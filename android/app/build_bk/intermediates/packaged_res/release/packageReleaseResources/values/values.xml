@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_bg">#FFF</color>
+    <color name="hpdq_background">#3DDC84</color>
+    <color name="splashscreen_bg">#FFF</color>
+    <color name="time365_101_background">#FFFFFF</color>
+    <color name="white">#FFF</color>
+    <integer name="react_native_dev_server_port">8081</integer>
+    <string name="app_name">Time365</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="gcm_defaultSenderId" translatable="false">135064105370</string>
+    <string name="google_api_key" translatable="false">AIzaSyDkL_foS39rJk0tV59wg_5HUA--C_X-mFw</string>
+    <string name="google_app_id" translatable="false">1:135064105370:android:a9fa8504b65842f6ef8a23</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDkL_foS39rJk0tV59wg_5HUA--C_X-mFw</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAyT1HUsboKcnjDTJ1XLRxYV7jJyUowJTk</string>
+    <string name="google_storage_bucket" translatable="false">tinvietsoft-73232.appspot.com</string>
+    <string name="project_id" translatable="false">tinvietsoft-73232</string>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        
+        <item name="android:textColor">#000000</item>
+
+        
+        <item name="android:statusBarColor">@color/app_bg</item>
+        
+        <item name="android:windowLightStatusBar">false</item>
+        
+        <item name="android:windowBackground">@color/app_bg</item>
+    </style>
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/splashscreen_bg</item>
+        <item name="android:background">@drawable/background_splash</item>
+    </style>
+</resources>

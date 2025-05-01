@@ -1,0 +1,75 @@
+// const param = {
+//   pro: 'UPDHRTI0020100',
+//   in_par: {
+//     p1_varchar2: employee_pk,
+//     p2_varchar2: personId,
+//     p3_varchar2: NewImage.toString().replace('data:image/png;base64,', ''),
+//   },
+//   out_par: {
+//     p1_varchar2: 'data',
+//   },
+//   token: 'tvs',
+//   machine_id: Device.getUniqueId(),
+// };
+// let axiosConfig = {
+//   headers: {
+//     Authorization: `Bearer ${tokenLogin}`,
+//   },
+// };
+// return await axios
+//   .post(API + 'ExecV2/MOBILE', param, axiosConfig)
+//   .then(res => {
+//     Alert.alert('Đăng ký khuôn mặt thành công.');
+//   })
+//   .catch(error => {
+//     if (error == 'AxiosError: Request failed with status code 401') {
+//       refreshNewToken('insertFaceToDB', employee_pk, personId, NewImage);
+//     } else {
+//       Alert.alert('Đăng ký khuôn mặt không thành công.');
+//     }
+//   });
+
+//chấm khuôn mặt
+
+{/* <Text>Phòn ban</Text>
+              <View style={styles.oneField}>
+                <Text>{information.org_nm}</Text>
+              </View> */}
+
+
+
+// const param = {
+//   pro: 'SELHRTI0020100',
+//   in_par: {
+//     p1_varchar2: employee_pk,
+//   },
+//   out_par: {
+//     p2_sys: 'face',
+//   },
+//   token: 'tvs',
+//   machine_id: Device.getUniqueId(),
+// };
+// let axiosConfig = {
+//   headers: {
+//     Authorization: `Bearer ${tokenLogin}`,
+//   },
+// };
+// await axios
+//   .post(API + 'Exec/MOBILE', param, axiosConfig)
+//   .then(res => {
+//     if (res.data.results === 'S') {
+//       if (res.data.data.face.length > 0) {
+//         setNewImage('data:image/png;base64,' + res.data.data.face[0].image);
+//         setPersonId(res.data.data.face[0].azure_person_id);
+//       }
+//       dispatch(HideGlobalLoading);
+//     } else {
+//       ShowError('fail');
+//       dispatch(HideGlobalLoading);
+//     }
+//   })
+//   .catch(error => {
+//     if (error == 'AxiosError: Request failed with status code 401') {
+//       refreshNewToken('loadData', null, null, null);
+//     }
+//   });
