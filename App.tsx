@@ -108,8 +108,7 @@ yarn add react-native-screens
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect } from "react";
-import { LogBox } from "react-native";
-import "react-native-gesture-handler";
+// import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import SplashScreen from "react-native-splash-screen";
 //import store from './src/store';
@@ -323,6 +322,7 @@ import MBHRBS002 from "./src/screens/HomeScreens/MBHRBS_XeDuaRuoc/MBHRBS002_Dang
 import MBHRBS003 from "./src/screens/HomeScreens/MBHRBS_XeDuaRuoc/MBHRBS003_DangKyXeTangCa";
 import ChiTietHopDongLaoDong from "./src/screens/HomeScreens/MBHRSG_KyDuyetOnline/MBHRSG002_KyHopDongLaoDong/ChiTietHopDongLaoDong";
 import KyThanhCong from "./src/screens/HomeScreens/MBHRSG_KyDuyetOnline/MBHRSG002_KyHopDongLaoDong/KyThanhCong";
+import { LogBox } from "react-native";
 
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications

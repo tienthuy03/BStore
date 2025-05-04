@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -10,12 +10,12 @@ import {
   Modal,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {useDispatch, useSelector} from 'react-redux';
-import {ConfigApiURL} from '../../../services/redux/SysConfig/action';
-import {fcmService} from '../../../config/FCMService';
-import {localNotificationService} from '../../../config/LocalNotificationService';
-import {ntGetNotification} from '../../../services/redux/Notification/action';
-const GlobalLoading = ({children}) => {
+import { useDispatch, useSelector } from 'react-redux';
+import { fcmService } from '../../../config/FCMService';
+import { localNotificationService } from '../../../config/LocalNotificationService';
+import { ntGetNotification } from '../../../services/redux/Notification/action';
+import { ConfigApiURL } from '../../../services/redux/SysConfig/action';
+const GlobalLoading = ({ children }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     const backAction = () => {
@@ -25,7 +25,7 @@ const GlobalLoading = ({children}) => {
           onPress: () => null,
           style: 'cancel',
         },
-        {text: 'Xác nhận', onPress: () => BackHandler.exitApp()},
+        { text: 'Xác nhận', onPress: () => BackHandler.exitApp() },
       ]);
       return true;
     };
