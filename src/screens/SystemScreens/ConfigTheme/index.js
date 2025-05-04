@@ -171,8 +171,8 @@ const ConfigThemeScreen = ({ navigation }) => {
         resolve(false);
       }, 10000);
       const URL =
-        ServerIP.tvs + "User/CheckClient?clientId=" + clientId + "&clientKey=";
-      console.log(URL);
+        ServerIP.bst + "User/CheckClient?clientId=" + clientId + "&clientKey=";
+
       axios
         .post(URL, null)
         .then(async (response) => {
@@ -212,7 +212,8 @@ const ConfigThemeScreen = ({ navigation }) => {
       CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID");
       API_URL = await AsyncStorage.getItem("API_URL");      
     }
-    if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+
+    if (API_URL == ServerIP.bst && CLIENT_ID == null) {
       setClientId("");
     } else if (API_URL == null && CLIENT_ID == null) {
       setClientId("");
@@ -220,7 +221,7 @@ const ConfigThemeScreen = ({ navigation }) => {
       setClientId(CLIENT_ID);
     }
 
-    if (API_URL != "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+    if (API_URL != ServerIP.bst && CLIENT_ID == null) {
       if (configAPI != null && configAPI != []) {
         configAPI.forEach(async function (item) {
           if (item.API_NAME.toLowerCase() == API_URL.toLowerCase()) {
@@ -236,8 +237,8 @@ const ConfigThemeScreen = ({ navigation }) => {
         getTheme();
       } else {
         AsyncStorage.setItem("themeName", "1");
-        AsyncStorage.setItem("API_URL", ServerIP.tvs);
-        dispatch(SetApiURL(ServerIP.tvs));
+        AsyncStorage.setItem("API_URL", ServerIP.bst);
+        dispatch(SetApiURL(ServerIP.bst));
         dispatch(sysLoadTheme(arr[0].color));
         AsyncStorage.setItem("firstLoadApp", "yes");
         setIsShow(true);
@@ -265,10 +266,10 @@ const ConfigThemeScreen = ({ navigation }) => {
 
   const OnGetDataConfig = async () => {
     const CONFIG_API = await AsyncStorage.getItem("CONFIG_API");
-    console.log(ServerIP.tvs + "Exec/ExecNoAuth/");
+    console.log(ServerIP.bst + "Exec/ExecNoAuth/");
     // if (CONFIG_API == null) {
     axios
-      .post(ServerIP.tvs + "Exec/ExecNoAuth/", {
+      .post(ServerIP.bst + "Exec/ExecNoAuth/", {
         pro: "SELHRDB000000",
         in_par: {
           p1_varchar2: "1.1.1",
