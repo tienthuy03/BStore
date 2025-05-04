@@ -44,7 +44,8 @@ export const SELSYSDICT0100 = "SELSYSDICT0100";
 export const APP_VERSION = "1.0.0";
 
 export const ServerIP = {
-  bst: "http://115.73.215.94:8082/api/api",
+  tvs: "http://115.73.215.94:8082/api/api/",
+  // tvs: "http://14.241.235.252:8585/tvs_api/api/",
 };
 export const configAPI = [
   {
