@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
+import React, { useState } from 'react';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import Block from '../components/Block';
 import OneField from '../components/OneFieldKeyValue';
 import Text from '../components/Text';
-import {useSelector} from 'react-redux';
-const {width, height} = Dimensions.get('screen');
-const ListLSVPCC = ({datas, onReload}) => {
+import { useSelector } from 'react-redux';
+const { width, height } = Dimensions.get('screen');
+const ListLSVPCC = ({ datas, onReload }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
   const data = datas ?? [];
   let [numberRecord, setNumberRecord] = useState(3);
@@ -18,9 +18,9 @@ const ListLSVPCC = ({datas, onReload}) => {
       setNumberRecord(numberRecordRender);
     }
   };
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     const styles = StyleSheet.create({
-      container: {marginTop: 5, marginRight: 10, marginLeft: 10},
+      container: { marginTop: 5, marginRight: 10, marginLeft: 10 },
       pContainer: {
         position: 'absolute',
         top: 0,
@@ -109,7 +109,7 @@ const ListLSVPCC = ({datas, onReload}) => {
         extraData={data}
         ListEmptyComponent={() => (
           <Block alignCenter justifyCenter marginTop={20}>
-            <Text>Không có dữ liệu !</Text>
+            <Text fontFamily={"Roboto-Medium"} >Không có dữ liệu !</Text>
           </Block>
         )}
       />

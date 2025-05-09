@@ -118,7 +118,7 @@ const QRCode = ({ navigation }) => {
                 // paddingBottom: 30,
               }}
             >
-              {/* {isShowTooltip ? (
+              {isShowTooltip ? (
                 <Animatable.View
                   ref={tooltipRef}
                   style={{
@@ -148,7 +148,7 @@ const QRCode = ({ navigation }) => {
                     </Text>
                   </View>
                 </Animatable.View>
-              ) : null} */}
+              ) : null}
 
               <View
                 style={{

@@ -1,18 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useIsFocused} from '@react-navigation/native';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import React, {useEffect, useState} from 'react';
-import {AppState, StatusBar} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { AppState, StatusBar } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import Block from '../../components/Block';
-import TabBar from '../../components/TabBar';
 import Text from '../../components/Text';
 import {
   ntGetNotification,
   ntResetCountNotiTab,
 } from '../../services/redux/Notification/action';
 import SystemNoti from '../HomeScreens/Tab_Notification/SystemNoti';
-import UserNoti from '../HomeScreens/Tab_Notification/UserNoti';
 const Tab = createMaterialTopTabNavigator();
 
 const NotificationMain = () => {
@@ -22,7 +20,7 @@ const NotificationMain = () => {
   const isFocused = useIsFocused();
   const [valueNoti, setValueNoti] = useState('Thông báo');
   let language = '';
-  const {notification, notificationGen, notificationSys} = useSelector(
+  const { notification, notificationGen, notificationSys } = useSelector(
     state => state.NotificationReducer,
   );
 

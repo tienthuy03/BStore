@@ -6,15 +6,15 @@ import EmailMethod from "./EmailMethod";
 
 const EmailSecurity = ({ navigation: { goBack }, route }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
-  const {first} = route.params;
+  const { first } = route.params;
   const [isFirst, setIsFirst] = useState(false);
 
   useEffect(() => {
-    if(first != undefined) {
+    if (first != undefined) {
       setIsFirst(first);
     }
   }, []);
-  
+
   return (
     <Block flex backgroundColor={Color.backgroundColor}>
       <TVSHeader goBack={goBack}>Email bảo mật</TVSHeader>
@@ -22,7 +22,6 @@ const EmailSecurity = ({ navigation: { goBack }, route }) => {
         {
           isFirst ? <EmailMethod isFirst={true} /> : <EmailMethod isFirst={false} />
         }
-        
       </Block>
     </Block>
   )

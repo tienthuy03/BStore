@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Dimensions,
-  Modal,
-  Platform,
-  StyleSheet,
+  View,
   Text,
+  Modal,
   TouchableOpacity,
-  View
+  StyleSheet,
+  Image,
+  Alert,
+  PermissionsAndroid,
+  Dimensions,
+  FlatList,
+  ScrollView,
+  Platform,
+  TextInput,
+  ActivityIndicator,
 } from "react-native";
-import * as AMT from "react-native-animatable";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Color } from "../../../../../colors/colortv";
-// import PDFView from "react-native-view-pdf";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import * as AMT from "react-native-animatable";
+import { useDispatch, useSelector } from "react-redux";
+// import PDFView from "react-native-view-pdf/lib/index";
 import Pdf from 'react-native-pdf';
 
 import axios from "axios";
@@ -31,10 +39,15 @@ const PopupPDF = ({
   backgroundColor = "white",
 }) => {
   const { width, height } = Dimensions.get("screen");
-  useEffect(() => {
-  }, []);
+  useEffect(() => { }, []);
 
   const [pdfError, setPdfError] = useState(false);
+  useEffect(() => {
+    console.log('Base64 Header:', dataPDF.substring(0, 50));
+
+
+  }, [])
+
 
   const handlePdfError = (error) => {
     console.log('PDF Error:', error);
@@ -100,6 +113,14 @@ const PopupPDF = ({
             }}
           >
             <View style={{ flex: 1 }}>
+              {/* <PDFView
+                fadeInDuration={0.0}
+                style={{ flex: 1 }}
+                resource={dataPDF}
+                resourceType={"base64"}
+                onLoad={() => console.log("done")}
+                onError={(error) => console.log("error pdf ", error)}
+              /> */}
               {pdfError ? (
                 <View style={styles.errorContainer}>
                   <Text style={styles.errorText}>Không thể tải tệp FDF.</Text>
@@ -117,8 +138,7 @@ const PopupPDF = ({
                   onPressLink={(uri) => {
                     console.log(`Link pressed: ${uri}`);
                   }}
-                  style={styles.pdf}
-                />
+                  style={{ width: '100%', height: '100%' }} />
               )}
             </View>
           </View>

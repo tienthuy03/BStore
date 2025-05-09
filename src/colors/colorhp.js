@@ -45,6 +45,16 @@ export const Color = {
   dangerText: '#F64E60',
   disableButton2: '#A9A9A9',
   disableText: '#A9A9A9',
+  //add colors new
+  textPrimary2: '#1E1E1E',
+  textPrimary3: '#979797',
+  backGroundColor2: '#F4F6FF',
+  btnPrimary2: "#0D92F4",
+  colorStatus: "#EB8317",
+  btnRed2: '#F44336',
+  backgroundColor3: "#84C4F7",
+  backgroundColor4: '#EAF4FD',
+  btnSuccess2: '#41B032',
 };
 
 export const TvsColor = {

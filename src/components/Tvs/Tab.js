@@ -116,16 +116,16 @@ const TVSTab = ({
                         item.id == "0"
                           ? "#FFA800"
                           : item.id == "1"
-                          ? "#009E00"
-                          : item.id == "2"
-                          ? "red"
-                          : item.id == "3"
-                          ? "#800080"
-                          : item.id == "4"
-                          ? "#009E00"
-                          : item.id == "5"
-                          ? "red"
-                          : "#CACFD2",
+                            ? "#009E00"
+                            : item.id == "2"
+                              ? "red"
+                              : item.id == "3"
+                                ? "#800080"
+                                : item.id == "4"
+                                  ? "#009E00"
+                                  : item.id == "5"
+                                    ? "red"
+                                    : "#CACFD2",
                       fontSize: 17,
                       fontWeight: "bold",
                     }}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Color } from "../../colors/colortv";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as AMT from "react-native-animatable";
@@ -22,73 +22,78 @@ const TVSControlPopup = ({
         backgroundColor: "rgba(0, 0, 0, 0.5)",
       }}
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "rgba(00,00,00,.1)",
-        }}
-      >
-        <HideArea onHide={onHide} />
-        <AMT.View
-          duration={300}
-          animation={"fadeInUp"}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+        <View
           style={{
-            marginHorizontal: 10,
-            backgroundColor: backgroundColor,
-            borderRadius: 20,
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 2,
+            flex: 1,
+            backgroundColor: "rgba(00,00,00,.1)",
           }}
         >
-          <View
+          <HideArea onHide={onHide} />
+          <AMT.View
+            duration={300}
+            animation={"fadeInUp"}
             style={{
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              flexDirection: "row",
-              backgroundColor: "rgba(00,00,00,.03)",
-              borderTopRightRadius: 20,
-              borderTopLeftRadius: 20,
+              marginHorizontal: 10,
+              backgroundColor: backgroundColor,
+              borderRadius: 20,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 2,
             }}
           >
-            <PopupTitle>{title}</PopupTitle>
-            <TouchableOpacity onPress={onHide}>
-              <Icon size={20} color={Color.mainColor} name={"close"} />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              padding: 10,
-              borderTopColor: Color.borderColor,
-              borderTopWidth: 1,
-              borderBottomColor: Color.borderColor,
-              borderBottomWidth: 1,
-              maxHeight,
-              minHeight,
-              // backgroundColor: "red",
-            }}
-          >
-            {children}
-          </View>
-          <View
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              flexDirection: "row",
-              backgroundColor: "rgba(00,00,00,.03)",
-              justifyContent: "center",
-            }}
-          >
-            {bottom}
-          </View>
-        </AMT.View>
-        <HideArea onHide={onHide} />
-      </View>
+            <View
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                flexDirection: "row",
+                backgroundColor: "rgba(00,00,00,.03)",
+                borderTopRightRadius: 20,
+                borderTopLeftRadius: 20,
+              }}
+            >
+              <PopupTitle>{title}</PopupTitle>
+              <TouchableOpacity onPress={onHide}>
+                <Icon size={20} color={Color.mainColor} name={"close"} />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                padding: 10,
+                borderTopColor: Color.borderColor,
+                borderTopWidth: 1,
+                borderBottomColor: Color.borderColor,
+                borderBottomWidth: 1,
+                maxHeight,
+                minHeight,
+                // backgroundColor: "red",
+              }}
+            >
+              {children}
+            </View>
+            <View
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                flexDirection: "row",
+                backgroundColor: "rgba(00,00,00,.03)",
+                justifyContent: "center",
+              }}
+            >
+              {bottom}
+            </View>
+          </AMT.View>
+          <HideArea onHide={onHide} />
+        </View>
+
+      </TouchableWithoutFeedback>
+
     </Modal>
   );
 };

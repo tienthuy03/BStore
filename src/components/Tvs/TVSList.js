@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Color } from "../../colors/colortv";
+import { Text } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { Color } from "../../colors/colortv";
 import Block from "../Block";
 import Button from "../Button";
 const TVSList = ({
@@ -32,7 +32,7 @@ const TVSList = ({
           maxHeight: maxHeight,
         }}
       >
-        <Text style={{ color: disabled ? "gray" : colorText }}>{code_nm}</Text>
+        <Text numberOfLines={1} style={{ color: disabled ? "gray" : colorText, fontFamily: "Roboto-Regular" }}>{code_nm}</Text>
       </Block>
       <Block style={{ justifyContent: "center", paddingRight: 10 }}>
         <Icon name={"chevron-down"} color={Color.mainColor} size={30} />

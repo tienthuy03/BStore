@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Svg, {G, Path} from 'react-native-svg';
-import {useSelector} from 'react-redux';
+import Svg, { G, Path } from 'react-native-svg';
+import { useSelector } from 'react-redux';
 function SvgTvtt(props) {
   const Color = useSelector((s) => s.SystemReducer.theme);
   return (

@@ -1,59 +1,67 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   StatusBar,
-  View,
-  Alert,
-  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
-import FastImage from "react-native-fast-image";
 import LinearGradient from "react-native-linear-gradient";
+import MaskedView from '@react-native-masked-view/masked-view';
 import Block from "../../components/Block";
 import Button from "../../components/Button";
-import Text from "../../components/Text";
-import Icon_TVTT_V2 from "../../icons/Menu/TruyVanThongTin";
-import Icon_DKDL_V2 from "../../icons/Menu/DangKyDuLieu";
-import Icon_PDDL_V2 from "../../icons/Menu/PheDuyetDuLieu";
-import Icon_CCKM_V2 from "../../icons/Menu/ChamCongKhuonMat";
-import Icon_BDTK_V2 from "../../icons/Menu/BieuDoThongKe";
-import Icon_QLDL_V2 from "../../icons/Menu/QuanLyDuLieu";
-import Icon_DKDLC_V2 from "../../icons/Menu/DangKyCom";
-import Icon_XDR_V2 from "../../icons/Menu/XeDuaRuoc";
-import Icon_TH_V2 from "../../icons/Menu/TongHop";
-import Icon_QLDT_V2 from "../../icons/Menu/QuanLyDonTu";
-import Icon_QLCV_V2 from "../../icons/Menu/QuanLyCongViec";
-import Icon_NONE_V2 from "../../icons/Menu/NoneIcon";
-import Icon_KSDG_V2 from "../../icons/Menu/KhaoSatDanhGia";
-import Icon_KDOL_V2 from "../../icons/Menu/KyDuyetOnline";
 import Icon_bdtk from "../../icons/BDTK";
+import Icon_bus from "../../icons/Bus";
 import Icon_cc from "../../icons/CC";
 import Icon_dkdl from "../../icons/DKDL";
+import Icon_gs from "../../icons/GS";
+import Icon_lsl from "../../icons/LSL";
+import Icon_BDTK_V2 from "../../icons/Menu/BieuDoThongKe";
+import Icon_CCKM_V2 from "../../icons/Menu/ChamCongKhuonMat";
+import Icon_DKDLC_V2 from "../../icons/Menu/DangKyCom";
+import Icon_DKDL_V2 from "../../icons/Menu/DangKyDuLieu";
+import Icon_KSDG_V2 from "../../icons/Menu/KhaoSatDanhGia";
+import Icon_KDOL_V2 from "../../icons/Menu/KyDuyetOnline";
+import Icon_NONE_V2 from "../../icons/Menu/NoneIcon";
+import Icon_PDDL_V2 from "../../icons/Menu/PheDuyetDuLieu";
+import Icon_QLCV_V2 from "../../icons/Menu/QuanLyCongViec";
+import Icon_QLDT_V2 from "../../icons/Menu/QuanLyDonTu";
+import Icon_QLDL_V2 from "../../icons/Menu/QuanLyDuLieu";
+import Icon_TH_V2 from "../../icons/Menu/TongHop";
+import Icon_TVTT_V2 from "../../icons/Menu/TruyVanThongTin";
+import Icon_XDR_V2 from "../../icons/Menu/XeDuaRuoc";
+import Icon_pddl_v2 from "../../icons/PDDLV2";
 import Icon_qldl from "../../icons/QLDL";
 import Icon_qldl_v2 from "../../icons/QLDLV2";
 import Icon_qldt from "../../icons/QLDT";
 import Icon_qldt_v2 from "../../icons/QLDTV2";
-import Icon_gs from "../../icons/GS";
-import Icon_lsl from "../../icons/LSL";
 import Icon_qlpd from "../../icons/QLPD";
-import Icon_pddl_v2 from "../../icons/PDDLV2";
 import Icon_st from "../../icons/ST";
 import Icon_tb from "../../icons/TB";
 import Icon_tvtt from "../../icons/TVTT";
-import Icon_bus from "../../icons/Bus";
-
-import { selectLanguageDM } from "../../Language";
+import Icon_gsNew from '../../icons/icongsnew'
+import Icon_Signature from "../../icons/IconSignature";
+import Icon_BHLD from "../../icons/IconBHLD";
 import axios from "axios";
-import { updateUserAction } from "../../actions";
 import RNRestart from "react-native-restart";
 import { useDispatch, useSelector } from "react-redux";
-import sysFetch from "../../services/fetch_v1";
-import { home } from "../../styles";
+import { updateUserAction } from "../../actions";
 import { APP_VERSION } from "../../config/Pro";
+import { selectLanguageDM } from "../../Language";
+import sysFetch from "../../services/fetch_v1";
+import { home } from "../../styles"
+import RowText from "../../components/RowText";
+import SvgPerson from "../../icons/Person";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Color } from "../../colors/colortv";
+import CardShop, { ShopCard } from "../../components/Bstore/CardShop";
 
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Svg, { Path } from "react-native-svg";
+const defaultAvatar = "https://i.pinimg.com/736x/99/d0/7f/99d07f72ea74f29fe21833964704cdc9.jpg"
 
 const HomeMain = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -61,16 +69,18 @@ const HomeMain = ({ navigation }) => {
   const loginReducers = useSelector((state) => state.loginReducers);
   const menuReducer = useSelector((state) => state.menuReducer);
   const languageReducer = useSelector((state) => state.languageReducer);
-  const [dataMenuMBHR, setDataMenuMBHR] = useState([]);
   const Color = useSelector((s) => s.SystemReducer.theme);
-  const numColumns = loginReducers.data.data.menu_type == 2 ? 3 : 2;
+  const numColumns = loginReducers.data.data.menu_type == 2 ? 2 : 3;
   const [loadMenu, setLoadMenu] = useState(true);
+  const [dataMenuMBHR, setDataMenuMBHR] = useState([]);
+
   let dataMenuMBHRs;
   let dataLanguage;
   let language;
   let fullname;
   let empId;
   let urlImage;
+
   // let loadMenu;
   function SetIcon(name) {
     if (loginReducers.data.data.menu_type == 2) {
@@ -154,7 +164,7 @@ const HomeMain = ({ navigation }) => {
         return <Icon_QLCV_V2 />;
       } else if (name === "icon-ksdg-v2") {
         return <Icon_KSDG_V2 />;
-      } else if (name === "icon-kdol-v2") {
+      } else if (name === "form-ksdg") {
         return <Icon_KDOL_V2 />;
       } else {
         return <Icon_NONE_V2 />;
@@ -183,13 +193,17 @@ const HomeMain = ({ navigation }) => {
       } else if (name === "form-lsl") {
         return <Icon_lsl />;
       } else if (name === "form-gs") {
-        return <Icon_gs />;
+        return <Icon_gsNew />;
       } else if (name === "form-pddlv2") {
         return <Icon_pddl_v2 />;
       } else if (name === "form-qldlv2") {
         return <Icon_qldl_v2 />;
       } else if (name === "bus") {
         return <Icon_bus />;
+      } else if (name === "form-kdonl") {
+        return <Icon_Signature />;
+      } else if (name === "form-bhld") {
+        return <Icon_BHLD />;
       }
     }
     // http://14.241.235.252:8484/tvs_api_v1/api/
@@ -211,14 +225,15 @@ const HomeMain = ({ navigation }) => {
   // loadMenu = menuReducer.isLoading;
   try {
     dataLanguage = languageReducer.data.data.language;
-  } catch (error) {}
+  } catch (error) { }
 
   try {
     language = loginReducers.data.data.user_language;
     urlImage = loginReducers.data.data.avatar;
     fullname = loginReducers.data.data.full_name;
     empId = loginReducers.data.data.emp_id;
-  } catch (error) {}
+
+  } catch (error) { }
 
   useEffect(() => {
     setLoadMenu(true);
@@ -266,7 +281,7 @@ const HomeMain = ({ navigation }) => {
                 [
                   {
                     text: "Đóng",
-                    onPress: () => {},
+                    onPress: () => { },
                   },
                   {
                     text: "Xác nhận",
@@ -358,12 +373,14 @@ const HomeMain = ({ navigation }) => {
       tokenLogin
     )
       .then((rs) => {
+
         if (rs == "Token Expired") {
           refreshNewToken("getMenu");
         }
         if (rs != "Token Expired") {
           setLoadMenu(false);
           dataMenuMBHRs = rs.data.menu;
+
           let dataMenuMBHRc = [];
           try {
             dataMenuMBHRs.map((item) => {
@@ -380,7 +397,7 @@ const HomeMain = ({ navigation }) => {
                 if (
                   (dataMenuMBHRc.filter((x) => x.menu_cd !== "MBHRAN").length -
                     1) %
-                    3 ===
+                  3 ===
                   1
                 ) {
                   dataMenuMBHRc.push({ pk: "pk", parent: true });
@@ -388,7 +405,7 @@ const HomeMain = ({ navigation }) => {
                 if (
                   (dataMenuMBHRc.filter((x) => x.menu_cd !== "MBHRAN").length -
                     1) %
-                    3 ===
+                  3 ===
                   2
                 ) {
                   dataMenuMBHRc.push(
@@ -417,7 +434,7 @@ const HomeMain = ({ navigation }) => {
             } else {
               if (
                 dataMenuMBHRc.filter((x) => x.menu_cd !== "MBHRAN").length %
-                  2 ===
+                2 ===
                 1
               ) {
                 dataMenuMBHRc.push({ pk: "pk", parent: true });
@@ -450,148 +467,112 @@ const HomeMain = ({ navigation }) => {
         }
       });
       return data[index][params.toString().toLowerCase()];
-    } catch (error) {}
+    } catch (error) { }
   }
+  const [greeting, setGreeting] = useState("");
+  // Hàm xác định lời chào dựa trên giờ hiện tại
+  const getGreeting = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    if (hour >= 0 && hour < 12) {
+      return "Chào buổi sáng! 🌞";
+    } else if (hour >= 12 && hour < 18) {
+      return "Chào buổi chiều! 🌤️";
+    } else {
+      return "Chào buổi tối! 🌙";
+    }
+  };
+  useEffect(() => {
+    // Hàm cập nhật lời chào
+    const updateGreeting = () => {
+      setGreeting(getGreeting());
+    };
+
+    // Gọi ngay khi component mount
+    updateGreeting();
+
+    // Cập nhật lời chào sau 5 phút
+    const interval = setInterval(updateGreeting, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const infor = useMemo(() => {
     return (
       <Block row justifyStart alignCenter paddingLeft={20}>
         <View style={home.boxI}>
-          <Image style={home.img} source={{ uri: urlImage }} />
-          <FastImage
-            style={home.image}
-            source={{
-              uri: urlImage,
-              headers: { Authorization: "someAuthToken" },
-              priority: FastImage.priority.normal,
-            }}
-          />
-        </View>
+          {urlImage !== "data:;base64," ? (
+            <Image
+              style={home.img}
+              source={{ uri: urlImage }}
+              resizeMode='stretch'
+            />
+          ) : (
+            <View style={home.imgNo}>
+              <SvgPerson />
+            </View>
 
-        <Block column paddingLeft={20}>
+          )}
+        </View>
+        <Block column paddingLeft={12}>
           <Text
-            size={15}
-            marginBottom={2}
+            size={20}
+            marginBottom={4}
             color={Color.white}
-            fontFamily={"RobotoCondensed-Regular"}
+            fontFamily={"Roboto-Bold"}
           >
-            {selectSystem(language, 1)}
+            {greeting}
           </Text>
-          <Text size={15} color={Color.white} fontFamily={"Roboto-Medium"}>
-            {empId}
-          </Text>
-          <Text size={24} color={Color.white} fontFamily={"Roboto-Medium"}>
-            {fullname}
-          </Text>
+          <View style={{ gap: 4, justifyContent: 'center' }}>
+            <RowText text={fullname} iconColor={Color.white} iconName={""} iconSize={24} textStyle={{ fontFamily: 'Roboto-Bold', fontSize: 16, color: Color.white }} />
+          </View>
         </Block>
       </Block>
     );
-  }, [language]);
-  // }, [language, loadMenu]);
-
+  }, [language, greeting]);
   const renderItem = ({ item }) => {
-    if (item.parent === true) {
-      return (
-        <Block flex height={120} margin={10} borderRadius={20} justifyCenter />
-      );
-    } else {
-      return (
-        <Block
-          shadow
-          flex={1}
-          height={120}
-          margin={10}
-          borderRadius={20}
-          justifyCenter
-          backgroundColor={Color.white}
-        >
-          <Button nextScreen={() => navigation.navigate(item.menu_cd)}>
-            <Block
-              row
-              justifyContent={"space-between"}
-              paddingLeft={15}
-              paddingRight={15}
-            >
-              {SetIcon(item.icon)}
-            </Block>
-            <Text
-              numberOfLines={1}
-              fontWeight={"bold"}
-              size={14}
-              color={Color.mainColor}
-              paddingLeft={10}
-              paddingTop={3}
-            >
-              {selectLanguageDM(item, language)}
-            </Text>
-          </Button>
-        </Block>
-      );
-    }
+    return (
+      <CardShop />
+    );
   };
+
   const renderItemV1 = ({ item }) => {
+    const isSelected = selectedItem === item;
     if (item.parent === true) {
       return (
         <View
           style={{
-            height: 100,
+            height: 120,
             margin: 5,
             flex: 1,
-            marginBottom: 30,
+            marginBottom: 12,
           }}
         ></View>
       );
     } else {
       return (
-        // <View
-        //   style={{
-        //     flex: 1,
-        //     marginTop: 10,
-        //     marginHorizontal: 5,
-        //     backgroundColor: "white",
-        //     borderRadius: 8,
-        //     padding: 10,
-        //   }}
-        // >
-        //   {/* <LinearGradient
-        //     start={{ x: 0, y: 0 }}
-        //     end={{ x: 0, y: 1 }}
-        //     colors={["#498DE3", "#25399F"]}
-        //     style={{
-        //       marginTop: 5,
-        //       backgroundColor: Color.mainColor,
-        //       borderRadius: 50,
-        //       padding: 10,
-        //     }}
-        //   > */}
-        //   <Icon color={Color.mainColor} size={30} name={item.icon} />
-        //   {/* </LinearGradient> */}
-        //   <View
-        //     style={{
-        //       marginTop: 5,
-        //     }}
-        //   >
-        //     <Text style={{}} numberOfLines={1}>
-        //       {item.title}
-        //     </Text>
-        //   </View>
-        // </View>
-        <View style={{ height: 100, margin: 5, flex: 1, marginBottom: 30 }}>
+        <View style={{ height: 100, flex: 1, marginBottom: 16, marginTop: 12 }}>
           <Block
             shadow
-            marginHorizontal={15}
-            height={80}
-            borderRadius={20}
+            marginHorizontal={12}
+            borderRadius={12}
             justifyCenter
             backgroundColor={Color.white}
+            paddingVertical={12}
+            style={{
+              borderColor: isSelected ? '#25399F' : 'transparent',
+              borderWidth: isSelected ? 2 : 0,
+            }}
           >
-            <Button nextScreen={() => navigation.navigate(item.menu_cd)}>
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                {SetIcon(item.icon)}
-              </View>
+            <Button
+              nextScreen={() => {
+                setSelectedItem(item);
+                navigation.navigate(item.menu_cd);
+              }}>
+              {SetIcon(item.icon)}
             </Button>
           </Block>
-
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Text
               numberOfLines={1}
@@ -605,130 +586,101 @@ const HomeMain = ({ navigation }) => {
               {selectLanguageDM(item, language)}
             </Text>
           </View>
-        </View>
+        </View >
       );
     }
   };
-  const dataTest = [
-    {
-      icon: "home",
-      title: "Truy vấn thông tin",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    {
-      icon: "chevron-down",
-      title: "Đăng ký dữ liệu công",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    {
-      icon: "checkbook",
-      title: "Đăng ký dữ liệu cơm",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    {
-      icon: "email-search-outline",
-      title: "Đăng ký dữ liệu xe tuyến",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    { parent: true },
-    { parent: true },
-  ];
-  return (
-    <LinearGradient
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 0.3 }}
-      // colors={['#0176C7', Color.mainColor, Color.mainColor]}
-      colors={["#498DE3", "#25399F"]}
-      style={home.linearGradient}
-    >
-      <StatusBar
-        translucent={true}
-        backgroundColor={"transparent"}
-        barStyle="light-content"
-      />
-      <View style={home.over} />
-      <Block
-        row
-        justifyContent={"space-between"}
-        alignCenter
-        paddingTop={40}
-        paddingRight={20}
-      >
-        <Block justifyCenter paddingLeft={20} height={50} />
-      </Block>
-      {infor}
-      <Block flex>
-        <Block
-          flex
-          backgroundColor={Color.gray}
-          borderTopRightRadius={30}
-          borderTopLeftRadius={30}
-          paddingLeft={10}
-          marginTop={30}
-          paddingRight={10}
+  const [selectedItem, setSelectedItem] = useState(null);
+  const ListHeaderComponent = () => {
+    return (
+      <Block>
+        <Text
+          paddingLeft={20}
+          // paddingTop={10}
+          size={22}
+          fontFamily={"Roboto-Bold"}
+          color={Color.mainColor}
+          paddingBottom={12}
         >
-          <Block>
-            <Text
-              paddingLeft={20}
-              paddingTop={10}
-              size={22}
-              fontFamily={"Roboto-Bold"}
-              color={Color.mainColor}
-            >
-              {selectSystem(language, 0)}
-            </Text>
-          </Block>
-          {loadMenu ? (
-            <Block flex>
-              <ActivityIndicator size="large" color="grey" />
-            </Block>
-          ) : (
-            <Block flex>
-              <FlatList
-                data={dataMenuMBHR.filter((x) => x !== "MBHRAN")}
-                renderItem={
-                  loginReducers.data.data.menu_type == 2
-                    ? renderItemV1
-                    : renderItem
-                }
-                numColumns={numColumns}
-                keyExtractor={(item, index) => index.toString()}
-                showsVerticalScrollIndicator={false}
-              />
-              {/* <View
-                style={{
-                  borderWidth: 0.5,
-                  borderRadius: 6,
-                  paddingBottom: 10,
-                }}
-              >
-                <View
+          {selectSystem(language, 0)}
+        </Text>
+      </Block>
+    )
+  }
+
+  return (
+    <>
+      <View style={{ paddingHorizontal: 16, backgroundColor: "#F1F1F1", flex: 1 }}>
+        <View style={{ paddingTop: '15%', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{}}>
+            {/* <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 20, color: Color.textPrimary3 }}>Xin chào 👋</Text> */}
+            <MaskedView
+              maskElement={
+                <Text
                   style={{
-                    // top: -10,
-                    // marginLeft: 10,
-                    backgroundColor: Color.white,
+                    fontFamily: 'Roboto-Medium',
+                    fontSize: 20,
+                    color: 'black', // màu này không quan trọng vì sẽ bị che
+                    textAlign: 'center',
                   }}
                 >
-                  <Text style={{ fontSize: 16 }}>Main title</Text>
-                </View>
+                  Xin chào 👋
+                </Text>
+              }
+            >
+              <LinearGradient
+                colors={['#FF5E62', '#FA812F',]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <Text
+                  style={{
+                    opacity: 0, // ẩn text gốc, chỉ dùng để lấy layout
+                    fontFamily: 'Roboto-Medium',
+                    fontSize: 20,
+                  }}
+                >
+                  Xin chào 👋
+                </Text>
+              </LinearGradient>
+            </MaskedView>
+            <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>Thuỷ Tiên</Text>
+          </View>
+          <View>
+            <Image
+              style={{ width: 40, height: 40, borderRadius: 100, borderWidth: 2, borderColor: Color.mainColor }}
+              source={{ uri: "https://i.pinimg.com/736x/3b/19/11/3b1911246fc66f81cbc8a0035014569b.jpg" }} />
+          </View>
+        </View>
+        <Text style={{ paddingVertical: 12, fontFamily: "Roboto-Medium", fontSize: 16, color: Color.mainColor }}>Danh sách cửa hàng</Text>
+
+        <Block flex={1} >
+          <Block flex>
+            {loadMenu ? (
+              <Block flex>
+                <ActivityIndicator size="large" color="grey" />
+              </Block>
+            ) : (
+              <Block flex={1}  >
                 <FlatList
-                  data={dataTest}
-                  renderItem={renderItemV1}
-                  numColumns={2}
-                  keyExtractor={(item, index) => index.toString()}
+                  data={dataMenuMBHR.filter((x) => x !== "MBHRAN")}
+                  renderItem={
+                    loginReducers.data.data.menu_type == 2
+                      ? renderItemV1
+                      : renderItem
+                  }
+                  numColumns={1}
+                  keyExtractor={(_, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
-                  scrollEnabled={false}
+                // ListHeaderComponent={ListHeaderComponent}
                 />
-              </View> */}
-            </Block>
-          )}
+              </Block>
+            )}
+          </Block>
         </Block>
-      </Block>
-    </LinearGradient>
+      </View >
+    </>
   );
 };
+
 export default HomeMain;

@@ -12,7 +12,6 @@ import * as AMT from 'react-native-animatable';
 import Pdf from 'react-native-pdf';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Color } from '../../../../colors/colortv';
-
 const PopupPDF = ({
   isShow,
   onHide,
@@ -23,13 +22,13 @@ const PopupPDF = ({
   backgroundColor = 'white',
 }) => {
   const [pdfError, setPdfError] = useState(false);
-  useEffect(() => {
+  useEffect(() => { }, [])
 
-  }, [])
   const handlePdfError = (error) => {
     console.log('PDF Error:', error);
     setPdfError(true);
   };
+
 
   return (
     <Modal transparent={true} visible={isShow}>
@@ -88,9 +87,9 @@ const PopupPDF = ({
                 </View>
               ) : (
                 <Pdf
-                  // source={{ uri: `data:application/pdf;base64,${dataPDF}` }}
+                  // source={{uri: `data:application/pdf;base64,${dataPDF}`}}
                   source={{
-                    uri: `data:application/pdf;base64,${dataPDF.replace(/\r?\n|\r/g, '')}`
+                    uri: `data:application/pdf;base64,${dataPDF?.replace(/\r?\n|\r/g, '')}`
                   }}
                   onLoadComplete={(numberOfPages, filePath) => {
                     console.log(`Number of pages: ${numberOfPages}`);
@@ -150,7 +149,9 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: 'red',
+    fontFamily: 'Roboto-Medium'
   },
 });
 
 export default PopupPDF;
+

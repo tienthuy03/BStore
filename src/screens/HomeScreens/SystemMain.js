@@ -1,5 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import NetInfo from "@react-native-community/netinfo";
+import axios from "axios";
 import md5 from "md5";
 import React, { useEffect, useState } from "react";
 import {
@@ -12,13 +13,13 @@ import {
   Platform,
   ScrollView,
   StatusBar,
-  Switch,
-  View,
-  TouchableOpacity,
   StyleSheet,
+  Switch,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import DefaultPreference from "react-native-default-preference";
+import LinearGradient from "react-native-linear-gradient";
 import RNRestart from "react-native-restart";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,22 +32,22 @@ import Text from "../../components/Text";
 import TextInput from "../../components/TextInput";
 import TVSControlPopup from "../../components/Tvs/ControlPopup";
 import TVSPopup from "../../components/Tvs/Popup2";
-import { APP_VERSION } from "../../config/Pro";
 import IconDown from "../../icons/Back";
 import Icon_email from "../../icons/Email";
 import EyeClose from "../../icons/EyeClose";
 import EyeOpen from "../../icons/EyeOpen";
-import Icon_infor from "../../icons/Infor";
-import Icon_next from "../../icons/Next";
 import Icon_face from "../../icons/Face";
 import Icon_finger from "../../icons/Finger";
+import Icon_infor from "../../icons/Infor";
+import Icon_next from "../../icons/Next";
 import ShowError from "../../services/errors";
+import sysFetch from "../../services/fetch";
 import {
   GetDataReceiceNotification,
   SetReveiceNotification,
 } from "../../services/redux/System/action";
-import sysFetch from "../../services/fetch";
-import axios from "axios";
+import SvgPerson from "../../icons/Person";
+import RowText from "../../components/RowText";
 const { width, height } = Dimensions.get("screen");
 
 const PROP = [
@@ -226,11 +227,8 @@ const SystemMain = ({ navigation }) => {
       </View>
       <View>
         <Text
-          style={{
-            marginBottom: 5,
-            textAlign: "center",
-          }}
-        >
+          marginBottom={4} size={16} fontFamily={"Roboto-Medium"}
+          center={"center"}>
           Bạn có muốn sử dụng{""}{" "}
           {valueAuthen == "face_id" ? "nhận dạng khuôn mặt" : "vân tay"}
           {""} để đăng nhập nhanh?
@@ -541,7 +539,7 @@ const SystemMain = ({ navigation }) => {
           //   setAuthenLanguage(item[lowerLanguage]);
           // }
         });
-      } catch (error) {}
+      } catch (error) { }
     });
   }, [language, loadLanguage]);
   const CustomProgressBar = ({ visible }) => (
@@ -555,7 +553,7 @@ const SystemMain = ({ navigation }) => {
           backgroundColor={Color.white}
           padding={25}
         >
-          <Text size={15} fontWeight={"200"}>
+          <Text size={15} fontWeight={"200"} fontFamily={"Roboto-Medium"}>
             Loading
           </Text>
           <ActivityIndicator size="small" color="grey" />
@@ -936,6 +934,7 @@ const SystemMain = ({ navigation }) => {
         <Text
           style={{
             marginBottom: 5,
+            fontFamily: 'Roboto-Medium'
           }}
         >
           Xác nhận mật khẩu
@@ -1920,9 +1919,6 @@ const SystemMain = ({ navigation }) => {
             <View style={[styles.viewImgProfile]}>
               <View
                 style={{
-                  borderRadius: 12,
-                  borderWidth: 1,
-                  borderColor: "#ddd",
                   padding: 2,
                   justifyContent: "center",
                   alignItems: "center",
@@ -1931,27 +1927,39 @@ const SystemMain = ({ navigation }) => {
                   overflow: "hidden",
                 }}
               >
-                <Image
-                  style={[
-                    styles.iconTopBar,
-                    {
-                      borderRadius: 12,
-                      width: 58,
-                      height: 58,
-                    },
-                  ]}
-                  resizeMode="cover"
-                  source={{ uri: urlImageLogin }}
-                />
+                {
+                  urlImageLogin !== "data:;base64," ? (
+                    <Image
+                      style={[
+                        styles.iconTopBar,
+                        {
+                          borderRadius: 100,
+                          width: 58,
+                          height: 58,
+                        },
+                      ]}
+                      resizeMode="stretch"
+                      source={{ uri: urlImageLogin }}
+                    />
+                  ) : (
+                    <View style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: 100,
+                      backgroundColor: Color.white
+                    }}>
+                      <SvgPerson />
+                    </View>
+                  )
+                }
+
               </View>
 
               <View style={styles.viewInfo}>
-                <Text style={[styles.textName, { fontSize: 20 }]}>
+                <Text style={[styles.textName, { fontSize: 20, color: Color.mainColor, }]}>
                   {fullnameLogin}
                 </Text>
-                <Text style={[styles.textStatus, { fontSize: 16 }]}>
-                  {empIdLogin}
-                </Text>
+                <RowText text={empIdLogin} iconColor={Color.mainColor} iconName={"card-account-details-outline"} iconSize={20} textStyle={{ fontFamily: 'Roboto-Medium', fontSize: 14, color: Color.mainColor, paddingLeft: -20 }} />
               </View>
             </View>
           </LinearGradient>
@@ -2032,8 +2040,8 @@ const SystemMain = ({ navigation }) => {
                     },
                   ]}
                 >
-                  <Text style={[styles.textName]}>Ví QR Code</Text>
-                  <Text style={[styles.textStatus]}>
+                  <Text fontFamily={"Roboto-Medium"} style={[styles.textName]}>Ví QR Code</Text>
+                  <Text fontFamily={"Roboto-Regular"} style={[styles.textStatus]}>
                     Lưu trữ và xuất trình các mã QR code quan trọng
                   </Text>
                 </View>
@@ -2052,8 +2060,8 @@ const SystemMain = ({ navigation }) => {
 
             {/* Dang nhap van tay */}
             {valueAuthen === "face_id" ||
-            valueAuthen === "touch_id" ||
-            valueAuthen === "finger_print" ? (
+              valueAuthen === "touch_id" ||
+              valueAuthen === "finger_print" ? (
               <TouchableOpacity style={styles.viewOption}>
                 <View style={[styles.viewImgProfile, { flex: 1 }]}>
                   <MaterialCommunityIcons
@@ -2328,12 +2336,14 @@ const styles = StyleSheet.create({
   viewInfo: {
     marginStart: 10,
     paddingRight: 20,
+    gap: 4
   },
   textName: {
     fontWeight: "600",
     fontSize: 16,
     color: "#000000",
     opacity: 0.8,
+    fontFamily: "Roboto-Medium"
   },
   textStatus: {
     fontWeight: "400",
@@ -2341,5 +2351,6 @@ const styles = StyleSheet.create({
     color: "#000000",
     opacity: 0.6,
     marginTop: 3,
+    fontFamily: "Roboto-Regular"
   },
 });

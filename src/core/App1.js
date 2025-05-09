@@ -5,21 +5,21 @@
  * @format
  * @flow strict-local
  */
-import {LogBox} from 'react-native';
+import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import SplashScreen from 'react-native-splash-screen';
 import LoginScreen from './src/screens/SystemScreens/LoginScreen';
 import ForgotPass from './src/screens/SystemScreens/ForgotPassword';
 import RegisterAccount from './src/screens/SystemScreens/RegisterAccount';
 import Index from './src/screens/HomeScreens/index';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 //import store from './src/store';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import TVTT from './src/screens/HomeScreens/MBHRIN_TruyVanThongTin/TVTT';
 import MBHRIN001 from './src/screens/HomeScreens/MBHRIN_TruyVanThongTin/MBHRIN001_CaNhan';
 import MBHRIN002 from './src/screens/HomeScreens/MBHRIN_TruyVanThongTin/MBHRIN002_NgayCong';
@@ -77,18 +77,18 @@ import UpdatePass from './src/screens/SystemScreens/UpdatePass';
 import ConfigThemeScreen from './src/screens/SystemScreens/ConfigTheme';
 
 import createSagaMiddleware from 'redux-saga';
-import {createStore, applyMiddleware} from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import allReducers from './src/reducers';
 import rootSaga from './src/sagas/rootSaga';
-import {fcmService} from './src/config/FCMService';
+import { fcmService } from './src/config/FCMService';
 //import {localNotificationService} from './src/config/LocalNotificationService';
-import {localNotificationService} from './src/config/LocalNotificationService';
+import { localNotificationService } from './src/config/LocalNotificationService';
 
-import {GlobalLoading, Popup} from './src/components/Base';
+import { GlobalLoading, Popup } from './src/components/Base';
 import NotificationAlert from './src/components/NotificationAlert';
 import SysConfig from './src/screens/SystemScreens/SysConfig';
 import TestScreenComponent from './src/tvs-libraries/test';
-import {SafeAreaView} from 'react-native';
+import { SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -111,7 +111,7 @@ const App = () => {
     fcmService.registerAppWithFCM();
     fcmService.register(onRegister, onNotification, onOpenNotification);
     localNotificationService.configure(onOpenNotification);
-    function onRegister(token) {}
+    function onRegister(token) { }
 
     function onNotification(notify) {
       hasNoti(notify.body);
@@ -128,7 +128,7 @@ const App = () => {
       // );
     }
 
-    function onOpenNotification(notify) {}
+    function onOpenNotification(notify) { }
 
     return () => {
       fcmService.unRegister();

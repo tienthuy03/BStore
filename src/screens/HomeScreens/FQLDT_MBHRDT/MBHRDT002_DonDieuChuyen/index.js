@@ -50,8 +50,6 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
     dataMenuMBHRs = menuReducer.data.data.menu;
     refreshToken = loginReducers.data.data.refreshToken;
     userPk = loginReducers.data.data.tes_user_pk;
-    console.log(fullname);
-
   } catch (error) {
     console.log(error);
   }
@@ -152,8 +150,6 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
       tokenLogin
     )
       .then((rs) => {
-        console.log("API response:", rs.data); // Log toàn bộ response
-
         setDataLV(rs.data.lst_loaivang);
       })
       .catch((error) => {
@@ -236,7 +232,7 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
     titleContainer: {
       // flex: 1,
       paddingHorizontal: 5,
-      marginBottom: 10,
+      marginBottom: 12,
     },
     titleText: {
       flexDirection: "row",
@@ -294,10 +290,10 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
             .p_pk
         )}
       </TVSHeader>
-      <Block backgroundColor={Color.white} flex>
+      <Block backgroundColor={Color.white} padding={12} flex >
         <Block style={styles.titleContainer}>
           <Block style={styles.titleText}>
-            <Text color={Color.mainColor}>Loại vắng</Text>
+            <Text style={{ color: Color.mainColor, fontFamily: 'Roboto-Regular', fontSize: 14 }}>Loại vắng</Text>
           </Block>
           <TVSList
             onPress={() => setModalVisibleLV(true)}
@@ -314,8 +310,8 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
               alignItems: "center",
             }}
           >
-            <Text color={Color.mainColor}>Ngày vắng</Text>
-            <Text color={Color.red}> *</Text>
+            <Text style={{ color: Color.mainColor, fontFamily: 'Roboto-Regular', fontSize: 14 }}>Ngày vắng</Text>
+            <Text style={{ color: Color.btnRed2, fontSize: 14 }}> *</Text>
           </Block>
           <TVSDate
             onPress={() => showDatePickerStart()}
@@ -328,7 +324,7 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
         </Block>
         <Block style={styles.titleContainer}>
           <Block style={styles.titleText}>
-            <Text color={Color.mainColor}>Ghi chú</Text>
+            <Text style={{ color: Color.mainColor, fontFamily: 'Roboto-Regular' }}>Ghi chú</Text>
           </Block>
           <Block
             style={{
@@ -344,6 +340,10 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
               placeholder={"Nhập ghi chú"}
               value={description}
               onChangeText={(text) => setDescription(text)}
+              style={{
+                fontSize: 14,
+                fontFamily: 'Roboto-Regular',
+              }}
             />
           </Block>
         </Block>

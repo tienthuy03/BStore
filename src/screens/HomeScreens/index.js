@@ -1,19 +1,11 @@
 import NetInfo from "@react-native-community/netinfo";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import {
   Platform,
   StyleSheet,
-  Text,
-  View,
-  Alert,
-  SafeAreaView,
-  TouchableOpacity,
-  Animated,
-  Easing,
+  View
 } from "react-native";
 import DefaultPreference from "react-native-default-preference";
 import { Badge } from "react-native-elements";
@@ -31,8 +23,8 @@ import HomeScreen from "../HomeScreens/HomeMain";
 import NotiScreen from "../HomeScreens/NotificationMain";
 import SystemScreen from "../HomeScreens/SystemMain";
 import QRCodeScreen from "./QRCodeScreen";
+import CustomTabBar from "../../components/Bstore/CustomTabar";
 
-import IconHome from "../../icons/Menu/BieuDoThongKe";
 
 // const Tab = createBottomTabNavigator();
 // const Tab = createMaterialTopTabNavigator();
@@ -70,13 +62,13 @@ const Index = () => {
     loadMenu = menuReducer.isLoading;
     login_status = state.data.data.login_status;
     // PushNotificationIOS
-  } catch (error) {}
+  } catch (error) { }
 
   try {
     language = state.data.data.user_language;
     dataLanguage = languageReducer.data.data.language;
     loadLanguage = languageReducer.isLoading;
-  } catch (error) {}
+  } catch (error) { }
 
   useEffect(() => {
     console.log("get DefaultPreference");
@@ -141,7 +133,7 @@ const Index = () => {
           setHome(item[lowerLanguage]);
         }
       });
-    } catch (error) {}
+    } catch (error) { }
   }, [languageReducer]);
   //handle noti count
   useEffect(() => {
@@ -157,268 +149,267 @@ const Index = () => {
   }, []);
 
   return (
-    <Tab.Navigator
-      screenOptions={{
-        initialRouteName: { home },
-        activeTintColor: "#2f95dc",
-        inactiveTintColor: "gray",
-        tabBarActiveTintColor: Color.mainColor,
-        showIcon: true,
-        showLabel: false,
-        tabBarStyle: {
-          backgroundColor: "#fff",
-          paddingBottom: Platform.OS == "ios" ? 25 : 5,
-          paddingTop: 5,
-          height: Platform.OS == "ios" ? 70 : 50,
-        },
-      }}
-      // tabBarOptions={{
-      //   initialRouteName: "Home",
-      //   activeTintColor: "#2f95dc",
-      //   inactiveTintColor: "gray",
-      //   showIcon: true,
-      //   showLabel: false,
-      //   style: {
-      //     backgroundColor: "#fff",
-      //     borderTopWidth: 1,
-      //     borderTopColor: "#ccc",
-      //   },
-      // }}
-    >
-      <Tab.Screen
-        name={home}
-        component={HomeScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"home"}
-                  color={Color.mainColor}
-                />
-              </View>
-            ) : (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"home"}
-                  color={Color.grayPlahoder}
-                />
-              </View>
-            ),
-        }}
-      />
-      {/* DashBoard START */}
-      <Tab.Screen
-        name={DashboardTitle}
-        component={Dashboard}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"clipboard-text-multiple"}
-                  color={Color.mainColor}
-                />
-              </View>
-            ) : (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"clipboard-text-multiple"}
-                  color={Color.grayPlahoder}
-                />
-              </View>
-            ),
-        }}
-      />
-      {/* QRCode */}
-      <Tab.Screen
-        name="QRCode"
-        component={QRCodeScreen}
-        options={{
-          headerShown: false,
-          tabBarLabel: "",
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <View
-                style={[
-                  styles.tabs,
-                  {
-                    width: 70,
-                    height: 70,
-                    borderRadius: 35,
-                    borderWidth: 2,
-                    borderColor: "transparent",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    top: -10,
-                    backgroundColor: Color.gray,
-                  },
-                ]}
-              >
-                <View
-                  style={{
-                    width: 55,
-                    height: 55,
-                    borderRadius: 30,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "white",
-                    padding: 10,
-                    shadowColor: Color.grayPlahoder,
-                    shadowOffset: {
-                      width: 0,
-                      height: 4,
-                    },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 8,
-                    elevation: 5,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    size={30}
-                    name={"qrcode"}
-                    color={Color.mainColor}
-                  />
-                </View>
-              </View>
-            ) : (
-              <View
-                style={[
-                  styles.tabs,
-                  {
-                    width: 70,
-                    height: 70,
-                    borderRadius: 35,
-                    borderWidth: 2,
-                    borderColor: "transparent",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    top: -10,
-                    backgroundColor: Color.gray,
-                  },
-                ]}
-              >
-                <View
-                  style={{
-                    width: 55,
-                    height: 55,
-                    borderRadius: 30,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "white",
-                    padding: 10,
-                    shadowColor: Color.grayPlahoder,
-                    shadowOffset: {
-                      width: 0,
-                      height: 4,
-                    },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 8,
-                    elevation: 5,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    size={30}
-                    name={"qrcode"}
-                    color={Color.grayPlahoder}
-                  />
-                </View>
-              </View>
-            ),
-        }}
-      />
-      {/* DashBoard END */}
-      <Tab.Screen
-        name={noti}
-        component={NotiScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"bell"}
-                  color={Color.mainColor}
-                />
-                <View style={styles.tabIcon}>
-                  {countNotiTab > 0 && (
-                    <Badge
-                      value={countNotiTab}
-                      status="error"
-                      textStyle={{
-                        fontSize: 12,
-                        fontWeight: "600",
-                        color: "white",
-                      }}
-                    />
-                  )}
-                </View>
-              </View>
-            ) : (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"bell"}
-                  color={Color.grayPlahoder}
-                />
-                <View style={styles.tabIcon}>
-                  {countNotiTab > 0 && (
-                    <Badge
-                      value={countNotiTab}
-                      status="error"
-                      textStyle={{
-                        fontSize: 12,
-                        fontWeight: "600",
-                        color: "white",
-                      }}
-                    />
-                  )}
-                </View>
-              </View>
-            ),
-        }}
-      />
-      <Tab.Screen
-        name={system}
-        component={SystemScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"account"}
-                  color={Color.mainColor}
-                />
-              </View>
-            ) : (
-              <View style={[styles.tabs]}>
-                <MaterialCommunityIcons
-                  size={24}
-                  name={"account"}
-                  color={Color.grayPlahoder}
-                />
-                {/* <Text
-                  style={{
-                    color: Color.grayPlahoder,
-                    fontFamily: "Roboto-Medium",
-                    fontSize: 12,
-                  }}
-                >
-                  {system}
-                </Text> */}
-              </View>
-            ),
-        }}
-      />
+    // <Tab.Navigator
+    //   screenOptions={{
+    //     initialRouteName: { home },
+    //     activeTintColor: "#2f95dc",
+    //     inactiveTintColor: "gray",
+    //     tabBarActiveTintColor: Color.mainColor,
+    //     showIcon: true,
+    //     showLabel: false,
+    //     tabBarStyle: {
+    //       backgroundColor: "#fff",
+    //       paddingBottom: Platform.OS == "ios" ? 15 : 10,
+    //       paddingTop: 8,
+    //       height: Platform.OS == "ios" ? 70 : 65,
+    //     },
+    //     tabBarLabelStyle: {
+    //       fontSize: 12,
+    //       fontFamily: "Roboto-Medium",
+    //     }
+    //   }}
+    // >
+    //   <Tab.Screen
+    //     name={home}
+    //     component={HomeScreen}
+    //     options={{
+    //       headerShown: false,
+    //       tabBarIcon: ({ focused }) =>
+    //         focused ? (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"home"}
+    //               color={Color.mainColor}
+    //             />
+    //           </View>
+    //         ) : (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"home"}
+    //               color={Color.grayPlahoder}
+    //             />
+    //           </View>
+    //         ),
+    //     }}
+    //   />
+    //   {/* DashBoard START */}
+    //   <Tab.Screen
+    //     name={DashboardTitle}
+    //     component={Dashboard}
+    //     options={{
+    //       headerShown: false,
+    //       tabBarIcon: ({ focused }) =>
+    //         focused ? (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"clipboard-text-multiple"}
+    //               color={Color.mainColor}
+    //             />
+    //           </View>
+    //         ) : (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"clipboard-text-multiple"}
+    //               color={Color.grayPlahoder}
+    //             />
+    //           </View>
+    //         ),
+    //     }}
+    //   />
+    //   {/* QRCode */}
+    //   <Tab.Screen
+    //     name="QRCode"
+    //     component={QRCodeScreen}
+    //     options={{
+    //       headerShown: false,
+    //       tabBarLabel: "",
+    //       tabBarIcon: ({ focused }) =>
+    //         focused ? (
+    //           <View
+    //             style={[
+    //               styles.tabs,
+    //               {
+    //                 width: 70,
+    //                 height: 70,
+    //                 borderRadius: 35,
+    //                 borderWidth: 2,
+    //                 borderColor: "transparent",
+    //                 justifyContent: "center",
+    //                 alignItems: "center",
+    //                 top: -10,
+    //                 backgroundColor: Color.gray,
+    //               },
+    //             ]}
+    //           >
+    //             <View
+    //               style={{
+    //                 width: 55,
+    //                 height: 55,
+    //                 borderRadius: 30,
+    //                 justifyContent: "center",
+    //                 alignItems: "center",
+    //                 backgroundColor: "white",
+    //                 padding: 10,
+    //                 shadowColor: Color.grayPlahoder,
+    //                 shadowOffset: {
+    //                   width: 0,
+    //                   height: 4,
+    //                 },
+    //                 shadowOpacity: 0.5,
+    //                 shadowRadius: 8,
+    //                 elevation: 5,
+    //               }}
+    //             >
+    //               <MaterialCommunityIcons
+    //                 size={30}
+    //                 name={"qrcode"}
+    //                 color={Color.mainColor}
+    //               />
+    //             </View>
+    //           </View>
+    //         ) : (
+    //           <View
+    //             style={[
+    //               styles.tabs,
+    //               {
+    //                 width: 70,
+    //                 height: 70,
+    //                 borderRadius: 35,
+    //                 borderWidth: 2,
+    //                 borderColor: "transparent",
+    //                 justifyContent: "center",
+    //                 alignItems: "center",
+    //                 top: -10,
+    //                 backgroundColor: Color.gray,
+    //               },
+    //             ]}
+    //           >
+    //             <View
+    //               style={{
+    //                 width: 55,
+    //                 height: 55,
+    //                 borderRadius: 30,
+    //                 justifyContent: "center",
+    //                 alignItems: "center",
+    //                 backgroundColor: "white",
+    //                 padding: 10,
+    //                 shadowColor: Color.grayPlahoder,
+    //                 shadowOffset: {
+    //                   width: 0,
+    //                   height: 4,
+    //                 },
+    //                 shadowOpacity: 0.5,
+    //                 shadowRadius: 8,
+    //                 elevation: 5,
+    //               }}
+    //             >
+    //               <MaterialCommunityIcons
+    //                 size={30}
+    //                 name={"qrcode"}
+    //                 color={Color.grayPlahoder}
+    //               />
+    //             </View>
+    //           </View>
+    //         ),
+    //     }}
+    //   />
+    //   {/* DashBoard END */}
+    //   <Tab.Screen
+    //     name={noti}
+    //     component={NotiScreen}
+    //     options={{
+    //       headerShown: false,
+    //       tabBarIcon: ({ focused }) =>
+    //         focused ? (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"bell"}
+    //               color={Color.mainColor}
+    //             />
+    //             <View style={styles.tabIcon}>
+    //               {countNotiTab > 0 && (
+    //                 <Badge
+    //                   value={countNotiTab}
+    //                   status="error"
+    //                   textStyle={{
+    //                     fontSize: 12,
+    //                     fontWeight: "600",
+    //                     color: "white",
+    //                   }}
+    //                 />
+    //               )}
+    //             </View>
+    //           </View>
+    //         ) : (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"bell"}
+    //               color={Color.grayPlahoder}
+    //             />
+    //             <View style={styles.tabIcon}>
+    //               {countNotiTab > 0 && (
+    //                 <Badge
+    //                   value={countNotiTab}
+    //                   status="error"
+    //                   textStyle={{
+    //                     fontSize: 12,
+    //                     fontWeight: "600",
+    //                     color: "white",
+    //                   }}
+    //                 />
+    //               )}
+    //             </View>
+    //           </View>
+    //         ),
+    //     }}
+    //   />
+    //   <Tab.Screen
+    //     name={system}
+    //     component={SystemScreen}
+    //     options={{
+    //       headerShown: false,
+    //       tabBarIcon: ({ focused }) =>
+    //         focused ? (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"account"}
+    //               color={Color.mainColor}
+    //             />
+    //           </View>
+    //         ) : (
+    //           <View style={[styles.tabs]}>
+    //             <MaterialCommunityIcons
+    //               size={24}
+    //               name={"account"}
+    //               color={Color.grayPlahoder}
+    //             />
+    //             {/* <Text
+    //               style={{
+    //                 color: Color.grayPlahoder,
+    //                 fontFamily: "Roboto-Medium",
+    //                 fontSize: 12,
+    //               }}
+    //             >
+    //               {system}
+    //             </Text> */}
+    //           </View>
+    //         ),
+    //     }}
+    //   />
+    // </Tab.Navigator>
+    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
+      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }} />
+      <Tab.Screen name="QRCode" component={QRCodeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Noti" component={NotiScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="System" component={SystemScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 };

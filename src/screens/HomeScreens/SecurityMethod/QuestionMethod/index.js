@@ -1,30 +1,29 @@
+import NetInfo from "@react-native-community/netinfo";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
+  FlatList,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Alert,
-  FlatList,
 } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 import Block from "../../../../components/Block";
+import TVSButton from "../../../../components/Tvs/Button";
 import TVSControlPopup2 from "../../../../components/Tvs/ControlPopup2";
 import TVSList from "../../../../components/Tvs/TVSList";
-import TVSButton from "../../../../components/Tvs/Button";
 import { APP_VERSION } from "../../../../config/Pro";
 import sysFetch from "../../../../services/fetch";
-import NetInfo from "@react-native-community/netinfo";
 
+import md5 from "md5";
+import Button from "../../../../components/Button.js";
 import TVSControlPopup from "../../../../components/Tvs/ControlPopup2";
 import EyeClose from "../../../../icons/EyeClose";
 import EyeOpen from "../../../../icons/EyeOpen";
 import Icon_pass from "../../../../icons/Password";
-import Button from "../../../../components/Button.js";
-import md5 from "md5";
 
 const QuestionMethod = ({ isFirst }) => {
   const navigation = useNavigation();
@@ -480,6 +479,7 @@ const QuestionMethod = ({ isFirst }) => {
         color: 'black',
         opacity: 0.4,
         marginBottom: 10,
+        fontFamily: 'Roboto-Medium'
       }}>
         Câu hỏi bảo mật sẽ được sử dụng để xác thực khi bạn quên mật khẩu.
       </Text>
@@ -488,6 +488,7 @@ const QuestionMethod = ({ isFirst }) => {
         color: 'black',
         opacity: 0.6,
         marginBottom: 5,
+        fontFamily: 'Roboto-Regular'
       }}>Câu hỏi bảo mật 1</Text>
       <Block style={{ marginBottom: 5 }}>
         <TVSList
@@ -518,7 +519,7 @@ const QuestionMethod = ({ isFirst }) => {
         /> */}
         <TextInput
           // flex
-          // style={{ flex: 1 }}
+          style={{ fontFamily: 'Roboto-Medium' }}
           height={55}
           // paddingLeft={15}
           {...!isHide ? {} : { editable: false }}
@@ -539,6 +540,7 @@ const QuestionMethod = ({ isFirst }) => {
         color: 'black',
         opacity: 0.6,
         marginBottom: 5,
+        fontFamily: 'Roboto-Regular'
       }}>Câu hỏi bảo mật 2</Text>
       <TVSList
         {...!isHide ? {} : { disabled: true }}
@@ -565,7 +567,7 @@ const QuestionMethod = ({ isFirst }) => {
           style={{ marginLeft: 5, color: Color.mainColor }}
         /> */}
         <TextInput
-          // flex
+          style={{ fontFamily: "Roboto-Medium" }}
           height={55}
           // paddingLeft={15}
           {...!isHide ? {} : { editable: false }}

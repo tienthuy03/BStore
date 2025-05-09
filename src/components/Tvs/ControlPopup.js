@@ -14,7 +14,6 @@ const TVSControlPopup = ({
   onAccept = null,
   backgroundColor = "white",
   scrollable = false,
-  showCloseButton = true, // Thêm thuộc tính để quyết định hiển thị nút "Đóng lại"
 }) => {
   return (
     <Modal transparent={true} visible={isShow}>
@@ -95,11 +94,9 @@ const TVSControlPopup = ({
               justifyContent: "center",
             }}
           >
-            {showCloseButton && ( // Kiểm tra showCloseButton trước khi hiển thị nút "Đóng lại"
-              <TVSButton type={"danger"} icon={"close"} onPress={onHide}>
-                Đóng lại
-              </TVSButton>
-            )}
+            <TVSButton type={"danger"} icon={"close"} onPress={onHide}>
+              Đóng lại
+            </TVSButton>
             {onAccept && (
               <TVSButton
                 icon={"check"}

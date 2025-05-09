@@ -74,7 +74,7 @@ const OneNotificationItem = ({ item, key }) => {
           }
         }
       });
-    } catch (error) {}
+    } catch (error) { }
     setModalVisible(true);
   };
   const modalPDF = (
@@ -105,6 +105,8 @@ const OneNotificationItem = ({ item, key }) => {
           <Text
             style={{
               marginBottom: 5,
+              fontFamily: "Roboto-Egular",
+              fontSize: 16
             }}
           >
             {x.toString().trim()}
@@ -114,6 +116,8 @@ const OneNotificationItem = ({ item, key }) => {
           style={{
             paddingTop: 10,
             color: "#808080",
+            fontFamily: "Roboto-Regular",
+            fontSize: 14
           }}
         >
           <Icon name={"calendar"} /> {displayTime(item.post_dt)}
@@ -157,6 +161,8 @@ const OneNotificationItem = ({ item, key }) => {
                   style={{
                     color: Color.mainColor,
                     textDecorationLine: "underline",
+                    fontSize: 14,
+                    fontFamily: "Roboto-Regular",
                   }}
                 >
                   File đính kèm
@@ -183,6 +189,8 @@ const OneNotificationItem = ({ item, key }) => {
               style={{
                 color: Color.mainColor,
                 textDecorationLine: "underline",
+                fontSize: 14,
+                fontFamily: "Roboto-Regular",
               }}
             >
               Xem chi tiết
@@ -241,17 +249,25 @@ const OneNotificationItem = ({ item, key }) => {
           >
             <Text
               style={{
-                fontSize: 17,
+                fontSize: 16,
                 color: Color.mainColor,
                 marginBottom: 5,
+                fontFamily: "Roboto-Medium",
               }}
             >
               {item.title}
             </Text>
-            <Text style={{ marginBottom: 5 }}>
+            <Text style={{
+              marginBottom: 5,
+              fontFamily: "Roboto-Regular",
+              fontSize: 14
+            }}>
               {item.from_emp_name} - {item.from_org_nm}
             </Text>
-            <Text style={{ fontSize: 12, marginBottom: 5, color: "#808080" }}>
+            <Text style={{
+              fontSize: 12, marginBottom: 5, color: "#808080",
+              fontFamily: "Roboto-Regular"
+            }}>
               {displayTime(item.post_dt)}
             </Text>
           </View>
@@ -284,6 +300,7 @@ const OneNotificationItem = ({ item, key }) => {
             style={{
               color: item.read_yn === "Y" ? "#808080" : null,
               fontSize: 12,
+              fontFamily: "Roboto-Regular",
             }}
           >
             {item.read_yn === "Y" ? " Đã xem" : " Chưa xem"}

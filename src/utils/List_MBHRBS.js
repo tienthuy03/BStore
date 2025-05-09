@@ -87,10 +87,9 @@ const Item_MBHRBS = () => {
               <Text
                 numberOfLines={1}
                 paddingLeft={10}
-                height={60}
-                size={17}
+                size={16}
                 color={Color.titleColor}
-                fontFamily={"Roboto-Medium"}
+                fontFamily={"Roboto-Redular"}
               >
                 {setLanguageItem(item, language)}
                 {/* {item.menu_cd} */}
@@ -104,7 +103,7 @@ const Item_MBHRBS = () => {
   };
 
   return (
-    <Block flex>
+    <Block flex marginTop={8}>
       <FlatList
         data={dataMenuMBHRBS}
         renderItem={renderItem}

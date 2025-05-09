@@ -18,7 +18,7 @@ const Item_MBHRRB = () => {
   try {
     dataMenuMBHRRBs = state.menuReducer.data.data.menu;
     language = state.loginReducers.data.data.user_language;
-  } catch (error) {}
+  } catch (error) { }
 
   const [dataMenuMBHRRB, setDataMenuMBHRRB] = useState([]);
 
@@ -34,7 +34,7 @@ const Item_MBHRRB = () => {
         }
         setDataMenuMBHRRB(dataMenuMRRBss);
       });
-    } catch (error) {}
+    } catch (error) { }
   }, []);
   const renderItem = ({ item, index }) => {
     return (
@@ -68,7 +68,7 @@ const Item_MBHRRB = () => {
             height={60}
             size={16}
             color={Color.titleColor}
-            fontFamily={"Roboto-Medium"}
+            fontFamily={"Redular-Regular"}
           >
             {setLanguageItem(item, language)}
           </Text>

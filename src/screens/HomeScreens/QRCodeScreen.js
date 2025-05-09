@@ -1,24 +1,17 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  StatusBar,
-  View,
   Alert,
-  Text,
-  Modal,
-  TouchableOpacity,
-  TextInput,
   Animated,
-  Easing,
-  Platform,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { RNCamera } from "react-native-camera";
-import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useSelector } from "react-redux";
 // import Clipboard from "@react-native-community/clipboard";
-import * as Animatable from "react-native-animatable";
 const QRCode = ({ navigation }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
   const cameraRef = useRef(null);
@@ -96,6 +89,7 @@ const QRCode = ({ navigation }) => {
         barStyle="light-content"
       />
       {!isShowValue ? (
+
         <RNCamera
           ref={cameraRef}
           style={{ flex: 1 }}
@@ -103,7 +97,7 @@ const QRCode = ({ navigation }) => {
           onBarCodeRead={isScanning ? onSuccess : undefined}
           barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
         >
-          <></>
+
         </RNCamera>
       ) : null}
       {isShowValue ? (
