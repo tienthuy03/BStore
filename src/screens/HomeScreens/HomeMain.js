@@ -359,7 +359,7 @@ const HomeMain = ({ navigation }) => {
       API,
       {
         // pro: 'SELHRMENU0100',
-        pro: "SELHRMENU0",
+        pro: "SELHRMENU1",
         in_par: {
           p1_varchar2: userPk,
           p2_varchar2: thr_emp_pk,
@@ -373,6 +373,7 @@ const HomeMain = ({ navigation }) => {
       tokenLogin
     )
       .then((rs) => {
+        console.log("rs: ", rs);
 
         if (rs == "Token Expired") {
           refreshNewToken("getMenu");
@@ -380,7 +381,7 @@ const HomeMain = ({ navigation }) => {
         if (rs != "Token Expired") {
           setLoadMenu(false);
           dataMenuMBHRs = rs.data.menu;
-
+          console.log("rs: ", dataMenuMBHRs);
           let dataMenuMBHRc = [];
           try {
             dataMenuMBHRs.map((item) => {
@@ -533,7 +534,13 @@ const HomeMain = ({ navigation }) => {
   }, [language, greeting]);
   const renderItem = ({ item }) => {
     return (
-      <CardShop />
+      <CardShop
+        onPress={() => navigation.navigate("Menu_Production")}
+        shop_image={"https://menuonline.vn/images/upload/news/789438234-Nha-hang-Hai-san.jpg"}
+        shop_address={"134 Trần Hưng Đạo, TP Hồ Chí Minh"}
+        shop_owner={"Thuỷ Tiên"}
+        shop_name={"Nhà hàng hải sản số 1"}
+        shop_phone={"0971761090"} />
     );
   };
 
@@ -611,46 +618,65 @@ const HomeMain = ({ navigation }) => {
   return (
     <>
       <View style={{ paddingHorizontal: 16, backgroundColor: "#F1F1F1", flex: 1 }}>
-        <View style={{ paddingTop: '15%', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View style={{}}>
-            {/* <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 20, color: Color.textPrimary3 }}>Xin chào 👋</Text> */}
-            <MaskedView
-              maskElement={
-                <Text
-                  style={{
-                    fontFamily: 'Roboto-Medium',
-                    fontSize: 20,
-                    color: 'black', // màu này không quan trọng vì sẽ bị che
-                    textAlign: 'center',
-                  }}
-                >
-                  Xin chào 👋
-                </Text>
-              }
-            >
-              <LinearGradient
-                colors={['#FF5E62', '#FA812F',]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <Text
-                  style={{
-                    opacity: 0, // ẩn text gốc, chỉ dùng để lấy layout
-                    fontFamily: 'Roboto-Medium',
-                    fontSize: 20,
-                  }}
-                >
-                  Xin chào 👋
-                </Text>
-              </LinearGradient>
-            </MaskedView>
-            <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>Thuỷ Tiên</Text>
-          </View>
-          <View>
+        <View style={{ paddingTop: '15%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', gap: 12, flexDirection: 'row', flex: 1, justifyContent: 'flex-start' }}>
             <Image
               style={{ width: 40, height: 40, borderRadius: 100, borderWidth: 2, borderColor: Color.mainColor }}
               source={{ uri: "https://i.pinimg.com/736x/3b/19/11/3b1911246fc66f81cbc8a0035014569b.jpg" }} />
+            <View style={{}}>
+              {/* <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 20, color: Color.textPrimary3 }}>Xin chào 👋</Text> */}
+              <MaskedView
+                maskElement={
+                  <Text
+                    style={{
+                      fontFamily: 'Roboto-Medium',
+                      fontSize: 20,
+                      color: 'black', // màu này không quan trọng vì sẽ bị che
+                      textAlign: 'center',
+                    }}
+                  >
+                    Xin chào 👋
+                  </Text>
+                }
+              >
+                <LinearGradient
+                  colors={['#FF5E62', '#FA812F',]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Text
+                    style={{
+                      opacity: 0, // ẩn text gốc, chỉ dùng để lấy layout
+                      fontFamily: 'Roboto-Medium',
+                      fontSize: 20,
+                    }}
+                  >
+                    Xin chào 👋
+                  </Text>
+                </LinearGradient>
+              </MaskedView>
+              <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>Thuỷ Tiên</Text>
+            </View>
+
           </View>
+          <TouchableOpacity style={{ width: 24, height: 24 }}>
+            <MaskedView
+              style={{ flex: 1 }}
+              maskElement={
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                  <Icon name="cart" size={24} color="black" />
+                </View>
+              }
+            >
+              <LinearGradient
+                colors={['#FF5E62', '#FA812F']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ flex: 1 }}
+              />
+            </MaskedView>
+          </TouchableOpacity>
+
         </View>
         <Text style={{ paddingVertical: 12, fontFamily: "Roboto-Medium", fontSize: 16, color: Color.mainColor }}>Danh sách cửa hàng</Text>
 

@@ -151,6 +151,7 @@ import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
 import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQuestionSecurity";
 
 import { LogBox } from "react-native";
+import Menu_Production from "./src/screens/HomeScreens/MBHS001";
 
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -184,6 +185,7 @@ const App = () => {
             <Stack.Screen name="UpdatePassQuestionSecurity" component={UpdatePassQuestionSecurity} />
             {/* <Stack.Screen name="SysConfig" component={SysConfig} /> */}
             <Stack.Screen name="Index" component={Index} options={{ gestureEnabled: false, }} />
+            <Stack.Screen name="Menu_Production" component={Menu_Production} options={{ gestureEnabled: false, }} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
