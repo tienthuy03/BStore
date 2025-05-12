@@ -344,7 +344,7 @@ const HomeMain = ({ navigation }) => {
       API,
       {
         // pro: 'SELHRMENU0100',
-        pro: "SELHRMENU0",
+        pro: "SELHRMENU1",
         in_par: {
           p1_varchar2: userPk,
           p2_varchar2: thr_emp_pk,
