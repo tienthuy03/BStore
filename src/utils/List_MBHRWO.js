@@ -18,7 +18,7 @@ const Item_MBHRWO = () => {
   try {
     dataMenuMBHRs = state.menuReducer.data.data.menu;
     language = state.loginReducers.data.data.user_language;
-  } catch (error) {}
+  } catch (error) { }
   const [dataMenuMBHRWO, setDataMenuMBHRWO] = useState([]);
 
   useEffect(() => {
@@ -61,10 +61,9 @@ const Item_MBHRWO = () => {
           <Text
             flex
             paddingLeft={10}
-            height={60}
             size={16}
             color={Color.titleColor}
-            fontFamily={"Roboto-Medium"}
+            fontFamily={"Roboto-Regular"}
           >
             {setLanguageItem(item, language)}
           </Text>

@@ -477,6 +477,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
       backgroundColor: Color.white,
       justifyContent: "center",
       borderRadius: 8,
+      fontFamily: "Roboto-Medium",
     },
     listControl: {
       padding: 7,
@@ -607,226 +608,226 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
 
     Platform.OS === "ios"
       ? sysFetch2(
-          API,
-          {
-            pro: "UPDHRMN0011100",
+        API,
+        {
+          pro: "UPDHRMN0011100",
 
-            in_par: {
-              p1_varchar2: p_action,
-              p2_varchar2: fullName,
-              p3_varchar2: empId,
-              p4_varchar2: idNum,
-              p5_varchar2: convertDate(characterSplit, birthDate),
-              p6_varchar2: convertDate(characterSplit, joinDate),
-              p7_varchar2:
-                currentSelectedOrg.code == undefined
-                  ? ""
-                  : currentSelectedOrg.code,
-              p8_varchar2:
-                currentSelectedPos.code == undefined
-                  ? ""
-                  : currentSelectedPos.code,
-              p9_varchar2:
-                currentSelectedJob.code == undefined
-                  ? ""
-                  : currentSelectedJob.code,
-              p10_varchar2:
-                currentSelectedWG.code == undefined
-                  ? ""
-                  : currentSelectedWG.code,
-              p11_varchar2:
-                currentSelectedEmpType.code == undefined
-                  ? ""
-                  : currentSelectedEmpType.code,
-              p12_varchar2:
-                currentSelectedProbType.code == undefined
-                  ? ""
-                  : currentSelectedProbType.code,
-              p13_varchar2: convertDate(characterSplit, startProb),
-              p14_varchar2: convertDate(characterSplit, endProb),
-              p15_varchar2: probSalary,
-              p16_varchar2: basicSalary,
-              p17_varchar2: personId,
-              p18_varchar2: convertDate(characterSplit, issue),
-              p19_varchar2:
-                currentSelectedPlaceId.code == undefined
-                  ? ""
-                  : currentSelectedPlaceId.code,
-              p20_varchar2:
-                currentSelectedBirthPlace.code == undefined
-                  ? ""
-                  : currentSelectedBirthPlace.code,
-              p21_varchar2: perAdd,
-              p22_varchar2: presentAdd,
-              p23_varchar2: image,
-              p24_varchar2: empPk,
-              p25_varchar2: crt_by,
-            },
-            out_par: {
-              p1_sys: "status",
-            },
+          in_par: {
+            p1_varchar2: p_action,
+            p2_varchar2: fullName,
+            p3_varchar2: empId,
+            p4_varchar2: idNum,
+            p5_varchar2: convertDate(characterSplit, birthDate),
+            p6_varchar2: convertDate(characterSplit, joinDate),
+            p7_varchar2:
+              currentSelectedOrg.code == undefined
+                ? ""
+                : currentSelectedOrg.code,
+            p8_varchar2:
+              currentSelectedPos.code == undefined
+                ? ""
+                : currentSelectedPos.code,
+            p9_varchar2:
+              currentSelectedJob.code == undefined
+                ? ""
+                : currentSelectedJob.code,
+            p10_varchar2:
+              currentSelectedWG.code == undefined
+                ? ""
+                : currentSelectedWG.code,
+            p11_varchar2:
+              currentSelectedEmpType.code == undefined
+                ? ""
+                : currentSelectedEmpType.code,
+            p12_varchar2:
+              currentSelectedProbType.code == undefined
+                ? ""
+                : currentSelectedProbType.code,
+            p13_varchar2: convertDate(characterSplit, startProb),
+            p14_varchar2: convertDate(characterSplit, endProb),
+            p15_varchar2: probSalary,
+            p16_varchar2: basicSalary,
+            p17_varchar2: personId,
+            p18_varchar2: convertDate(characterSplit, issue),
+            p19_varchar2:
+              currentSelectedPlaceId.code == undefined
+                ? ""
+                : currentSelectedPlaceId.code,
+            p20_varchar2:
+              currentSelectedBirthPlace.code == undefined
+                ? ""
+                : currentSelectedBirthPlace.code,
+            p21_varchar2: perAdd,
+            p22_varchar2: presentAdd,
+            p23_varchar2: image,
+            p24_varchar2: empPk,
+            p25_varchar2: crt_by,
           },
-          tokenLogin
-        )
-          .then((rs) => {
-            if (rs == "Token Expired") {
-              refreshNewToken("onSave", null);
+          out_par: {
+            p1_sys: "status",
+          },
+        },
+        tokenLogin
+      )
+        .then((rs) => {
+          if (rs == "Token Expired") {
+            refreshNewToken("onSave", null);
+          }
+          if (rs != "Token Expired") {
+            if (rs.result === "S") {
+              Alert.alert(
+                "Thông báo",
+                p_action === "INSERT"
+                  ? "Tạo mới nhân viên thành công!"
+                  : "Sao lưu thành công!",
+                [
+                  {
+                    text: "Đóng",
+                    onPress: () => {
+                      thrTablePk = rs.data[0].tablepk;
+                      onCallbackReload(rs.data[0].tablepk);
+                    },
+                    style: "cancel",
+                  },
+                ],
+                { cancelable: false }
+              );
             }
-            if (rs != "Token Expired") {
-              if (rs.result === "S") {
-                Alert.alert(
-                  "Thông báo",
+            if (rs.result === "F") {
+              let newText = rs.content.split("ORA");
+              let errors = "";
+              try {
+                errors = newText[1].trim().split(":")[1];
+              } catch (error) {
+                errors =
                   p_action === "INSERT"
-                    ? "Tạo mới nhân viên thành công!"
-                    : "Sao lưu thành công!",
-                  [
-                    {
-                      text: "Đóng",
-                      onPress: () => {
-                        thrTablePk = rs.data[0].tablepk;
-                        onCallbackReload(rs.data[0].tablepk);
-                      },
-                      style: "cancel",
-                    },
-                  ],
-                  { cancelable: false }
-                );
+                    ? "Lỗi: đăng ký không thành công."
+                    : "Lỗi: sao lưu không thành công.";
               }
-              if (rs.result === "F") {
-                let newText = rs.content.split("ORA");
-                let errors = "";
-                try {
-                  errors = newText[1].trim().split(":")[1];
-                } catch (error) {
-                  errors =
-                    p_action === "INSERT"
-                      ? "Lỗi: đăng ký không thành công."
-                      : "Lỗi: sao lưu không thành công.";
-                }
 
-                Alert.alert(
-                  "Thông báo",
-                  errors,
-                  [
-                    {
-                      text: "Thoát",
-                      onPress: () => {},
-                      style: "cancel",
-                    },
-                  ],
-                  { cancelable: false }
-                );
-              }
+              Alert.alert(
+                "Thông báo",
+                errors,
+                [
+                  {
+                    text: "Thoát",
+                    onPress: () => { },
+                    style: "cancel",
+                  },
+                ],
+                { cancelable: false }
+              );
             }
-          })
-          .catch((error) => {
-            Alert.alert(
-              "Thông báo",
-              p_action === "INSERT"
-                ? "Tạo mới nhân viên thất bại. " + error
-                : "Sao lưu thất bại. " + error
-            );
-          })
+          }
+        })
+        .catch((error) => {
+          Alert.alert(
+            "Thông báo",
+            p_action === "INSERT"
+              ? "Tạo mới nhân viên thất bại. " + error
+              : "Sao lưu thất bại. " + error
+          );
+        })
       : sysFetch2(
-          API,
-          {
-            pro: "UPDHRMN0011100",
+        API,
+        {
+          pro: "UPDHRMN0011100",
 
-            in_par: {
-              p1_varchar2: p_action,
-              p2_varchar2: fullName,
-              p3_varchar2: empId,
-              p4_varchar2: idNum,
-              p5_varchar2: convertDate(characterSplit, birthDate),
-              p6_varchar2: convertDate(characterSplit, joinDate),
-              p7_varchar2: valueOrg,
-              p8_varchar2: valuePos,
-              p9_varchar2: valueJob,
-              p10_varchar2: valueWG,
-              p11_varchar2: valueEmpType,
-              p12_varchar2: valueProb,
-              p13_varchar2: convertDate(characterSplit, startProb),
-              p14_varchar2: convertDate(characterSplit, endProb),
-              p15_varchar2: probSalary,
-              p16_varchar2: basicSalary,
-              p17_varchar2: personId,
-              p18_varchar2: convertDate(characterSplit, issue),
-              p19_varchar2:
-                currentSelectedPlaceId.code == undefined
-                  ? ""
-                  : currentSelectedPlaceId.code,
-              p20_varchar2:
-                currentSelectedBirthPlace.code == undefined
-                  ? ""
-                  : currentSelectedBirthPlace.code,
-              p21_varchar2: perAdd,
-              p22_varchar2: presentAdd,
-              p23_varchar2: image,
-              p24_varchar2: empPk,
-              p25_varchar2: crt_by,
-            },
-            out_par: {
-              p1_sys: "status",
-            },
+          in_par: {
+            p1_varchar2: p_action,
+            p2_varchar2: fullName,
+            p3_varchar2: empId,
+            p4_varchar2: idNum,
+            p5_varchar2: convertDate(characterSplit, birthDate),
+            p6_varchar2: convertDate(characterSplit, joinDate),
+            p7_varchar2: valueOrg,
+            p8_varchar2: valuePos,
+            p9_varchar2: valueJob,
+            p10_varchar2: valueWG,
+            p11_varchar2: valueEmpType,
+            p12_varchar2: valueProb,
+            p13_varchar2: convertDate(characterSplit, startProb),
+            p14_varchar2: convertDate(characterSplit, endProb),
+            p15_varchar2: probSalary,
+            p16_varchar2: basicSalary,
+            p17_varchar2: personId,
+            p18_varchar2: convertDate(characterSplit, issue),
+            p19_varchar2:
+              currentSelectedPlaceId.code == undefined
+                ? ""
+                : currentSelectedPlaceId.code,
+            p20_varchar2:
+              currentSelectedBirthPlace.code == undefined
+                ? ""
+                : currentSelectedBirthPlace.code,
+            p21_varchar2: perAdd,
+            p22_varchar2: presentAdd,
+            p23_varchar2: image,
+            p24_varchar2: empPk,
+            p25_varchar2: crt_by,
           },
-          tokenLogin
-        )
-          .then((rs) => {
-            if (rs == "Token Expired") {
-              refreshNewToken("onSave", null);
-            }
-            if (rs != "Token Expired") {
-              if (rs.result === "S") {
-                Alert.alert(
-                  "Thông báo",
+          out_par: {
+            p1_sys: "status",
+          },
+        },
+        tokenLogin
+      )
+        .then((rs) => {
+          if (rs == "Token Expired") {
+            refreshNewToken("onSave", null);
+          }
+          if (rs != "Token Expired") {
+            if (rs.result === "S") {
+              Alert.alert(
+                "Thông báo",
+                p_action === "INSERT"
+                  ? "Tạo mới nhân viên thành công!"
+                  : "Sao lưu thành công!",
+                [
+                  {
+                    text: "Đóng",
+                    onPress: () => {
+                      onCallbackReload(rs.data[0].tablepk);
+                    },
+                    style: "cancel",
+                  },
+                ],
+                { cancelable: false }
+              );
+            } else {
+              let newText = rs.content.split("ORA");
+              let errors = "";
+              try {
+                errors = newText[1].trim().split(":")[1];
+              } catch (error) {
+                errors =
                   p_action === "INSERT"
-                    ? "Tạo mới nhân viên thành công!"
-                    : "Sao lưu thành công!",
-                  [
-                    {
-                      text: "Đóng",
-                      onPress: () => {
-                        onCallbackReload(rs.data[0].tablepk);
-                      },
-                      style: "cancel",
-                    },
-                  ],
-                  { cancelable: false }
-                );
-              } else {
-                let newText = rs.content.split("ORA");
-                let errors = "";
-                try {
-                  errors = newText[1].trim().split(":")[1];
-                } catch (error) {
-                  errors =
-                    p_action === "INSERT"
-                      ? "Lỗi: đăng ký không thành công."
-                      : "Lỗi: sao lưu không thành công.";
-                }
-                Alert.alert(
-                  "Thông báo",
-                  errors,
-                  [
-                    {
-                      text: "Thoát",
-                      onPress: () => {},
-                      style: "cancel",
-                    },
-                  ],
-                  { cancelable: false }
-                );
+                    ? "Lỗi: đăng ký không thành công."
+                    : "Lỗi: sao lưu không thành công.";
               }
+              Alert.alert(
+                "Thông báo",
+                errors,
+                [
+                  {
+                    text: "Thoát",
+                    onPress: () => { },
+                    style: "cancel",
+                  },
+                ],
+                { cancelable: false }
+              );
             }
-          })
-          .catch((error) => {
-            Alert.alert(
-              "Thông báo",
-              p_action === "INSERT"
-                ? "Tạo mới nhân viên thất bại. " + error
-                : "Sao lưu thất bại. " + error
-            );
-          });
+          }
+        })
+        .catch((error) => {
+          Alert.alert(
+            "Thông báo",
+            p_action === "INSERT"
+              ? "Tạo mới nhân viên thất bại. " + error
+              : "Sao lưu thất bại. " + error
+          );
+        });
   };
 
   const onResetForm = () => {
@@ -981,6 +982,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               name={"arrow-down-drop-circle-outline"}
               color={Color.mainColor}
               size={24}
+
             />
           </Button>
           {isShow && (
@@ -1735,8 +1737,9 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
         <ScrollView
           style={{
             flex: 1,
-            padding: 10,
             marginBottom: 10,
+            paddingTop: 10,
+            paddingHorizontal: 12
           }}
         >
           <View style={{ flexDirection: "row" }}>
@@ -1744,8 +1747,8 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               <TouchableOpacity
                 onPress={takePhoto}
                 style={{
-                  width: 79,
-                  height: 104,
+                  width: 100,
+                  height: 120,
                   marginRight: 20,
                   borderWidth: 1,
                   borderRadius: 10,
@@ -1755,7 +1758,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
                 {image ? (
                   <Image
                     style={{
-                      width: 75,
+                      width: 100,
                       height: 100,
                       borderRadius: 10,
                     }}
@@ -1783,10 +1786,19 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
             <View flex={4}>
               <View
                 style={{
-                  marginBottom: 10,
+                  marginBottom: 12,
+
                 }}
               >
-                <Text>Mã nhân viên *</Text>
+                <View style={{
+                  marginBottom: 8,
+                  flexDirection: 'row',
+                  gap: 4
+                }}>
+                  <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor }}>Mã nhân viên</Text>
+                  <Text style={{ color: Color.btnRed2 }}>*</Text>
+                </View>
+
                 <TextInput
                   style={styles.input}
                   value={empId}
@@ -1795,10 +1807,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               </View>
               <View
                 style={{
-                  marginBottom: 10,
+                  marginBottom: 12,
                 }}
               >
-                <Text>Mã chấm công</Text>
+                <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor }}>Mã chấm công</Text>
                 <TextInput
                   style={styles.input}
                   value={idNum}
@@ -1809,10 +1821,17 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
           </View>
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
+
             }}
           >
-            <Text>Họ tên *</Text>
+            <View style={{
+              flexDirection: 'row',
+            }}>
+              <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Họ tên </Text>
+              <Text style={{ color: Color.btnRed2 }}>*</Text>
+            </View>
+
             <TextInput
               style={styles.input}
               value={fullName}
@@ -1821,10 +1840,16 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
           </View>
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Phòng ban *</Text>
+            <View style={{
+              flexDirection: 'row',
+            }} >
+              <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Phòng ban </Text>
+              <Text style={{ color: Color.btnRed2, }}>*</Text>
+            </View>
+
             {Platform.OS === "ios" ? (
               <Block>
                 <SelectOrg
@@ -1875,8 +1900,9 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               }}
             >
               <Button nextScreen={() => showBirthDatePicker()} column flex>
-                <Block row>
-                  <Text>Ngày sinh *</Text>
+                <Block row >
+                  <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Ngày sinh</Text>
+                  <Text style={{ color: Color.btnRed2, }}>*</Text>
                 </Block>
                 <Block
                   row
@@ -1914,12 +1940,13 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
             <View
               style={{
                 flex: 1,
-                marginBottom: 10,
+                marginBottom: 12,
               }}
             >
               <Button nextScreen={() => showJoinDatePicker()} column flex>
-                <Block row>
-                  <Text>Ngày vào *</Text>
+                <Block row >
+                  <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Ngày vào</Text>
+                  <Text style={{ color: Color.btnRed2, }}>*</Text>
                 </Block>
                 <Block
                   row
@@ -1960,7 +1987,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               marginBottom: 10,
             }}
           >
-            <Text>Chức vụ</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }} >Chức vụ</Text>
 
             {Platform.OS === "ios" ? (
               <Block>
@@ -2006,10 +2033,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
 
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Công việc</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Công việc</Text>
             {Platform.OS === "ios" ? (
               <Block>
                 <SelectJob
@@ -2057,7 +2084,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               marginBottom: 10,
             }}
           >
-            <Text>Nhóm làm việc</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }} >Nhóm làm việc</Text>
             {Platform.OS === "ios" ? (
               <Block>
                 <SelectWG
@@ -2101,10 +2128,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
           </View>
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Loại nhân viên</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Loại nhân viên</Text>
             {Platform.OS === "ios" ? (
               <Block>
                 <SelectEmpType
@@ -2148,10 +2175,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
           </View>
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Loại thử việc</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Loại thử việc</Text>
             {Platform.OS === "ios" ? (
               <Block>
                 <SelectProbType
@@ -2199,7 +2226,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
                 style={{
                   flex: 1,
                   marginRight: 10,
-                  marginBottom: 10,
+                  marginBottom: 12,
                 }}
               >
                 <Button
@@ -2210,7 +2237,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
                   flex
                 >
                   <Block row>
-                    <Text>Ngày BĐ thử việc</Text>
+                    <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Ngày BĐ thử việc</Text>
                   </Block>
                   <Block
                     row
@@ -2248,7 +2275,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               <View
                 style={{
                   flex: 1,
-                  marginBottom: 10,
+                  marginBottom: 12,
                 }}
               >
                 <Button
@@ -2259,7 +2286,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
                   flex
                 >
                   <Block row>
-                    <Text>Ngày KT thử việc</Text>
+                    <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Ngày KT thử việc</Text>
                   </Block>
                   <Block
                     row
@@ -2299,10 +2326,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
 
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Số CMND,CCCD</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Số CMND,CCCD</Text>
             <TextInput
               style={styles.input}
               value={personId}
@@ -2319,12 +2346,12 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               style={{
                 flex: 1,
                 marginRight: 10,
-                marginBottom: 10,
+                marginBottom: 12,
               }}
             >
               <Button nextScreen={() => showIssuePicker()} column flex>
                 <Block row>
-                  <Text>Ngày cấp</Text>
+                  <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Ngày cấp</Text>
                 </Block>
                 <Block
                   row
@@ -2362,10 +2389,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
             <View
               style={{
                 flex: 1,
-                marginBottom: 10,
+                marginBottom: 12,
               }}
             >
-              <Text>Nơi cấp</Text>
+              <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Nơi cấp</Text>
               <Block>
                 <SelectPlaceId
                   onChangeSelectedPlaceId={onChangeSelectedPlaceId}
@@ -2377,10 +2404,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
 
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Nơi sinh</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Nơi sinh</Text>
             <Block>
               <SelectBirthPlace
                 onChangeSelectedBirthPlace={onChangeSelectedBirthPlace}
@@ -2391,10 +2418,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
 
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Địa chỉ thường trú</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Địa chỉ thường trú</Text>
             <TextInput
               style={styles.input}
               value={perAdd}
@@ -2403,10 +2430,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
           </View>
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Địa chỉ tạm trú</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Địa chỉ tạm trú</Text>
             <TextInput
               style={styles.input}
               value={presentAdd}
@@ -2415,10 +2442,10 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
           </View>
           <View
             style={{
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
-            <Text>Lương thử việc</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Lương thử việc</Text>
             <TextInput
               style={styles.input}
               value={probSalary}
@@ -2431,7 +2458,7 @@ const CreateNewEmployee = ({ navigation: { goBack } }) => {
               marginBottom: 20,
             }}
           >
-            <Text>Lương chính thức</Text>
+            <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Lương chính thức</Text>
             <TextInput
               style={styles.input}
               value={basicSalary}

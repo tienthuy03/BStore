@@ -38,7 +38,7 @@ const SysConfig = ({navigation: {goBack}}) => {
 
   const checkAPI = (clientId, clientKey) => {
     const URL =
-      ServerIP.bst +
+      ServerIP.tvs +
       'User/CheckClient?clientId=' +
       clientId +
       '&clientKey=' +

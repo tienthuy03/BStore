@@ -214,7 +214,7 @@ const QuanLyCacQuyetDinh = ({ navigation: { goBack } }) => {
             marginBottom: 20,
           }}
         >
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingHorizontal: 12 }}>
             <TouchableOpacity
               onPress={() => null}
               style={{
@@ -227,15 +227,15 @@ const QuanLyCacQuyetDinh = ({ navigation: { goBack } }) => {
                 flexDirection: "row",
               }}
             >
-              <View style={{ paddingHorizontal: 5 }}>
+              <View style={{ paddingHorizontal: 12 }}>
                 <Icon
                   name={"folder-multiple-plus-outline"}
                   color={"#5A94E7"}
                   size={20}
                 />
               </View>
-              <View style={{ paddingHorizontal: 5 }}>
-                <Text style={{ color: "#5A94E7" }}>Thêm mới</Text>
+              <View style={{ paddingHorizontal: 12 }}>
+                <Text style={{ fontFamily: "Roboto-Medium", fontSize: 14, color: Color.mainColor }}>Thêm mới</Text>
               </View>
             </TouchableOpacity>
           </View>

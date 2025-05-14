@@ -17,8 +17,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
     userLanguage = state.loginReducers.data.data.user_language;
     dataLanguage = state.languageReducer.data.data.language;
     // dataLanguage = state.loginReducers.data.data.user_language;
-  } catch (error) {}
+  } catch (error) { }
   const [currentData, setCurrentData] = useState([]);
+  console.log("setCurrentData ", currentData);
+
   const [isShow, setIsShow] = useState(false);
   const [TabName, setTabName] = useState("");
 
@@ -91,10 +93,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
               paddingBottom={10}
               justifyContent={"space-between"}
             >
-              <Text color={Color.keyColor} flex={1}>
+              <Text color={Color.keyColor} fontFamily={"Roboto-Regular"} flex={1}>
                 {items.key}
               </Text>
-              <Text color={Color.valueColor} flex={1}>
+              <Text color={Color.valueColor} fontFamily={"Roboto-Light"} flex={1}>
                 {items.val2}
               </Text>
             </Block>
@@ -112,10 +114,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
             paddingBottom={10}
             justifyContent={"space-between"}
           >
-            <Text color={Color.keyColor} flex={1}>
+            <Text color={Color.keyColor} fontFamily={"Roboto-Regular"} flex={1}>
               {items.val.eng}
             </Text>
-            <Text color={Color.valueColor} flex={1}>
+            <Text color={Color.valueColor} fontFamily={"Roboto-Light"} flex={1}>
               {items.val2}
             </Text>
           </Block>
@@ -137,10 +139,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
                 paddingBottom={10}
                 justifyContent={"space-between"}
               >
-                <Text color={Color.keyColor} flex={1}>
+                <Text color={Color.keyColor} fontFamily={"Roboto-Regular"} flex={1}>
                   {vals[2]}
                 </Text>
-                <Text color={Color.valueColor} flex={1}>
+                <Text color={Color.valueColor} fontFamily={"Roboto-Light"} flex={1}>
                   {vals[0]} Vnđ
                 </Text>
               </Block>
@@ -160,10 +162,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
               paddingBottom={10}
               justifyContent={"space-between"}
             >
-              <Text color={Color.keyColor} flex={1}>
+              <Text color={Color.keyColor} fontFamily={"Roboto-Regular"} flex={1}>
                 {items.key}
               </Text>
-              <Text color={Color.valueColor} flex={1}>
+              <Text color={Color.valueColor} fontFamily={"Roboto-Light"} flex={1}>
                 {items.val2}
               </Text>
             </Block>
@@ -181,10 +183,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
             paddingBottom={10}
             justifyContent={"space-between"}
           >
-            <Text color={Color.keyColor} flex={1}>
+            <Text color={Color.keyColor} fontFamily={"Roboto-Regular"} flex={1}>
               {items.val.vie}
             </Text>
-            <Text color={Color.valueColor} flex={1}>
+            <Text color={Color.valueColor} fontFamily={"Roboto-Light"} flex={1}>
               {items.val2}
             </Text>
           </Block>
@@ -206,10 +208,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
                 paddingBottom={10}
                 justifyContent={"space-between"}
               >
-                <Text color={Color.keyColor} flex={1}>
+                <Text color={Color.keyColor} fontFamily={"Roboto-Regular"} flex={1}>
                   {vals[2]}
                 </Text>
-                <Text color={Color.valueColor} flex={1}>
+                <Text color={Color.valueColor} fontFamily={"Roboto-Light"} flex={1}>
                   {vals[0]} Vnđ
                 </Text>
               </Block>
@@ -229,10 +231,10 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
               paddingBottom={10}
               justifyContent={"space-between"}
             >
-              <Text color={Color.keyColor} flex={1}>
+              <Text color={Color.keyColor} fontFamily={"Roboto-Regular"} flex={1}>
                 {items.key}
               </Text>
-              <Text color={Color.valueColor} flex={1}>
+              <Text color={Color.valueColor} fontFamily={"Roboto-Light"} flex={1}>
                 {items.val2}
               </Text>
             </Block>
@@ -389,7 +391,7 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
           height={60}
           size={16}
           color={Color.titleColor}
-          fontFamily={"Roboto-Bold"}
+          fontFamily={"Roboto-Regular"}
         >
           {temp.length === 0
             ? field_name
@@ -453,10 +455,9 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
         keyExtractor={index.toString()}
         backgroundColor={Color.blueB}
         // padding={10}
-        marginLeft={10}
-        // borderBottomColor={Color.line}
-        // borderBottomWidth={1}
-        marginRight={10}
+        borderBottomColor={Color.line}
+        borderBottomWidth={1}
+        marginHorizontal={10}
         style={{
           shadowColor: "#000",
           shadowOffset: {
@@ -511,15 +512,14 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
               setTabName(currentTabName);
             }}
             shadow
-            justifyContent={"space-between"}
+            justifyContent={"center"}
             alignCenter
-            marginLeft={10}
-            marginRight={10}
-            marginBottom={5}
+            marginHorizontal={16}
+            marginVertical={4}
             radius={8}
-            padding={10}
+            padding={16}
             row
-            backgroundColor={Color.tabColor}
+            backgroundColor={Color.white}
           >
             <Block
               marginLeft={10}
@@ -531,7 +531,6 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
             <Text
               flex
               paddingLeft={10}
-              height={60}
               size={16}
               color={Color.titleColor}
               fontFamily={"Roboto-Bold"}
@@ -561,6 +560,7 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
           bottom: 0,
           right: 0,
           left: 0,
+
         }}
       >
         <Button
@@ -589,11 +589,12 @@ const Item_MBHRIN = ({ data, fetchItems, refreshing }) => {
           />
           <Text
             flex
-            paddingLeft={10}
-            height={60}
+            paddingLeft={8}
+            // height={60}
             size={16}
             color={Color.titleColor}
             fontFamily={"Roboto-Bold"}
+            padding={10}
           >
             {tabName}
           </Text>

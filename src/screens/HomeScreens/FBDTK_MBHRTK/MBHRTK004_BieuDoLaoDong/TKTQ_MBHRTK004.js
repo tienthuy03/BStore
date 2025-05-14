@@ -194,8 +194,8 @@ const TKTQ_MBHRMN004 = ({ navigation: { goBack } }) => {
             borderRadius: 5,
           }}
         />
-        <Texts flex>{item.col}</Texts>
-        <Texts width={100}>
+        <Texts flex fontFamily={"Roboto-medium"}>{item.col}</Texts>
+        <Texts width={100} fontFamily={"Roboto-medium"}>
           {item.colvalue} - ({per}%)
         </Texts>
       </View>
@@ -298,7 +298,7 @@ const TKTQ_MBHRMN004 = ({ navigation: { goBack } }) => {
                 marginBottom: 3,
               }}
             >
-              <Text>{item.code_nm}</Text>
+              <Text fontFamily={"Roboto-medium"}>{item.code_nm}</Text>
             </TouchableOpacity>
           );
         }}
@@ -353,7 +353,7 @@ const TKTQ_MBHRMN004 = ({ navigation: { goBack } }) => {
             radius={5}
           >
             <View>
-              <Text>Phòng ban</Text>
+              <Text style={{ color: Color.mainColor, fontFamily: 'Roboto-Medium' }}>Phòng ban</Text>
               <Button
                 nextScreen={() => setModalPbVisible(true)}
                 row
@@ -413,6 +413,7 @@ const TKTQ_MBHRMN004 = ({ navigation: { goBack } }) => {
                   flex
                   size={14}
                   paddingLeft={10}
+                  fontFamily={"Roboto-Regular"}
                 >
                   Ngày {daySelect}
                 </Texts>

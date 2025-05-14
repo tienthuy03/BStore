@@ -1,5 +1,4 @@
-import NetInfo from "@react-native-community/netinfo";
-import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -9,24 +8,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
+import RNRestart from "react-native-restart";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
+import { updateUserAction } from "../../../../actions";
 import Block from "../../../../components/Block";
 import Button from "../../../../components/Button";
 import Text from "../../../../components/Text";
-import { updateUserAction } from "../../../../actions";
-import RNRestart from "react-native-restart";
-import sysFetch from "../../../../services/fetch_v1";
-import { useNavigation } from "@react-navigation/native";
-import { ActivityIndicator } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import PopupPDF from "./Popup_PDF";
-import PopupIMG from "./Popup_IMG";
+import { showAlert } from "../../../../components/Tvs/TVSAlertORA";
 import { APP_VERSION } from "../../../../config/Pro";
+import sysFetch from "../../../../services/fetch_v1";
 import {
   HideGlobalLoading,
   ShowGlobalLoading,
 } from "../../../../services/redux/GlobalLoading/action";
-import { showAlert } from "../../../../components/Tvs/TVSAlertORA";
+import PopupIMG from "./Popup_IMG";
+import PopupPDF from "./Popup_PDF";
 
 const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
   const dispatch = useDispatch();
@@ -341,7 +339,7 @@ const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
                       paddingBottom={5}
                       justifyContent={"space-between"}
                     >
-                      <Text flex={0}>
+                      <Text size={16} fontFamily={"Roboto-Regular"} flex={0}>
                         {oneField[0]
                           .replace("_", "")
                           .substr(0, 1)
@@ -351,7 +349,7 @@ const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
                             .substr(1, oneField[0].replace("_", "").length)}
                       </Text>
 
-                      <Text right flex={1}>
+                      <Text size={16} fontFamily={"Roboto-Medium"} right flex={1}>
                         {oneField[1]}
                       </Text>
                     </Block>
@@ -371,6 +369,7 @@ const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
                 },
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
+
                 elevation: 5,
               }}
             >
@@ -381,7 +380,7 @@ const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
                   backgroundColor: Color.blueB,
                 }}
               >
-                <Text color={Color.keyColor} flex={1}>
+                <Text size={14} fontFamily={"Roboto-Regular"} color={Color.keyColor} flex={1}>
                   {item.content}
                 </Text>
               </View>
@@ -397,7 +396,9 @@ const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
               <View style={{ alignItems: "center", flex: 1, paddingTop: 10 }}>
                 <Text
                   textDecorationLine={"underline"}
-                  style={{ color: Color.mainColor }}
+                  color={Color.mainColor}
+                  size={14}
+                  fontFamily={"Roboto-Regular"}
                 >
                   Xem thêm
                 </Text>
@@ -413,7 +414,9 @@ const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
               <View style={{ alignItems: "center", flex: 1, paddingTop: 10 }}>
                 <Text
                   textDecorationLine={"underline"}
-                  style={{ color: Color.mainColor }}
+                  color={Color.mainColor}
+                  size={14}
+                  fontFamily={"Roboto-Regular"}
                 >
                   Ẩn bớt
                 </Text>
@@ -484,7 +487,9 @@ const CongTyNoti = ({ onCallbackSetDate, startDate, endDate }) => {
               alignItems: "center",
             }}
           >
-            <Text>Không có dữ liệu !</Text>
+            <Text
+              size={16}
+              fontFamily={"Roboto-Medium"}>Không có dữ liệu !</Text>
           </View>
         )}
       />

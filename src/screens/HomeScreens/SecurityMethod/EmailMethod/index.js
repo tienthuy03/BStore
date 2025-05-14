@@ -96,8 +96,8 @@ const EmailMethod = ({ isFirst }) => {
       const emailSplit = smData.split('@');
       const emailHideTemp = emailSplit[0].slice(0, -3) + '***@' + emailSplit[1];
       setEmailHide(emailHideTemp);
-    } 
-    if(smData == 'null' || smData == null){
+    }
+    if (smData == 'null' || smData == null) {
       setEmailHide('');
     }
   }, [smData]);
@@ -375,6 +375,7 @@ const EmailMethod = ({ isFirst }) => {
           color: 'black',
           opacity: 0.4,
           marginTop: 4,
+          fontFamily: "Roboto-Medium"
         }}>
           {
             isFirstState
@@ -386,7 +387,7 @@ const EmailMethod = ({ isFirst }) => {
           emailHide == '' ? (
             <TextInput
               placeholder={"Nhập thông tin email"}
-              style={[styles.inputEmail, { marginTop: 10 }]}
+              style={[styles.inputEmail, { marginTop: 10, fontFamily: "Roboto-Medium" }]}
               value={Email ?? ""}
               onChangeText={onChangeEmail}
             />
@@ -395,7 +396,7 @@ const EmailMethod = ({ isFirst }) => {
               editable={false}
               disabled={true}
               placeholder={"Nhập thông tin email"}
-              style={[styles.inputEmail, { marginTop: 10 }]}
+              style={[styles.inputEmail, { marginTop: 10, fontFamily: "Roboto-Medium" }]}
               value={emailHide ?? ""}
             // onChangeText={setEmailHide}
             />

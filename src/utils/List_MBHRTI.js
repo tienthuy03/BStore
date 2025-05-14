@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import {FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Block from '../components/Block';
 import Text from '../components/Text';
 import Button from '../components/Button';
 import Icon_next from '../icons/Next';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {setLanguageItem} from '../Language';
-import {Color} from '../colors/color';
+import { setLanguageItem } from '../Language';
+import { Color } from '../colors/color';
 
 const Item_MBHRTI = () => {
   const navigation = useNavigation();
@@ -18,7 +18,7 @@ const Item_MBHRTI = () => {
   try {
     dataMenuMBHRs = state.menuReducer.data.data.menu;
     language = state.loginReducers.data.data.user_language;
-  } catch (error) {}
+  } catch (error) { }
   const [dataMenuMBHRTI, setDataMenuMBHRRE] = useState([]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const Item_MBHRTI = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
       <Block>
         <Button
@@ -61,20 +61,19 @@ const Item_MBHRTI = () => {
           <Text
             flex
             paddingLeft={10}
-            height={60}
             size={16}
             color={Color.titleColor}
-            fontFamily={'Roboto-Medium'}>
+            fontFamily={'Regular-Redular'}>
             {setLanguageItem(item, language)}
           </Text>
-          <Icon_next color={Color.titleColor} style={{marginRight: 10}} />
+          <Icon_next color={Color.titleColor} style={{ marginRight: 10 }} />
         </Button>
       </Block>
     );
   };
 
   return (
-    <Block paddingTop={10}>
+    <Block paddingTop={10} flex>
       <FlatList
         data={dataMenuMBHRTI}
         renderItem={renderItem}

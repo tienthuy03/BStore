@@ -94,7 +94,7 @@ const MBHRTK002 = ({ navigation: { goBack } }) => {
   try {
     dataMenuMBHRs = state.menuReducer.data.data.menu;
     language = state.loginReducers.data.data.user_language;
-  } catch (error) {}
+  } catch (error) { }
   useEffect(() => {
     // dispatch(HRTK002LayDanhSachPhongBan());
     getData();
@@ -182,10 +182,10 @@ const MBHRTK002 = ({ navigation: { goBack } }) => {
         borderBottomWidth={1}
         padding={10}
       >
-        <TextSYS flex={1} center>
+        <TextSYS flex={1} center fontFamily={"Roboto-Medium"}>
           {item.work_mon}
         </TextSYS>
-        <TextSYS flex={1} center>
+        <TextSYS flex={1} center fontFamily={"Roboto-Medium"}>
           {item.net_am_convert.toString().trim()}
         </TextSYS>
       </Block>
@@ -225,7 +225,7 @@ const MBHRTK002 = ({ navigation: { goBack } }) => {
               radius={8}
             >
               <Block flex height={40} paddingLeft={10} justifyCenter>
-                <TextSYS size={16} color={Color.mainColor}>
+                <TextSYS size={16} color={Color.mainColor} fontFamily={"Roboto-Medium"}>
                   {ChonPhongBan.code_nm}
                 </TextSYS>
               </Block>
@@ -263,6 +263,7 @@ const MBHRTK002 = ({ navigation: { goBack } }) => {
                   flex
                   size={14}
                   paddingLeft={10}
+                  fontFamily={"Roboto-Medium"}
                 >
                   Năm {ChonNam}
                 </TextSYS>
@@ -293,10 +294,10 @@ const MBHRTK002 = ({ navigation: { goBack } }) => {
               borderBottomWidth={1}
               padding={10}
             >
-              <TextSYS flex={1} color={Color.white} center>
+              <TextSYS flex={1} color={Color.white} center fontFamily={"Roboto-Medium"}>
                 Tháng
               </TextSYS>
-              <TextSYS flex={1} color={Color.white} center>
+              <TextSYS flex={1} color={Color.white} center fontFamily={"Roboto-Medium"}>
                 Lương
               </TextSYS>
             </Block>

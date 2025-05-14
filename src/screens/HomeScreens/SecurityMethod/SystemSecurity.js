@@ -23,7 +23,8 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                                 fontWeight: '700',
                                 opacity: 0.6,
                                 marginBottom: 10,
-                                paddingHorizontal: 10
+                                paddingHorizontal: 10,
+                                fontFamily: "Roboto-Bold"
                             }}>
                                 Thiết lập tài khoản
                             </Text>
@@ -42,7 +43,8 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                                             fontSize: 14,
                                             color: 'black',
                                             opacity: 0.8,
-                                            marginLeft: 10
+                                            marginLeft: 10,
+                                            fontFamily: 'Roboto-Medium'
                                         }}>
                                             Đổi mật khẩu
                                         </Text>
@@ -50,7 +52,8 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                                             fontSize: 13,
                                             color: 'black',
                                             opacity: 0.4,
-                                            marginLeft: 10
+                                            marginLeft: 10,
+                                            fontFamily: 'Roboto-Regular',
                                         }}>
                                             Thay đổi mật khẩu đăng nhập tài khoản
                                         </Text>
@@ -77,7 +80,8 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                                 fontWeight: '700',
                                 opacity: 0.6,
                                 marginBottom: 10,
-                                paddingHorizontal: 10
+                                paddingHorizontal: 10,
+                                fontFamily: "Roboto-Bold"
                             }}>
                                 Thiết lập thông tin bảo mật
                             </Text>
@@ -123,8 +127,8 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                             </TouchableOpacity> */}
 
                             <TouchableOpacity onPress={() => navigation.navigate(
-                                'EmailSecurity', 
-                                {first: false}
+                                'EmailSecurity',
+                                { first: false }
                             )}>
                                 <View style={{
                                     flexDirection: 'row',
@@ -136,24 +140,26 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                                     paddingHorizontal: 10,
                                 }}>
                                     <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                    <Text style={{
-                                        fontSize: 14,
-                                        color: 'black',
-                                        opacity: 0.6,
-                                        marginLeft: 10
-                                    }}>
-                                        Email bảo mật
-                                    </Text>
-                                    <Text style={{
-                                        fontSize: 13,
-                                        color: 'black',
-                                        opacity: 0.4,
-                                        marginLeft: 10
-                                    }}>
-                                        Thiết lập email bảo mật để lấy lại mật khẩu
-                                    </Text>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: 'black',
+                                            opacity: 0.6,
+                                            marginLeft: 10,
+                                            fontFamily: 'Roboto-Medium'
+                                        }}>
+                                            Email bảo mật
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 13,
+                                            color: 'black',
+                                            opacity: 0.4,
+                                            marginLeft: 10,
+                                            fontFamily: 'Roboto-Regular'
+                                        }}>
+                                            Thiết lập email bảo mật để lấy lại mật khẩu
+                                        </Text>
                                     </View>
-                                    
+
                                     <MaterialCommunityIcons
                                         name="chevron-right"
                                         size={24}
@@ -166,8 +172,8 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => navigation.navigate(
-                                'QuestionSecurity', 
-                                {first: false}
+                                'QuestionSecurity',
+                                { first: false }
                             )}>
                                 <View style={{
                                     flexDirection: 'row',
@@ -178,33 +184,34 @@ const SystemSecurity = ({ navigation: { goBack } }) => {
                                     marginBottom: 2,
                                     paddingHorizontal: 10,
                                 }}>
-                                    <View style={{ 
-                                        flexDirection: 'column', 
-                                        alignItems: 'flex-start' 
+                                    <View style={{
+                                        flexDirection: 'column',
+                                        alignItems: 'flex-start'
                                     }}>
-                                    <Text style={{
-                                        fontSize: 14,
-                                        color: 'black',
-                                        opacity: 0.6,
-                                        marginLeft: 10
-                                    }}>
-                                        Câu hỏi bảo mật
-                                    </Text>
-                                    <Text style={{
-                                        fontSize: 13,
-                                        color: 'black',
-                                        opacity: 0.4,
-                                        marginLeft: 10
-                                    }}>
-                                        Thiết lập câu hỏi bảo mật để lấy lại mật khẩu
-                                    </Text>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: 'black',
+                                            opacity: 0.6,
+                                            marginLeft: 10,
+                                            fontFamily: 'Roboto-Medium'
+                                        }}>
+                                            Câu hỏi bảo mật
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 13,
+                                            color: Color.textPrimary2,
+                                            opacity: 0.4,
+                                            marginLeft: 10,
+                                            fontFamily: 'Roboto-Regular'
+                                        }}>
+                                            Thiết lập câu hỏi bảo mật để lấy lại mật khẩu
+                                        </Text>
                                     </View>
-                                    
+
                                     <MaterialCommunityIcons
                                         name="chevron-right"
                                         size={24}
                                         style={{
-                                            color: 'black',
                                             opacity: 0.8,
                                         }}
                                     />

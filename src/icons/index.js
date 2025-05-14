@@ -25,5 +25,6 @@ import Time from './Time';
 import Translate from './Translate';
 import TVTT from './TVTT';
 import User from './User';
+import GSNew from './icongsnew'
 
 

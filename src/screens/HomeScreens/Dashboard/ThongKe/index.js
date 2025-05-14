@@ -1,24 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
   LayoutAnimation,
-  Platform,
-  AppState,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { Color } from "../../../../colors/colorhp";
 import { HRDB001LayDuLieuThongKe } from "../../../../services/redux/Dashboard/action";
 import TKContent from "./TKContent";
-import LinearGradient from "react-native-linear-gradient";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from "@react-navigation/native";
-import { useIsFocused } from "@react-navigation/native";
 const styles = StyleSheet.create({
   label: {
     width: "50%",
@@ -76,8 +73,8 @@ const ThongKe = ({ navigation }) => {
             <Text
               numberOfLines={2}
               style={{
-                fontWeight: "bold",
-                fontSize: 12,
+                fontSize: 14,
+                fontFamily: 'Roboto-Bold',
                 color: Color.white,
               }}
             >
@@ -96,6 +93,7 @@ const ThongKe = ({ navigation }) => {
             <Text
               style={{
                 fontWeight: "bold",
+                fontFamily: "Roboto-Bold",
                 fontSize: 24,
                 color: Color.white,
               }}
@@ -114,11 +112,7 @@ const ThongKe = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{ flex: 1 }}
-      > */}
+    <ScrollView style={{ flex: 1 }}>
       <View style={{ marginBottom: 10, flexDirection: "column" }}>
         <FlatList
           numColumns={3}
@@ -154,11 +148,12 @@ const ThongKe = ({ navigation }) => {
           )}
         />
       </View>
-      {/* </ScrollView> */}
-    </View>
+    </ScrollView>
   );
 };
 const ItemMenu = ({ item, detail, detail2 }) => {
+  console.log(detail2);
+
   const [expanded, setExpanded] = useState(false);
   const navigation = useNavigation();
   let count1 = 0;
@@ -170,7 +165,7 @@ const ItemMenu = ({ item, detail, detail2 }) => {
     count3 += Number(itemD.count.split("|")[2].split(":")[1]);
   });
   return item.menu_type == 1 ? (
-    <View>
+    <View >
       <View style={styles.container}>
         <TouchableOpacity
           onPress={() => {
@@ -237,12 +232,13 @@ const ItemMenu = ({ item, detail, detail2 }) => {
                 <Text
                   numberOfLines={1}
                   paddingLeft={10}
-                  height={60}
-                  fontFamily={"Roboto-Medium"}
+
                   style={{
                     // fontWeight: 'bold',
                     fontSize: 17,
                     color: Color.mainColor,
+                    fontFamily: "Roboto-Medium"
+
                   }}
                 >
                   {item.name}
@@ -267,6 +263,7 @@ const ItemMenu = ({ item, detail, detail2 }) => {
                   color: "#FFA800",
                   fontSize: 17,
                   fontWeight: "bold",
+                  fontFamily: "Roboto-Bold"
                 }}
               >
                 {count1}
@@ -290,6 +287,7 @@ const ItemMenu = ({ item, detail, detail2 }) => {
                   color: "#009E00",
                   fontSize: 17,
                   fontWeight: "bold",
+                  fontFamily: "Roboto-Bold"
                 }}
               >
                 {count2}
@@ -302,7 +300,7 @@ const ItemMenu = ({ item, detail, detail2 }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 paddingVertical: 2,
-                paddingHorizontal: 5,
+                paddingHorizontal: 12,
                 marginLeft: 1,
                 marginVertical: 15,
                 marginHorizontal: 2,
@@ -313,6 +311,7 @@ const ItemMenu = ({ item, detail, detail2 }) => {
                   color: "red",
                   fontSize: 17,
                   fontWeight: "bold",
+                  fontFamily: "Roboto-Bold"
                 }}
               >
                 {count3}
@@ -406,12 +405,10 @@ const ItemMenu = ({ item, detail, detail2 }) => {
               <Text
                 numberOfLines={1}
                 paddingLeft={10}
-                height={60}
-                fontFamily={"Roboto-Medium"}
                 style={{
-                  // fontWeight: 'bold',
-                  fontSize: 17,
+                  fontSize: 16,
                   color: Color.mainColor,
+                  fontFamily: "Roboto-Medium"
                 }}
               >
                 {item.name}
@@ -515,7 +512,7 @@ const ItemMenu = ({ item, detail, detail2 }) => {
                 fontFamily={"Roboto-Medium"}
                 style={{
                   // fontWeight: 'bold',
-                  fontSize: 17,
+                  fontSize: 16,
                   color: Color.mainColor,
                 }}
               >
@@ -549,13 +546,13 @@ const ItemDetail = ({ item }) => {
     <TouchableOpacity
       onPress={() => (item.path ? navigation.navigate(item.path) : null)}
     >
-      <View style={{ marginHorizontal: 20 }}>
+      <View style={{ marginHorizontal: 5 }}>
         <View
           style={{
             height: 40,
             justifyContent: "center",
             marginHorizontal: 5,
-            marginBottom: 5,
+            marginBottom: 8,
             borderRadius: 8,
             flexDirection: "row",
             backgroundColor: Color.tabColor,
@@ -567,6 +564,7 @@ const ItemDetail = ({ item }) => {
               width: 20,
               alignItems: "center",
               justifyContent: "center",
+
             }}
           >
             <Icon name={"circle"} color={Color.titleColor} size={13} />
@@ -608,6 +606,7 @@ const ItemDetail = ({ item }) => {
                 color: "#FFA800",
                 fontSize: 14,
                 fontWeight: "bold",
+                fontFamily: "Roboto-Bold"
               }}
             >
               {count1}
@@ -630,6 +629,7 @@ const ItemDetail = ({ item }) => {
                 color: "#009E00",
                 fontSize: 14,
                 fontWeight: "bold",
+                fontFamily: "Roboto-Bold"
               }}
             >
               {count2}
@@ -653,6 +653,7 @@ const ItemDetail = ({ item }) => {
                 color: "red",
                 fontSize: 14,
                 fontWeight: "bold",
+                fontFamily: "Roboto-Bold"
               }}
             >
               {count3}
@@ -696,10 +697,10 @@ const Item = ({ item }) => {
       }}
     >
       <View>
-        <Text>{item.title}</Text>
+        <Text style={{ fontSize: 16, fontFamily: "Roboto-Regular" }}>{item.title}</Text>
       </View>
       <View>
-        <Text>{item.value}</Text>
+        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium" }}>{item.value}</Text>
       </View>
     </View>
   );

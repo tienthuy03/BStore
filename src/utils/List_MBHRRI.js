@@ -18,7 +18,7 @@ const Item_MBHRRI = () => {
   try {
     dataMenuMBHRRIs = state.menuReducer.data.data.menu;
     language = state.loginReducers.data.data.user_language;
-  } catch (error) {}
+  } catch (error) { }
 
   const [dataMenuMBHRRI, setDataMenuMBHRRI] = useState([]);
 
@@ -34,7 +34,7 @@ const Item_MBHRRI = () => {
         }
         setDataMenuMBHRRI(dataMenuMRRIss);
       });
-    } catch (error) {}
+    } catch (error) { }
   }, []);
   const renderItem = ({ item, index }) => {
     return (
@@ -65,10 +65,9 @@ const Item_MBHRRI = () => {
           <Text
             flex
             paddingLeft={10}
-            height={60}
             size={16}
             color={Color.titleColor}
-            fontFamily={"Roboto-Medium"}
+            fontFamily={"Roboto-Regular"}
           >
             {setLanguageItem(item, language)}
           </Text>

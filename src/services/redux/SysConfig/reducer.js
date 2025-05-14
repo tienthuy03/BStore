@@ -1,4 +1,4 @@
-import {SET_API_URL} from './action';
+import { SET_API_URL } from './action';
 
 const initialState = {
   API_URL: '',
@@ -10,6 +10,7 @@ const reducer = (state = initialState, act) => {
         ...state,
         API_URL: act.URL,
       };
+
     default:
       return state;
   }

@@ -1,20 +1,9 @@
-import AsyncStorage from "@react-native-community/async-storage";
 import messaging from "@react-native-firebase/messaging";
 import md5 from "md5";
 import React, { useEffect, useState, useRef } from "react";
 import {
-  Alert,
-  StatusBar,
-  StyleSheet,
-  View,
-  Platform,
-  Image,
-  Dimensions,
-  Animated,
-  Keyboard,
-  TouchableWithoutFeedback,
-  SafeAreaView,
-  TouchableOpacity,
+  Alert, StatusBar, StyleSheet, View, Platform, Image, Dimensions, Animated
+  , Keyboard, TouchableWithoutFeedback, SafeAreaView, TouchableOpacity,
 } from "react-native";
 import DefaultPreference from "react-native-default-preference";
 import RNRestart from "react-native-restart";
@@ -39,19 +28,77 @@ import LinearGradient from "react-native-linear-gradient";
 import axios from "axios";
 import { updateUserAction } from "../../actions";
 import sysFetch from "../../services/fetch";
-import { SetApiURL } from "../../services/redux/SysConfig/action";
 import TVSControlPopup from "../../components/Tvs/ControlPopup2";
 import Swiper from "react-native-swiper";
 import { Linking } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import NetInfo from "@react-native-community/netinfo";
 import ShowError from "../../services/errors";
+import AsyncStorage from "@react-native-community/async-storage";
+
 
 const LoginScreen = ({ navigation, reloadConfig }) => {
+  //get infor ClientId  from AsyncStorage
+  const [clientId, setClientId] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const savedClientId = await AsyncStorage.getItem('CLIENT_ID');
+      setClientId(savedClientId);
+    };
+    fetchData();
+  }, []);
+
   const [banner, setBanner] = useState(10);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [checkUpdateVersion, setCheckUpdateVersion] = useState("N");
+  const Color = useSelector((s) => s.SystemReducer.theme);
+  const state = useSelector((s) => s.loginReducers);
+  const API = useSelector((state) => state.SysConfigReducer.API_URL);
 
+  const dispatch = useDispatch();
+  let thr_emp_pk;
+  let tokenLogin;
+  let device_id;
+  let results;
+  let errorData;
+  let loadings;
+  let login_status;
+  let fullnames;
+  let userPk;
+  let refreshToken;
+  try {
+    loadings = state.isLoading;
+    results = state.data.results;
+    errorData = state.data.errorData;
+    tokenLogin = state.data.data.tokenLogin;
+    thr_emp_pk = state.data.data.thr_emp_pk;
+    fullnames = state.data.data.full_name;
+    device_id = state.data.data.device_id;
+    login_status = state.data.data.login_status;
+    userPk = state.data.data.tes_user_pk;
+    refreshToken = state.data.data.refreshToken;
+  } catch (error) {
+    console.log(error);
+  }
+  //create state
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullname, setfullName] = useState("");
+  const [valueAuthen, setValueAuthen] = useState("");
+  const [modalPass, setModalPass] = useState(false);
+  const [passwords, setPasswords] = useState("");
+
+  //Khởi tạo biến để lưu yêu cầu đăng nhập nhanh
+  const [temp, setTemp] = useState("");
+  const [finger, setFinger] = useState("");
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const [typeAuthen, setTypeAuthen] = useState("");
+  const [eye, setEye] = useState(true);
+  //REF
+  const passwordRef = useRef(null);
+  const [modalVisibleHelping, setModalVisibleHelping] = useState(false);
   const checkVersionUpdate = () => {
     if (Platform.OS === "android") {
       Linking.openURL(
@@ -83,63 +130,12 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       keyboardDidShowListener.remove();
     };
   }, []);
-  const Color = useSelector((s) => s.SystemReducer.theme);
-  const state = useSelector((s) => s.loginReducers);
-  let API = useSelector((state) => state.SysConfigReducer.API_URL);
-  const dispatch = useDispatch();
-  let thr_emp_pk = "";
-  let tokenLogin = "";
-  let device_id = "";
-  let results = "";
-  let errorData = "";
-  let loadings = "";
-  let login_status = "";
-  let fullnames = "";
-  let userPk = "";
-  let refreshToken = "";
-  try {
-    loadings = state.isLoading||'';
-    results = state.data.results||'';
-    errorData = state.data.errorData||'';
-    tokenLogin = state.data.data.tokenLogin||'';
-    thr_emp_pk = state.data.data.thr_emp_pk||'';
-    fullnames = state.data.data.full_name||'';
-    device_id = state.data.data.device_id||'';
-    login_status = state.data.data.login_status||'';
-    userPk = state.data.data.tes_user_pk||'';
-    refreshToken = state.data.data.refreshToken||'';
-  } catch (error) {
-    // console.log("error LoginScreen.js");
-    // console.log(error);
-  }
-  //create state
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullname, setfullName] = useState("");
-  const [valueAuthen, setValueAuthen] = useState("");
-  const [modalPass, setModalPass] = useState(false);
-  const [passwords, setPasswords] = useState("");
 
-  //Khởi tạo biến để lưu yêu cầu đăng nhập nhanh
-  const [temp, setTemp] = useState("");
-
-  const [finger, setFinger] = useState("");
-  const [user, setUser] = useState("");
-  const [pass, setPass] = useState("");
-  const [typeAuthen, setTypeAuthen] = useState("");
-  const [eye, setEye] = useState(true);
-
-  //REF
-  const passwordRef = useRef(null);
-
-  const [modalVisibleHelping, setModalVisibleHelping] = useState(false);
   useEffect(() => {
     //random number
-
     DefaultPreference.getAll().then(function (valueAll) {
       //Khởi tạo biến để lưu yêu cầu đăng nhập nhanh
       setTemp(valueAll.temp);
-
       setFinger(valueAll.status);
       setUsername(valueAll.username);
       setPass(valueAll.password);
@@ -171,6 +167,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       token
     )
       .then((res) => {
+        console.log("Check valid token", res);
         if (res == "Token Expired") {
           console.log("Expired token");
           // refreshNewToken("checkValidToken", api, username, token);
@@ -242,8 +239,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
             }
           })
           .catch(() => {
-            // Failure code
-            //Alert.alert('Lỗi thiết bị!');
+
           });
         navigation.replace("Index");
       }
@@ -339,13 +335,70 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       });
   }
   //get tokens firebase, after login
+  // async function getTokens(p_thr_emp_pk, device_id) {
+  //   console.log("getTokens");
+  //   const authStatus = await messaging().requestPermission();
+  //   console.log("getTokens 1");
+  //   const enabled =
+  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  //   console.log("getTokens 2");
+  //   if (enabled) {
+  //     console.log('Notification permission granted.');
+  //     const fcmToken = await messaging().getToken();
+  //     console.log("fcmToken: ", fcmToken);
+  //     if (fcmToken) {
+  //       if (device_id !== fcmToken) {
+  //         const action = "UPDATE";
+  //         sysFetch(
+  //           API,
+  //           {
+  //             pro: "UPDDEVICE0100",
+  //             in_par: {
+  //               p1_varchar2: action,
+  //               p2_varchar2: p_thr_emp_pk,
+  //               p3_varchar2: fcmToken,
+  //               p4_varchar2: "",
+  //             },
+  //             out_par: {
+  //               p1_varchar2: "update_device",
+  //             },
+  //           },
+  //           tokenLogin
+  //         )
+  //           .then((rs) => {
+  //             console.log("res UPDDEVICE0100: ", res);
+
+  //             if (rs == "Token Expired") {
+  //               refreshNewToken("getTokens", p_thr_emp_pk, device_id);
+  //             }
+  //             if (rs != "Token Expired") {
+  //               console.log(rs);
+  //             }
+  //           })
+  //           .catch((error) => {
+  //             console.log(error);
+  //           });
+  //       }
+  //     } else {
+  //       console.log('Notification permission denied.');
+  //     }
+  //   }
+  // }
+
+  console.log("device_id: ", device_id);
+
   async function getTokens(p_thr_emp_pk, device_id) {
     const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     if (enabled) {
+      console.log('Notification permission granted.');
+      // ⚠️ XÓA TOKEN CŨ & LẤY TOKEN MỚI
+      await messaging().deleteToken();
       const fcmToken = await messaging().getToken();
+      console.log("FCM Token (new): ", fcmToken);
       if (fcmToken) {
         if (device_id !== fcmToken) {
           const action = "UPDATE";
@@ -357,7 +410,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
                 p1_varchar2: action,
                 p2_varchar2: p_thr_emp_pk,
                 p3_varchar2: fcmToken,
-                p4_varchar2: "",
+                p4_varchar2: ""
               },
               out_par: {
                 p1_varchar2: "update_device",
@@ -368,19 +421,27 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
             .then((rs) => {
               if (rs == "Token Expired") {
                 refreshNewToken("getTokens", p_thr_emp_pk, device_id);
-              }
-              if (rs != "Token Expired") {
-                console.log(rs);
+              } else {
+                console.log("Token res", rs);
               }
             })
             .catch((error) => {
-              console.log(error);
+              console.log("Token error", error);
             });
         }
       } else {
+        console.log('Không thể lấy FCM Token.');
       }
+    } else {
+      console.log('Người dùng chưa cho phép thông báo.');
     }
   }
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      getTokens();
+    }
+  }, []);
 
   function setViewss() {
     if (finger === "1" || finger === "11") {
@@ -445,7 +506,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
             height={55}
             nextScreen={() => _pressHandler()}
           >
-            <Icon_finger style={{ marginRight: 20 }} />
+            <Icon_finger style={{ padding: 15 }} />
           </Button>
         );
       }
@@ -512,7 +573,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
             Alert.alert(
               "Thông báo",
               "Thiết bị của bạn không kết nối được với máy chủ. Vui lòng kiểm tra lại kết nối mạng hoặc liên hệ với quản trị.",
-              [{ text: "Xác nhận", onPress: () => {} }]
+              [{ text: "Xác nhận", onPress: () => { } }]
             );
           }
         } else {
@@ -524,26 +585,25 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
   const [urlAPIPing, setUrlAPIPing] = useState("");
   const [statusAPI, setStatusAPI] = useState("");
   useEffect(() => {
+    console.log(API);
     setUrlAPIPing(API.split("/")[0] + "//" + API.split("/")[2]);
-    // console.log(API.split("/")[0] + "//" + API.split("/")[2]);
     const fetchData = async () => {
       try {
+        console.log(API.split("/")[0] + "//" + API.split("/")[2]);
         const rs = await fetch(API.split("/")[0] + "//" + API.split("/")[2])
           .then((response) => {
             if (response.status === 200) {
-              // console.log("success");
               setStatusAPI(true);
             } else {
-              // console.warn("error");
               setStatusAPI(false);
             }
           })
           .catch((error) => {
-            console.error("network error: " + error);
+            console.error("network error: 00000 " + error);
             setStatusAPI(false);
           });
       } catch (error) {
-        console.error("network error: " + error);
+        console.error("network error: 1111 " + error);
         setStatusAPI(false);
       }
     };
@@ -551,12 +611,13 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
     fetchData();
     const intervalId = setInterval(fetchData, 2000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [API]);
   const [modalVisibleCloudConnect, setModalVisibleCloudConnect] =
     useState(false);
   const showInfoConnect = () => {
     setModalVisibleCloudConnect(true);
   };
+
   const modalCloudConnect = (
     <TVSControlPopup
       title={"Thông tin Server"}
@@ -576,29 +637,8 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       }
     >
       <View style={{ flex: 1 }}>
-        {/* <View style={{ paddingLeft: 10 }}>
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>
-            Địa chỉ Server
-          </Text>
-        </View>
-        <View
-          style={{
-            paddingLeft: 20,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialCommunityIcons
-            name="api"
-            size={20}
-            style={{ marginLeft: 5, color: Color.mainColor }}
-          />
-          <Text style={{ marginLeft: 10 }}>
-            {API.split("/")[0] + "//" + API.split("/")[2]}
-          </Text>
-        </View> */}
         <View style={{ paddingLeft: 10, paddingTop: 10 }}>
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>
+          <Text fontFamily={'Roboto-Medium'} size={16} marginBottom={8}>
             Tình trạng kết nối
           </Text>
         </View>
@@ -613,10 +653,10 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
           >
             <MaterialCommunityIcons
               name={"cloud-check-outline"}
-              size={20}
+              size={24}
               color={"green"}
             />
-            <Text style={{ marginLeft: 10, color: "green" }}>Đã kết nối</Text>
+            <Text fontFamily={'Roboto-Bold'} size={16} paddingLeft={8}>Đã kết nối</Text>
           </View>
         ) : (
           <View
@@ -631,10 +671,14 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
               size={20}
               color={"red"}
             />
-            <Text style={{ marginLeft: 10, color: "red" }}>Không kết nối</Text>
+            <Text style={{ marginLeft: 10, color: "red", fontFamily: 'Roboto-Bold', marginBottom: 8 }}>Không kết nối</Text>
           </View>
         )}
+        <Text style={{ paddingLeft: 10, paddingTop: 10, fontSize: 16, fontFamily: "Roboto-Medium" }}>
+          Khách hàng: <Text fontFamily={"Roboto-Bold"} color={Color.mainColor}>{clientId}</Text>
+        </Text>
       </View>
+
     </TVSControlPopup>
   );
   const modalHelping = (
@@ -804,6 +848,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
     }
   }
 
+
   return (
     <Block flex backgroundColor={"#498DE3"}>
       <SafeAreaView>
@@ -813,7 +858,6 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
           barStyle="light-content"
         />
       </SafeAreaView>
-      {/* <KeyboardAvoidingView behavior="padding" style={styles.container}> */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
           <View style={styles.inner}>

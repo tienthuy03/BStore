@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {Dimensions, FlatList} from 'react-native';
-import {useSelector} from 'react-redux';
+import React, { useState } from 'react';
+import { Dimensions, FlatList } from 'react-native';
+import { useSelector } from 'react-redux';
 import Block from '../components/Block';
 import OneField from '../components/OneFieldObject';
 import Text from '../components/Text';
-const {width, height} = Dimensions.get('screen');
-const ListTTNN_MBHRIN005 = ({datas, onReload}) => {
+const { width, height } = Dimensions.get('screen');
+const ListTTNN_MBHRIN005 = ({ datas, onReload }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
   let [numberRecord, setNumberRecord] = useState(3);
 
@@ -38,7 +38,7 @@ const ListTTNN_MBHRIN005 = ({datas, onReload}) => {
       </Block>
     );
   }
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
       <Block flex marginLeft={10} marginRight={10} marginBottom={10}>
         <Block row justifyContent={'space-between'}>
@@ -64,7 +64,7 @@ const ListTTNN_MBHRIN005 = ({datas, onReload}) => {
           borderColor={Color.oneContentBorder}
           borderWidth={1}
           paddingBottom={5}>
-          <OneField value={{'Loại vắng': item.abs_type}} />
+          <OneField value={{ 'Loại vắng': item.abs_type }} />
           <OneField
             value={{
               'Giờ vào - ra':
@@ -73,8 +73,8 @@ const ListTTNN_MBHRIN005 = ({datas, onReload}) => {
                 (item.end_hours.length === 0 ? '--:--' : item.end_hours),
             }}
           />
-          <OneField value={{'Giờ vắng': item.abs_hours}} />
-          <OneField value={{'Lý do vắng': item.description}} />
+          <OneField value={{ 'Giờ vắng': item.abs_hours }} />
+          <OneField value={{ 'Lý do vắng': item.description }} />
         </Block>
       </Block>
     );
@@ -92,7 +92,7 @@ const ListTTNN_MBHRIN005 = ({datas, onReload}) => {
         extraData={datas}
         ListEmptyComponent={() => (
           <Block alignCenter justifyCenter marginTop={20}>
-            <Text>Không có dữ liệu !</Text>
+            <Text fontFamily={"Roboto-Medium"}>Không có dữ liệu !</Text>
           </Block>
         )}
       />

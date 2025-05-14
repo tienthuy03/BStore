@@ -1,18 +1,18 @@
-import moment from 'moment';
-import React, {useEffect, useState} from 'react';
-import {View, FlatList, Text, Alert} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Color} from '../../../colors/colortv';
-import {ntGetNotification} from '../../../services/redux/Notification/action';
-import OneNotificationItem from './OneNotificationItem';
 import axios from 'axios';
-import {updateUserAction} from '../../../actions';
+import moment from 'moment';
+import React from 'react';
+import { Alert, FlatList, Text, View } from 'react-native';
 import RNRestart from 'react-native-restart';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUserAction } from '../../../actions';
+import { Color } from '../../../colors/colortv';
 import sysFetch from '../../../services/fetch';
+import { ntGetNotification } from '../../../services/redux/Notification/action';
+import OneNotificationItem from './OneNotificationItem';
 const UserNoti = () => {
   const dispatch = useDispatch();
   const API = useSelector(state => state.SysConfigReducer.API_URL);
-  const {notificationGen} = useSelector(state => state.NotificationReducer);
+  const { notificationGen } = useSelector(state => state.NotificationReducer);
   let tokenLogin = useSelector(
     state => state.loginReducers.data.data.tokenLogin,
   );
@@ -65,7 +65,7 @@ const UserNoti = () => {
                 },
               },
             ],
-            {cancelable: true},
+            { cancelable: true },
           );
         }
         console.log(error);
@@ -88,6 +88,7 @@ const UserNoti = () => {
       tokenLogin,
     )
       .then(rs => {
+
         if (rs == 'Token Expired') {
           refreshNewToken('getData');
         }
@@ -99,11 +100,11 @@ const UserNoti = () => {
         console.log(error);
       });
   };
-  const renderOneItem = ({item, index}) => (
+  const renderOneItem = ({ item, index }) => (
     <OneNotificationItem key={index.toString()} item={item} />
   );
   return (
-    <View style={{marginHorizontal: 10, marginVertical: 5}}>
+    <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
       <FlatList
         ListHeaderComponent={() => {
           return notificationGen.filter(
@@ -118,6 +119,7 @@ const UserNoti = () => {
                     marginTop: 20,
                     marginBottom: 10,
                     color: Color.mainColor,
+                    fontFamily: "Roboto-Bold"
                   }}>
                   Hôm nay
                 </Text>
@@ -140,7 +142,7 @@ const UserNoti = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Text>Không có dữ liệu</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium" }}>Không có dữ liệu</Text>
                   </View>
                 )}
               />

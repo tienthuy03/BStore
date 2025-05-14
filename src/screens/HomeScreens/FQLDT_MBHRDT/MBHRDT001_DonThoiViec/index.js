@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Block from "../../../../components/Block";
 import TVSHeader from "../../../../components/Tvs/Header";
 import { setHeaderChil } from "../../../../Language";
-import RNFetchBlob from "rn-fetch-blob";
+import RNFetchBlob from "react-native-blob-util";
 import DocumentPicker, { types } from "react-native-document-picker";
 import sysFetch from "../../../../services/fetch_v1";
 import { APP_VERSION } from "../../../../config/Pro";
@@ -84,32 +84,22 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
     getData();
   }, []);
   const getData = () => {
-    pro = "SELHRDT001000",
-      console.log(pro);
-
-    out_par = {
-      p1_sys: "data",
-    }
-    console.log("out_par: ", out_par);
     sysFetch(
       API,
       {
-        // pro: "SELHRDT001000",
-        pro,
+        pro: "SELHRDT001000",
         in_par: {
           p1_varchar2: thr_emp_pk,
           p2_varchar2: APP_VERSION,
           p3_varchar2: crt_by,
         },
-        out_par
-        // out_par: {
-        //   p1_sys: "data",
-        // },
+        out_par: {
+          p1_sys: "data",
+        },
       },
       tokenLogin
     )
       .then((res) => {
-        console.log("API response:", res); // Log toàn bộ response
         setData(res.data.data[0]);
       })
       .catch((error) => {
@@ -194,15 +184,15 @@ const DonThoiViec = ({ navigation: { goBack } }) => {
           <StatusBar barStyle={"dark-content"} />
           {base64Upload.length > 0
             ? base64Upload.map((file, index) => (
-              <View>
-                <Text style={{}} numberOfLines={1} ellipsizeMode={"middle"}>
-                  {file?.name}
-                </Text>
-                <Text style={{}} numberOfLines={1} ellipsizeMode={"middle"}>
-                  {file?.data}
-                </Text>
-              </View>
-            ))
+                <View>
+                  <Text style={{}} numberOfLines={1} ellipsizeMode={"middle"}>
+                    {file?.name}
+                  </Text>
+                  <Text style={{}} numberOfLines={1} ellipsizeMode={"middle"}>
+                    {file?.data}
+                  </Text>
+                </View>
+              ))
             : null}
         </View>
       </Block>

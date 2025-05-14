@@ -1,8 +1,8 @@
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { useSelector } from 'react-redux';
 // import {Color} from '../colors/color';
 
 LocaleConfig.locales.vn = {
@@ -39,7 +39,7 @@ LocaleConfig.locales.vn = {
   today: "Hôm nay'HN",
 };
 LocaleConfig.defaultLocale = 'vn';
-const Calende = ({getState, startDayss, endDayss}) => {
+const Calende = ({ getState, startDayss, endDayss }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   const [startDay, setStartDay] = useState(
     moment(startDayss).format('YYYY-MM-DD'),
@@ -150,19 +150,19 @@ const Calende = ({getState, startDayss, endDayss}) => {
             [v]:
               v === moment(startingDays).format('YYYY-MM-DD')
                 ? {
-                    selected: true,
-                    startingDay: true,
-                    endingDay: true,
-                    color: Color.mainColor,
-                  }
+                  selected: true,
+                  startingDay: true,
+                  endingDay: true,
+                  color: Color.mainColor,
+                }
                 : v === moment(endingDays).format('YYYY-MM-DD')
-                ? {
+                  ? {
                     selected: true,
                     startingDay: true,
                     endingDay: true,
                     color: Color.mainColor,
                   }
-                : {
+                  : {
                     selected: true,
                     marked: true,
                     color: Color.mainColor,
@@ -181,30 +181,30 @@ const Calende = ({getState, startDayss, endDayss}) => {
             [v]:
               nextDay.length === 1
                 ? {
-                    selected: true,
-                    marked: true,
-                    color: Color.mainColor,
-                    dotColor: '#fff',
-                  }
+                  selected: true,
+                  marked: true,
+                  color: Color.mainColor,
+                  dotColor: '#fff',
+                }
                 : v === moment(startingDays).format('YYYY-MM-DD')
-                ? {
+                  ? {
                     startingDay: true,
                     selected: true,
                     color: Color.mainColor,
                   }
-                : v === moment(endingDays).format('YYYY-MM-DD')
-                ? {
-                    endingDay: true,
-                    selected: true,
-                    color: Color.mainColor,
-                  }
-                : {
-                    selected: true,
-                    color: Color.mainColor,
-                    marked: true,
-                    dotColor: 'white',
-                    textColor: 'white',
-                  },
+                  : v === moment(endingDays).format('YYYY-MM-DD')
+                    ? {
+                      endingDay: true,
+                      selected: true,
+                      color: Color.mainColor,
+                    }
+                    : {
+                      selected: true,
+                      color: Color.mainColor,
+                      marked: true,
+                      dotColor: 'white',
+                      textColor: 'white',
+                    },
           }),
         {},
       );
@@ -217,13 +217,13 @@ const Calende = ({getState, startDayss, endDayss}) => {
     if (thisIsOnChangMonth == null) {
       startingDay > endingDay
         ? response(
-            moment(endingDay).format('YYYYMMDD'),
-            moment(startingDay).format('YYYYMMDD'),
-          )
+          moment(endingDay).format('YYYYMMDD'),
+          moment(startingDay).format('YYYYMMDD'),
+        )
         : response(
-            moment(startingDay).format('YYYYMMDD'),
-            moment(endingDay).format('YYYYMMDD'),
-          );
+          moment(startingDay).format('YYYYMMDD'),
+          moment(endingDay).format('YYYYMMDD'),
+        );
     }
   };
 
@@ -249,51 +249,51 @@ const Calende = ({getState, startDayss, endDayss}) => {
   const thisWeek = () => {
     let monday =
       currentMonth !==
-      moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(0)).format(
-        'YYYY-MM',
-      )
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(0)).format(
+          'YYYY-MM',
+        )
         ? moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(0)).format(
-            'YYYY-MM',
-          ) +
-          moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(0)).format(
-            '-DD',
-          )
+          'YYYY-MM',
+        ) +
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(0)).format(
+          '-DD',
+        )
         : currentMonth +
-          moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(0)).format(
-            '-DD',
-          );
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(0)).format(
+          '-DD',
+        );
 
     let betweenday =
       currentMonth !==
-      moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(4)).format(
-        'YYYY-MM',
-      )
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(4)).format(
+          'YYYY-MM',
+        )
         ? moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(4)).format(
-            'YYYY-MM',
-          ) +
-          moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(4)).format(
-            '-DD',
-          )
+          'YYYY-MM',
+        ) +
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(4)).format(
+          '-DD',
+        )
         : currentMonth +
-          moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(4)).format(
-            '-DD',
-          );
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(4)).format(
+          '-DD',
+        );
 
     let sunday =
       currentMonth !==
-      moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(6)).format(
-        'YYYY-MM',
-      )
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(6)).format(
+          'YYYY-MM',
+        )
         ? moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(6)).format(
-            'YYYY-MM',
-          ) +
-          moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(6)).format(
-            '-DD',
-          )
+          'YYYY-MM',
+        ) +
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(6)).format(
+          '-DD',
+        )
         : currentMonth +
-          moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(6)).format(
-            '-DD',
-          );
+        moment(moment(startDay, 'YYYY-MM-DD').clone().weekday(6)).format(
+          '-DD',
+        );
     setCurrentMonth(moment(betweenday).format('YYYY-MM'));
     setStartDay(monday);
     setEndtDay(sunday);
@@ -330,11 +330,11 @@ const Calende = ({getState, startDayss, endDayss}) => {
     const daySelected =
       startingDay > endingDay
         ? moment(endingDay).format('DD/MM/YYYY') +
-          ' - ' +
-          moment(startingDay).format('DD/MM/YYYY')
+        ' - ' +
+        moment(startingDay).format('DD/MM/YYYY')
         : startingDay === endingDay
-        ? moment(startingDay).format('DD/MM/YYYY')
-        : moment(startingDay).format('DD/MM/YYYY') +
+          ? moment(startingDay).format('DD/MM/YYYY')
+          : moment(startingDay).format('DD/MM/YYYY') +
           ' - ' +
           moment(endingDay).format('DD/MM/YYYY');
 

@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, { Component, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,11 +7,11 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {Color} from '../colors/color';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Color } from '../colors/color';
 import Check from '../icons/Check';
-const {width, height} = Dimensions.get('screen');
-const RadioButton = ({PROP, getState, keys}) => {
+const { width, height } = Dimensions.get('screen');
+const RadioButton = ({ PROP, getState, keys }) => {
   const [value, setValue] = useState(keys);
 
   return (
@@ -42,10 +42,10 @@ const RadioButton = ({PROP, getState, keys}) => {
                   });
               }}>
               <Image style={styles.img} source={res.url} />
-              <Text style={{paddingLeft: 10}}>{res.text}</Text>
+              <Text style={{ paddingLeft: 10, fontFamily: "Roboto-Medium", fontSize: 16 }}>{res.text}</Text>
               {value === res.key && (
                 <View
-                  style={{flex: 1, alignItems: 'flex-end', paddingRight: 10}}>
+                  style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10 }}>
                   <Check />
                 </View>
               )}

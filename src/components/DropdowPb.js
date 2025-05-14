@@ -1,13 +1,13 @@
-import React, {Component, useState} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import React, { Component, useState } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Color } from '../colors/color';
 import Check from '../icons/Check';
 
-const RadioButton = ({PROP, getState, codes}) => {
+const RadioButton = ({ PROP, getState, codes }) => {
   const [value, setValue] = useState(codes);
 
   return (
-    <View style={{width: '100%'}}>
+    <View style={{ width: '100%' }}>
       {PROP.map((res) => {
         return (
           <View key={res.code} style={styles.container}>
@@ -20,10 +20,10 @@ const RadioButton = ({PROP, getState, codes}) => {
                     code_nm: res.code_nm,
                   });
               }}>
-              <Text style={{paddingLeft: 10}}>{res.code_nm}</Text>
+              <Text style={{ paddingLeft: 10, fontFamily: 'Roboto-Medium' }}>{res.code_nm}</Text>
               {value === res.code && (
                 <View
-                  style={{flex: 1, alignItems: 'flex-end', paddingRight: 10}}>
+                  style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10 }}>
                   <Check />
                 </View>
               )}

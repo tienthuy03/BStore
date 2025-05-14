@@ -1,24 +1,24 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import md5 from "md5";
 import NetInfo from "@react-native-community/netinfo";
+import axios from "axios";
+import md5 from "md5";
+import React, { useState } from "react";
+import { Alert, ScrollView, Text, TextInput, View } from "react-native";
+import DefaultPreference from "react-native-default-preference";
+import RNRestart from "react-native-restart";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserAction } from "../../../actions";
 import Block from "../../../components/Block";
 import Button from "../../../components/Button.js";
-import TVSHeader from "../../../components/Tvs/Header";
 import TVSButton from "../../../components/Tvs/Button";
-import { ScrollView, Text, View, TextInput, Alert } from "react-native";
+import TVSHeader from "../../../components/Tvs/Header";
 import EyeClose from "../../../icons/EyeClose";
 import EyeOpen from "../../../icons/EyeOpen";
 import Icon_pass from "../../../icons/Password";
 import sysFetch from "../../../services/fetch";
-import axios from "axios";
-import DefaultPreference from "react-native-default-preference";
-import RNRestart from "react-native-restart";
 import {
     HideGlobalLoading,
     ShowGlobalLoading,
 } from "../../../services/redux/GlobalLoading/action";
-import { updateUserAction } from "../../../actions";
 
 const UpdatePassword = ({ navigation: { goBack } }) => {
     const dispatch = useDispatch();
@@ -279,12 +279,12 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                     justifyContent: 'center',
                 }}>
                     <Text style={{
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: '600',
-                        color: 'black',
                         opacity: 0.6,
                         paddingHorizontal: 10,
-                        paddingVertical: 15
+                        paddingVertical: 15,
+                        fontFamily: 'Roboto-Medium'
                     }}>
                         Mật khẩu phải từ 4 đến 20 ký tự, bao gồm chữ cái và số
                     </Text>
@@ -297,7 +297,8 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                             fontSize: 14,
                             color: 'black',
                             opacity: 0.8,
-                            paddingHorizontal: 10
+                            paddingHorizontal: 10,
+                            fontFamily: 'Roboto-Regular'
                         }}>
                             Mật khẩu hiện tại
                         </Text>
@@ -313,7 +314,7 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                         >
                             <Icon_pass />
                             <TextInput
-                                style={{ flex: 1, }}
+                                style={{ flex: 1, fontFamily: "Roboto-Medium" }}
                                 size={15}
                                 height={55}
                                 paddingLeft={15}
@@ -341,7 +342,8 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                             color: 'black',
                             opacity: 0.8,
                             paddingHorizontal: 10,
-                            marginTop: 20
+                            marginTop: 20,
+                            fontFamily: 'Roboto-Regular'
                         }}>
                             Mật khẩu mới
                         </Text>
@@ -357,7 +359,10 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                         >
                             <Icon_pass />
                             <TextInput
-                                style={{ flex: 1, paddingLeft: 15}}
+                                style={{
+                                    flex: 1, paddingLeft: 15,
+                                    fontFamily: "Roboto-Medium"
+                                }}
                                 size={15}
                                 height={55}
                                 paddingLeft={15}
@@ -390,7 +395,10 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                         >
                             <Icon_pass />
                             <TextInput
-                                style={{ flex: 1, }}
+                                style={{
+                                    flex: 1,
+                                    fontFamily: "Roboto-Medium"
+                                }}
                                 size={15}
                                 height={55}
                                 paddingLeft={15}
@@ -425,17 +433,16 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                                 type={"login"}
                                 onPress={() => validateInput()}
                             >
-                                <Text style={{ color: "white", fontSize: 16 }}>
+                                <Text style={{
+                                    color: "white", fontSize: 16,
+                                    fontFamily: 'Roboto-Bold'
+
+                                }}>
                                     Cập nhật
                                 </Text>
                             </TVSButton>
                         </View>
-
-
-
                     </View>
-
-
                 </ScrollView>
             </Block>
         </Block>

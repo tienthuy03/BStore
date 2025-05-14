@@ -1,9 +1,11 @@
-import AsyncStorage from "@react-native-community/async-storage";
+
 import messaging from "@react-native-firebase/messaging";
 import md5 from "md5";
 import React, { useEffect, useState, useRef } from "react";
-import { Alert, StatusBar, StyleSheet, View, Platform, Image, Dimensions, Animated
-            , Keyboard,TouchableWithoutFeedback, SafeAreaView, TouchableOpacity, } from "react-native";
+import {
+  Alert, StatusBar, StyleSheet, View, Platform, Image, Dimensions, Animated,
+  Keyboard, TouchableWithoutFeedback, SafeAreaView, TouchableOpacity,
+} from "react-native";
 import DefaultPreference from "react-native-default-preference";
 import RNRestart from "react-native-restart";
 import TouchID from "react-native-touch-id";
@@ -27,23 +29,34 @@ import LinearGradient from "react-native-linear-gradient";
 import axios from "axios";
 import { updateUserAction } from "../../actions";
 import sysFetch from "../../services/fetch";
-import { SetApiURL } from "../../services/redux/SysConfig/action";
 import TVSControlPopup from "../../components/Tvs/ControlPopup2";
 import Swiper from "react-native-swiper";
 import { Linking } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import NetInfo from "@react-native-community/netinfo";
 import ShowError from "../../services/errors";
+import AsyncStorage from "@react-native-community/async-storage";
+import ButtonV2 from "../../components/ButtonV2.js";
 
-const LoginScreen = ({ navigation, reloadConfig }) => 
-{
+const LoginScreen = ({ navigation, reloadConfig }) => {
+  //get infor ClientId from AsyncStorage
+  const [clientId, setClientId] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const savedClientId = await AsyncStorage.getItem('CLIENT_ID');
+      setClientId(savedClientId);
+    };
+    fetchData();
+  }, []);
+
   const [banner, setBanner] = useState(10);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [checkUpdateVersion, setCheckUpdateVersion] = useState("N");
-
   const Color = useSelector((s) => s.SystemReducer.theme);
   const state = useSelector((s) => s.loginReducers);
   const API = useSelector((state) => state.SysConfigReducer.API_URL);
+
   const dispatch = useDispatch();
   let thr_emp_pk;
   let tokenLogin;
@@ -67,10 +80,8 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
     userPk = state.data.data.tes_user_pk;
     refreshToken = state.data.data.refreshToken;
   } catch (error) {
-    // console.log("error LoginScreen.js");
-    // console.log(error);
+    console.log(error);
   }
-
   //create state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -89,6 +100,8 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
   //REF
   const passwordRef = useRef(null);
   const [modalVisibleHelping, setModalVisibleHelping] = useState(false);
+  const [status, setStatus] = useState(false);
+
   const checkVersionUpdate = () => {
     if (Platform.OS === "android") {
       Linking.openURL(
@@ -99,7 +112,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
         "https://apps.apple.com/vn/app/time365/id1585777072?l=vi"
       );
     }
-  }; 
+  };
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -120,13 +133,12 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
       keyboardDidShowListener.remove();
     };
   }, []);
+
   useEffect(() => {
     //random number
-
     DefaultPreference.getAll().then(function (valueAll) {
       //Khởi tạo biến để lưu yêu cầu đăng nhập nhanh
       setTemp(valueAll.temp);
-
       setFinger(valueAll.status);
       setUsername(valueAll.username);
       setPass(valueAll.password);
@@ -158,6 +170,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
       token
     )
       .then((res) => {
+        console.log("Check valid token", res);
         if (res == "Token Expired") {
           console.log("Expired token");
           // refreshNewToken("checkValidToken", api, username, token);
@@ -165,7 +178,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
         if (res != "Token Expired") {
           setCheckUpdateVersion(res.data.flag[0].flag_upd);
           if (res.data.flag[0].flag_upd == "Y") {
-            Alert.alert("Thông báo", "Cập nhật phiên bản mới?", [
+            Alert.alert("Thông báo", "Cập nhật phiên bản mới?", [
               { text: "Xác nhận", onPress: () => checkVersionUpdate() },
             ]);
           } else {
@@ -229,8 +242,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
             }
           })
           .catch(() => {
-            // Failure code
-            //Alert.alert('Lỗi thiết bị!');
+
           });
         navigation.replace("Index");
       }
@@ -261,9 +273,6 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
       } else {
         dialogError(errorData);
       }
-
-      //
-      //abcd1234
     }
   }, [results]);
 
@@ -328,14 +337,18 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
         Alert.alert("Xác nhận vân tay không thành công");
       });
   }
-  //get tokens firebase, after login
+
   async function getTokens(p_thr_emp_pk, device_id) {
     const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     if (enabled) {
+      console.log('Notification permission granted.');
+      // ⚠️ XÓA TOKEN CŨ & LẤY TOKEN MỚI
+      await messaging().deleteToken();
       const fcmToken = await messaging().getToken();
+      console.log("FCM Token (new): ", fcmToken);
       if (fcmToken) {
         if (device_id !== fcmToken) {
           const action = "UPDATE";
@@ -347,7 +360,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
                 p1_varchar2: action,
                 p2_varchar2: p_thr_emp_pk,
                 p3_varchar2: fcmToken,
-                p4_varchar2: "",
+                p4_varchar2: ""
               },
               out_par: {
                 p1_varchar2: "update_device",
@@ -358,52 +371,62 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
             .then((rs) => {
               if (rs == "Token Expired") {
                 refreshNewToken("getTokens", p_thr_emp_pk, device_id);
-              }
-              if (rs != "Token Expired") {
-                console.log(rs);
+              } else {
+                console.log("Token res", rs);
               }
             })
             .catch((error) => {
-              console.log(error);
+              console.log("Token error", error);
             });
         }
       } else {
+        console.log('Không thể lấy FCM Token.');
       }
+    } else {
+      console.log('Người dùng chưa cho phép thông báo.');
     }
   }
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      getTokens();
+    }
+  }, []);
 
   function setViewss() {
     if (finger === "1" || finger === "11") {
       return (
         <TextInput
-          size={15}
+          size={14}
           flex
-          height={55}
-          paddingLeft={15}
+          height={42}
+          paddingLeft={12}
           editable={false}
           value={user}
           placeholder={"Tài khoản"}
-          color={Color.mainColor}
+          color={Color.textPrimary2}
           placeholderTextColor={Color.grayPlahoder}
           onChangeText={(username) => setUsername(username)}
           returnKeyType="done"
           blurOnSubmit={false}
+          style={styles.input}
         />
       );
     } else {
       return (
         <TextInput
           flex
-          size={15}
-          height={55}
-          paddingLeft={15}
+          size={14}
+          height={42}
+          paddingLeft={12}
           value={username}
           placeholder={"Tài khoản"}
-          color={Color.mainColor}
+          color={Color.textPrimary2}
           placeholderTextColor={Color.grayPlahoder}
           onChangeText={(username) => setUsername(username)}
           returnKeyType="done"
           blurOnSubmit={false}
+          style={styles.input}
         />
       );
     }
@@ -412,7 +435,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
     if (finger === "1") {
       if (types === "face_id") {
         return (
-          <Button center radius={6} nextScreen={() => _pressHandler()}>
+          <Button center radius={6} nextScreen={() => _pressHandler()} style={styles.biometricButton}>
             <Icon_face style={{ marginRight: 20 }} />
           </Button>
         );
@@ -421,8 +444,9 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
           <Button
             center
             radius={6}
-            height={55}
+            height={48}
             nextScreen={() => _pressHandler()}
+            style={styles.biometricButton}
           >
             <Icon_finger style={{ width: 50, height: 50, marginRight: 20 }} />
           </Button>
@@ -432,10 +456,11 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
           <Button
             center
             radius={6}
-            height={55}
+            height={48}
             nextScreen={() => _pressHandler()}
+            style={styles.biometricButton}
           >
-            <Icon_finger style={{ marginRight: 20 }} />
+            <Icon_finger style={{ padding: 15 }} />
           </Button>
         );
       }
@@ -471,7 +496,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
   //Valifate form login
   const validateLogin = async (usernames, passwords) => {
     if (checkUpdateVersion == "Y") {
-      Alert.alert("Thông báo", "Cập nhật phiên bản mới?", [
+      Alert.alert("Thông báo", "Cập nhật phiên bản mới?", [
         { text: "Xác nhận", onPress: () => checkVersionUpdate() },
       ]);
     } else {
@@ -502,7 +527,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
             Alert.alert(
               "Thông báo",
               "Thiết bị của bạn không kết nối được với máy chủ. Vui lòng kiểm tra lại kết nối mạng hoặc liên hệ với quản trị.",
-              [{ text: "Xác nhận", onPress: () => {} }]
+              [{ text: "Xác nhận", onPress: () => { } }]
             );
           }
         } else {
@@ -516,25 +541,23 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
   useEffect(() => {
     console.log(API);
     setUrlAPIPing(API.split("/")[0] + "//" + API.split("/")[2]);
-    // console.log(API.split("/")[0] + "//" + API.split("/")[2]);
     const fetchData = async () => {
       try {
+        console.log(API.split("/")[0] + "//" + API.split("/")[2]);
         const rs = await fetch(API.split("/")[0] + "//" + API.split("/")[2])
           .then((response) => {
             if (response.status === 200) {
-              // console.log("success");
               setStatusAPI(true);
             } else {
-              // console.warn("error");
               setStatusAPI(false);
             }
           })
           .catch((error) => {
-            console.error("network error: " + error);
+            console.error("network error: 00000 " + error);
             setStatusAPI(false);
           });
       } catch (error) {
-        console.error("network error: " + error);
+        console.error("network error: 1111 " + error);
         setStatusAPI(false);
       }
     };
@@ -548,13 +571,13 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
   const showInfoConnect = () => {
     setModalVisibleCloudConnect(true);
   };
+
   const modalCloudConnect = (
     <TVSControlPopup
       title={"Thông tin Server"}
       isShow={modalVisibleCloudConnect}
       minHeight={200}
       onHide={() => setModalVisibleCloudConnect(false)}
-      // onAccept={() => onUpdateApprove()}
       bottom={
         <TVSButton
           type={"danger"}
@@ -567,29 +590,8 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
       }
     >
       <View style={{ flex: 1 }}>
-        {/* <View style={{ paddingLeft: 10 }}>
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>
-            Địa chỉ Server
-          </Text>
-        </View>
-        <View
-          style={{
-            paddingLeft: 20,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialCommunityIcons
-            name="api"
-            size={20}
-            style={{ marginLeft: 5, color: Color.mainColor }}
-          />
-          <Text style={{ marginLeft: 10 }}>
-            {API.split("/")[0] + "//" + API.split("/")[2]}
-          </Text>
-        </View> */}
         <View style={{ paddingLeft: 10, paddingTop: 10 }}>
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>
+          <Text fontFamily={'Roboto-Medium'} size={16} marginBottom={8}>
             Tình trạng kết nối
           </Text>
         </View>
@@ -604,10 +606,10 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
           >
             <MaterialCommunityIcons
               name={"cloud-check-outline"}
-              size={20}
+              size={24}
               color={"green"}
             />
-            <Text style={{ marginLeft: 10, color: "green" }}>Đã kết nối</Text>
+            <Text fontFamily={'Roboto-Bold'} size={16} paddingLeft={8}>Đã kết nối</Text>
           </View>
         ) : (
           <View
@@ -622,19 +624,22 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
               size={20}
               color={"red"}
             />
-            <Text style={{ marginLeft: 10, color: "red" }}>Không kết nối</Text>
+            <Text style={{ marginLeft: 10, color: "red", fontFamily: 'Roboto-Bold', marginBottom: 8 }}>Không kết nối</Text>
           </View>
         )}
+        <Text style={{ paddingLeft: 10, paddingTop: 10, fontSize: 16, fontFamily: "Roboto-Medium" }}>
+          Khách hàng: <Text fontFamily={"Roboto-Bold"} color={Color.mainColor}>{clientId}</Text>
+        </Text>
       </View>
     </TVSControlPopup>
   );
+
   const modalHelping = (
     <TVSControlPopup
       title={"Trợ giúp đăng nhập"}
       isShow={modalVisibleHelping}
       minHeight={600}
       onHide={() => setModalVisibleHelping(false)}
-      // onAccept={() => onUpdateApprove()}
       bottom={
         <TVSButton
           type={"danger"}
@@ -708,6 +713,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
       </View>
     </TVSControlPopup>
   );
+
   const translation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -748,6 +754,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
         alignCenter
         backgroundColor={Color.gray}
         row
+        style={styles.inputContainer}
       >
         <MaterialCommunityIcons
           name="account-lock-outline"
@@ -764,6 +771,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
           secureTextEntry={true}
           value={passwords}
           onChangeText={(password) => setPassword(password)}
+          style={styles.input}
         />
       </Block>
     </TVSControlPopup>
@@ -796,7 +804,7 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
   }
 
   return (
-    <Block flex backgroundColor={"#498DE3"}>
+    <Block flex backgroundColor={"#F4F6FF"}>
       <SafeAreaView>
         <StatusBar
           translucent={true}
@@ -804,235 +812,195 @@ const LoginScreen = ({ navigation, reloadConfig }) =>
           barStyle="light-content"
         />
       </SafeAreaView>
-      {/* <KeyboardAvoidingView behavior="padding" style={styles.container}> */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
-          <View style={styles.inner}>
-            <View>
-              <LinearGradient
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "100%",
-                  height: Dimensions.get("screen").height / 8,
-                  paddingTop: 40,
-                  top: 0,
-                }}
-                colors={["#498DE3", "#25399F"]}
-              >
-                <Text color={Color.white} size={40} fontFamily={"Roboto-Bold"}>
-                  Time365
-                </Text>
-              </LinearGradient>
-            </View>
-            <Animated.View
-              style={{
-                zIndex: 999,
-                backgroundColor: "white",
-                flex: 1,
-                borderTopLeftRadius: 30,
-                borderTopRightRadius: 30,
-                transform: [{ translateY: translation }],
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  showInfoConnect();
-                }}
-                style={{
-                  justifyContent: "center",
-                  alignItems: "flex-end",
-                  position: "absolute",
-                  right: 20,
-                  paddingTop: 10,
-                }}
-              >
-                {statusAPI ? (
-                  <MaterialCommunityIcons
-                    name={"cloud-check-outline"}
-                    size={30}
-                    color={"green"}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name={"cloud-off-outline"}
-                    size={30}
-                    color={"red"}
-                  />
-                )}
-              </TouchableOpacity>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 30,
-                }}
-              >
-                <Text
-                  color={Color.mainColor}
-                  size={25}
-                  fontFamily={"Roboto-Bold"}
-                >
-                  ĐĂNG NHẬP
-                </Text>
-              </View>
-              <View style={{ marginLeft: 20, marginTop: 20 }}>
-                <Text color={Color.mainColor} fontFamily={"Roboto-Bold"}>
-                  Tài khoản
-                </Text>
-              </View>
-              <Block
-                marginHorizontal={20}
-                paddingLeft={20}
-                paddingRight={10}
-                radius={8}
-                alignCenter
-                row
-                borderBottomColor={"#B9C2D6"}
-                borderBottomWidth={1}
-              >
-                <Icon_user />
-                {setViewss()}
-              </Block>
-              <View style={{ marginLeft: 20, marginTop: 20 }}>
-                <Text color={Color.mainColor} fontFamily={"Roboto-Bold"}>
-                  Mật khẩu
-                </Text>
-              </View>
-              <Block
-                marginHorizontal={20}
-                paddingLeft={20}
-                paddingRight={10}
-                radius={8}
-                alignCenter
-                row
-                borderBottomColor={"#B9C2D6"}
-                borderBottomWidth={1}
-              >
-                <Icon_pass />
-                <TextInput
-                  size={15}
-                  flex
-                  height={55}
-                  paddingLeft={15}
-                  placeholder={"Mật khẩu"}
-                  autoCompleteType={"password"}
-                  color={Color.mainColor}
-                  placeholderTextColor={Color.grayPlahoder}
-                  secureTextEntry={eye}
-                  value={password}
-                  onChangeText={(text) => setPassword(text)}
-                  onSubmitEditing={() => validateLogin(username, password)}
-                  ref={passwordRef}
-                />
-                <Button
-                  justifyCenter
-                  height={30}
-                  width={30}
-                  nextScreen={() => setEye(!eye)}
-                >
-                  {eye ? <EyeOpen /> : <EyeClose />}
-                </Button>
-              </Block>
-              <Block
-                row
-                justifyContent={"space-between"}
-                marginTop={10}
-                marginHorizontal={20}
-              >
-                {finger === "1" || finger === "11" ? (
-                  <Button nextScreen={() => logoutAppss()}>
-                    <Text color={Color.mainColor}>Thoát tài khoản!</Text>
-                  </Button>
-                ) : (
-                  <Button nextScreen={() => setModalVisibleHelping(true)}>
-                    <Text color={Color.mainColor}>Trợ giúp!</Text>
-                  </Button>
-                )}
-                <Button
-                  nextScreen={() =>
-                    navigation.navigate("ForgotPass", { users: username })
-                  }
-                >
-                  <Text color={Color.mainColor}>Quên mật khẩu?</Text>
-                </Button>
-              </Block>
-              <View
-                style={{
-                  marginVertical: 40,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <TVSButton
-                  paddingHorizontal={80}
-                  paddingVertical={20}
-                  borderRadius={30}
-                  type={"login"}
-                  onPress={() => validateLogin(username, password)}
-                >
-                  ĐĂNG NHẬP
-                </TVSButton>
-                {setFingers(typeAuthen)}
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 300,
-                }}
-              >
-                {buildFor === "tvs" && (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginRight: 10,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {finger !== "1" && finger !== "11" ? (
-                      <>
-                        <Button
-                          nextScreen={async () => {
-                            const rs = await AsyncStorage.getItem("themeName");
-
-                            if (rs) {
-                              await AsyncStorage.setItem(
-                                "oldTheme",
-                                rs.toString()
-                              );
-                              await AsyncStorage.removeItem("themeName");
-                              await RNRestart.Restart();
-                            }
-                          }}
-                        >
-                          <Text
-                            borderRadius={5}
-                            borderColor={Color.secondaryColor}
-                            color={Color.mainColor}
-                            padding={10}
-                          >
-                            Cấu hình ứng dụng
-                          </Text>
-                        </Button>
-                      </>
-                    ) : (
-                      <View></View>
-                    )}
-                  </View>
-                )}
-                <View
-                  style={{
-                    flex: 1,
-                    marginVertical: 10,
-                  }}
-                >
-                  <Text>Phiên bản {APP_VERSION}</Text>
-                </View>
-              </View>
-            </Animated.View>
+          {/* Logo at the top */}
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../../assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </View>
+
+          {/* <TouchableOpacity
+            onPress={() => {
+              showInfoConnect();
+            }}
+            style={styles.connectionIcon}
+          >
+            {statusAPI ? (
+              <MaterialCommunityIcons
+                name={"cloud-check-outline"}
+                size={30}
+                color={"green"}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                name={"cloud-off-outline"}
+                size={30}
+                color={"red"}
+              />
+            )}
+          </TouchableOpacity> */}
+
+          <View style={styles.headerContainer}>
+            <Text
+              color={Color.textPrimary2}
+              size={16}
+              fontFamily={"Roboto-Bold"}
+            >
+              Đăng nhập với tài khoản của bạn
+            </Text>
+          </View>
+
+          <View style={styles.labelContainer}>
+            <Text color={Color.textPrimary3} fontFamily={"Roboto-Medium"}>
+              Tài khoản
+            </Text>
+          </View>
+
+          <Block
+            marginHorizontal={16}
+            paddingLeft={20}
+            paddingRight={10}
+            alignCenter
+            row
+            style={styles.inputContainer}
+          >
+            <Icon_user />
+            {setViewss()}
+          </Block>
+
+          <View style={styles.labelContainer}>
+            <Text color={Color.textPrimary3} fontFamily={"Roboto-Medium"}>
+              Mật khẩu
+            </Text>
+          </View>
+
+          <Block
+            marginHorizontal={16}
+            paddingLeft={20}
+            paddingRight={10}
+            alignCenter
+            row
+            style={styles.inputContainer}
+          >
+            <Icon_pass />
+            <TextInput
+              size={14}
+              flex
+              height={42}
+              paddingLeft={12}
+              placeholder={"Mật khẩu"}
+              autoCompleteType={"password"}
+              color={Color.textPrimary2}
+              placeholderTextColor={Color.grayPlahoder}
+              secureTextEntry={eye}
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              onSubmitEditing={() => validateLogin(username, password)}
+              ref={passwordRef}
+              style={styles.input}
+            />
+            <Button
+              justifyCenter
+              height={30}
+              width={30}
+              nextScreen={() => setEye(!eye)}
+            >
+              {eye ? <EyeOpen /> : <EyeClose />}
+            </Button>
+          </Block>
+
+          <Block
+            row
+            justifyContent={"space-between"}
+            marginTop={10}
+            marginHorizontal={20}
+          >
+            {finger === "1" || finger === "11" ? (
+              <Button nextScreen={() => logoutAppss()}>
+                <Text color={Color.mainColor}>Thoát tài khoản!</Text>
+              </Button>
+            ) : (
+              <Button nextScreen={() => setModalVisibleHelping(true)}>
+                <Text fontFamily={"Roboto-Medium"} color={Color.textPrimary2}>Trợ giúp!</Text>
+              </Button>
+            )}
+            <Button
+              nextScreen={() =>
+                navigation.navigate("ForgotPass", { users: username })
+              }
+            >
+              <Text fontFamily={"Roboto-Medium"} color={Color.textPrimary2}>Quên mật khẩu?</Text>
+            </Button>
+          </Block>
+
+          <View style={styles.loginButtonContainer}>
+
+            <ButtonV2
+              title="Đăng nhập"
+              backgroundColor={Color.mainColor}
+              borderRadius={8}
+              textColor="#ffffff"
+              fontFamily="Roboto-Medium"
+              fontWeight="500"
+              padding={10}
+              onPress={() => validateLogin(username, password)}
+            />
+            {setFingers(typeAuthen)}
+          </View>
+
+          <View style={styles.footerContainer}>
+            {buildFor === "tvs" && (
+              <View style={styles.configButtonContainer}>
+                {finger !== "1" && finger !== "11" ? (
+                  <>
+                    <Button
+                      nextScreen={async () => {
+                        const rs = await AsyncStorage.getItem("themeName");
+
+                        if (rs) {
+                          await AsyncStorage.setItem(
+                            "oldTheme",
+                            rs.toString()
+                          );
+                          await AsyncStorage.removeItem("themeName");
+                          await RNRestart.Restart();
+                        }
+                      }}
+                      style={styles.configButton}
+                    >
+                      <Text
+                        borderRadius={5}
+                        borderColor={Color.secondaryColor}
+                        color={Color.textPrimary3}
+                        padding={8}
+                        fontFamily={"Roboto-Medium"}
+                      >
+                        Chưa có tài khoản?
+                      </Text>
+                      <Text
+                        borderRadius={5}
+                        borderColor={Color.secondaryColor}
+                        color={Color.mainColor}
+                        fontFamily={"Roboto-Bold"}
+                      >
+                        Đăng ký
+                      </Text>
+                    </Button>
+                  </>
+                ) : (
+                  <View></View>
+                )}
+              </View>
+            )}
+            <View style={styles.versionContainer}>
+              <Text>Phiên bản {APP_VERSION}</Text>
+            </View>
+          </View>
+          {/* </Animated.View> */}
         </View>
       </TouchableWithoutFeedback>
       {modalHelping}
@@ -1049,21 +1017,83 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     justifyContent: "space-around",
-    backgroundColor: "#25399F",
+    backgroundColor: "#F4F6FF",
   },
-  header: {
-    fontSize: 36,
-    marginBottom: 48,
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
   },
-  textInput: {
-    height: 40,
-    borderColor: "#000000",
-    borderBottomWidth: 1,
-    marginBottom: 36,
+  logo: {
+    marginTop: 32,
+    width: 300,
+    height: 160,
   },
-  btnContainer: {
-    backgroundColor: "white",
-    marginTop: 12,
+  headerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  labelContainer: {
+    marginLeft: 20,
+  },
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    backgroundColor: '#FAFAFA',
+  },
+  input: {
+    borderRadius: 8,
+  },
+  loginButtonContainer: {
+    paddingHorizontal: 16,
+    marginVertical: 30,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loginButton: {
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  biometricButton: {
+    marginLeft: 10,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 10,
+  },
+  footerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 200,
+  },
+  configButtonContainer: {
+    flexDirection: "row",
+    marginRight: 10,
+    marginLeft: 10,
+  },
+  configButton: {
+    // borderWidth: 1,
+    // borderColor: '#E0E0E0',
+    // borderRadius: 8,
+    // marginBottom: 10,
+    flexDirection: 'row'
+  },
+  versionContainer: {
+    flex: 1,
+    marginVertical: 10,
+  },
+  connectionIcon: {
+    justifyContent: "center",
+    alignItems: "flex-end",
+    position: "absolute",
+    right: 20,
+    paddingTop: 10,
+    zIndex: 100,
   },
 });
 

@@ -1,16 +1,16 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Block from '../components/Block';
 import Button from '../components/Button';
 import Text from '../components/Text';
 import Icon_next from '../icons/Next';
-import {setLanguageItem} from '../Language';
-import {useDispatch, useSelector} from 'react-redux';
-import {deviceId} from '../constants/index';
-import {fetchMenuAction} from '../actions';
-import {useIsFocused} from '@react-navigation/native';
+import { setLanguageItem } from '../Language';
+import { useDispatch, useSelector } from 'react-redux';
+import { deviceId } from '../constants/index';
+import { fetchMenuAction } from '../actions';
+import { useIsFocused } from '@react-navigation/native';
 const Item_MBHRSV = () => {
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
@@ -71,7 +71,7 @@ const Item_MBHRSV = () => {
       onReload();
     }
   }, [isFocused]);
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
       <Block>
         <Button
@@ -104,15 +104,14 @@ const Item_MBHRSV = () => {
               <Text
                 numberOfLines={1}
                 paddingLeft={10}
-                height={60}
-                size={17}
+                size={16}
                 color={Color.titleColor}
-                fontFamily={'Roboto-Medium'}>
+                fontFamily={'Roboto-Regular'}>
                 {setLanguageItem(item, language)}
               </Text>
             </View>
           </View>
-          <Icon_next color={Color.titleColor} style={{marginRight: 10}} />
+          <Icon_next color={Color.titleColor} style={{ marginRight: 10 }} />
         </Button>
       </Block>
     );

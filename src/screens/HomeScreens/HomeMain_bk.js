@@ -211,14 +211,14 @@ const HomeMain = ({ navigation }) => {
   // loadMenu = menuReducer.isLoading;
   try {
     dataLanguage = languageReducer.data.data.language;
-  } catch (error) {}
+  } catch (error) { }
 
   try {
     language = loginReducers.data.data.user_language;
     urlImage = loginReducers.data.data.avatar;
     fullname = loginReducers.data.data.full_name;
     empId = loginReducers.data.data.emp_id;
-  } catch (error) {}
+  } catch (error) { }
 
   useEffect(() => {
     setLoadMenu(true);
@@ -266,7 +266,7 @@ const HomeMain = ({ navigation }) => {
                 [
                   {
                     text: "Đóng",
-                    onPress: () => {},
+                    onPress: () => { },
                   },
                   {
                     text: "Xác nhận",
@@ -376,7 +376,7 @@ const HomeMain = ({ navigation }) => {
               if (
                 (dataMenuMBHRc.filter((x) => x.menu_cd !== "MBHRAN").length -
                   1) %
-                  3 ===
+                3 ===
                 1
               ) {
                 dataMenuMBHRc.push({ pk: "pk", parent: true });
@@ -384,7 +384,7 @@ const HomeMain = ({ navigation }) => {
               if (
                 (dataMenuMBHRc.filter((x) => x.menu_cd !== "MBHRAN").length -
                   1) %
-                  3 ===
+                3 ===
                 2
               ) {
                 dataMenuMBHRc.push(
@@ -395,7 +395,7 @@ const HomeMain = ({ navigation }) => {
             } else {
               if (
                 dataMenuMBHRc.filter((x) => x.menu_cd !== "MBHRAN").length %
-                  2 ===
+                2 ===
                 1
               ) {
                 dataMenuMBHRc.push({ pk: "pk", parent: true });
@@ -428,7 +428,7 @@ const HomeMain = ({ navigation }) => {
         }
       });
       return data[index][params.toString().toLowerCase()];
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const infor = useMemo(() => {
@@ -522,39 +522,7 @@ const HomeMain = ({ navigation }) => {
       );
     } else {
       return (
-        // <View
-        //   style={{
-        //     flex: 1,
-        //     marginTop: 10,
-        //     marginHorizontal: 5,
-        //     backgroundColor: "white",
-        //     borderRadius: 8,
-        //     padding: 10,
-        //   }}
-        // >
-        //   {/* <LinearGradient
-        //     start={{ x: 0, y: 0 }}
-        //     end={{ x: 0, y: 1 }}
-        //     colors={["#498DE3", "#25399F"]}
-        //     style={{
-        //       marginTop: 5,
-        //       backgroundColor: Color.mainColor,
-        //       borderRadius: 50,
-        //       padding: 10,
-        //     }}
-        //   > */}
-        //   <Icon color={Color.mainColor} size={30} name={item.icon} />
-        //   {/* </LinearGradient> */}
-        //   <View
-        //     style={{
-        //       marginTop: 5,
-        //     }}
-        //   >
-        //     <Text style={{}} numberOfLines={1}>
-        //       {item.title}
-        //     </Text>
-        //   </View>
-        // </View>
+
         <View style={{ height: 100, margin: 5, flex: 1, marginBottom: 30 }}>
           <Block
             shadow
@@ -588,34 +556,7 @@ const HomeMain = ({ navigation }) => {
       );
     }
   };
-  const dataTest = [
-    {
-      icon: "home",
-      title: "Truy vấn thông tin",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    {
-      icon: "chevron-down",
-      title: "Đăng ký dữ liệu công",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    {
-      icon: "checkbook",
-      title: "Đăng ký dữ liệu cơm",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    {
-      icon: "email-search-outline",
-      title: "Đăng ký dữ liệu xe tuyến",
-      from_color: "#498DE3",
-      to_color: "#25399F",
-    },
-    { parent: true },
-    { parent: true },
-  ];
+
   return (
     <LinearGradient
       start={{ x: 0, y: 0 }}
@@ -678,31 +619,7 @@ const HomeMain = ({ navigation }) => {
                 keyExtractor={(item, index) => index.toString()}
                 showsVerticalScrollIndicator={false}
               />
-              {/* <View
-                style={{
-                  borderWidth: 0.5,
-                  borderRadius: 6,
-                  paddingBottom: 10,
-                }}
-              >
-                <View
-                  style={{
-                    // top: -10,
-                    // marginLeft: 10,
-                    backgroundColor: Color.white,
-                  }}
-                >
-                  <Text style={{ fontSize: 16 }}>Main title</Text>
-                </View>
-                <FlatList
-                  data={dataTest}
-                  renderItem={renderItemV1}
-                  numColumns={2}
-                  keyExtractor={(item, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
-                  scrollEnabled={false}
-                />
-              </View> */}
+
             </Block>
           )}
         </Block>

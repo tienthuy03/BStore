@@ -1,6 +1,13 @@
 import { Dimensions, StyleSheet } from "react-native";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export const home = StyleSheet.create({
+
+  linearGradient: {
+    height: 120,
+    flexDirection: "column",
+  },
+
   container: {
     flex: 1,
     width: Dimensions.get("screen").width,
@@ -11,21 +18,23 @@ export const home = StyleSheet.create({
   over: {
     width: Dimensions.get("screen").width,
     height: Dimensions.get("screen").height / 3,
-    // backgroundColor: 'rgba(1,35,100, 0.6)',
     position: "absolute",
-    paddingBottom: 40,
+    top: -1
   },
   boxI: {
-    borderRadius: 12,
-    overflow: "hidden",
     width: 60,
     height: 60,
-    backgroundColor: "white",
-    alignItems: "center",
   },
   img: {
-    width: 50,
-    height: 70,
+    width: '100%',
+    height: '100%',
+    borderRadius: 100,
+  },
+  imgNo: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 100,
+    backgroundColor: Colors.white
   },
   image: {
     width: 160,
@@ -39,9 +48,5 @@ export const home = StyleSheet.create({
     marginRight: 20,
     marginLeft: 20,
     resizeMode: "cover",
-  },
-  linearGradient: {
-    flex: 1,
-    flexDirection: "column",
   },
 });

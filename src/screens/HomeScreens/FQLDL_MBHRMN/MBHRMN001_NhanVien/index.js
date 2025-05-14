@@ -1,38 +1,37 @@
-import React, {useEffect, useState} from 'react';
+import axios from 'axios';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   FlatList,
-  Text,
-  TouchableOpacity,
-  View,
   Image,
   PermissionsAndroid,
+  Text,
   TextInput,
-  Alert,
-  Dimensions,
+  TouchableOpacity,
+  View
 } from 'react-native';
+import * as ANT from 'react-native-animatable';
+import { launchCamera } from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import RNRestart from 'react-native-restart';
+import Skeleton from 'react-native-skeleton-placeholder';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUserAction } from '../../../../actions';
+import Block from '../../../../components/Block';
+import Button from '../../../../components/Button';
+import TVSButton from '../../../../components/Tvs/Button';
 import TVSControlPopup from '../../../../components/Tvs/ControlPopup';
 import TVSHeader from '../../../../components/Tvs/Header';
 import TVSSelect from '../../../../components/Tvs/Select';
-import Person from '../../../../icons/Person';
-import sysFetch from '../../../../services/fetch';
-import * as ANT from 'react-native-animatable';
-import Skeleton from 'react-native-skeleton-placeholder';
-import Button from '../../../../components/Button';
-import TVSButton from '../../../../components/Tvs/Button';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import Block from '../../../../components/Block';
-import moment from 'moment';
-import {launchCamera} from 'react-native-image-picker';
-import sysFetch2 from '../../../../services/fetch/fetch2';
 import IconDate from '../../../../icons/Datev';
-import axios from 'axios';
-import {updateUserAction} from '../../../../actions';
-import RNRestart from 'react-native-restart';
-import {setHeaderChil2} from '../../../../Language';
-const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
+import Person from '../../../../icons/Person';
+import { setHeaderChil2 } from '../../../../Language';
+import sysFetch from '../../../../services/fetch';
+import sysFetch2 from '../../../../services/fetch/fetch2';
+const MBHRMN001_NhanVien = ({ navigation: { goBack, navigate } }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   const dispatch = useDispatch();
   const API = useSelector(state => state.SysConfigReducer.API_URL);
@@ -138,7 +137,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
                 },
               },
             ],
-            {cancelable: true},
+            { cancelable: true },
           );
         }
         console.log(error);
@@ -296,7 +295,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
   };
 
   //render item
-  const renderItem = ({item}) => <RenderItem item={item} onUpdate={onUpdate} />;
+  const renderItem = ({ item }) => <RenderItem item={item} onUpdate={onUpdate} />;
 
   //update image web user upgrade new image employee
   const onUpdate = (pk, image) => {
@@ -330,7 +329,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
       <FlatList
         data={dataPb}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <TouchableOpacity
               onPress={() => {
@@ -340,7 +339,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
                 backgroundColor: '#F3F6F9',
                 padding: 10,
                 borderRadius: 6,
-                marginBottom: 3,
+                marginBottom: 8,
               }}>
               <Text>{item.code_nm}</Text>
             </TouchableOpacity>
@@ -364,6 +363,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
         <View
           style={{
             flex: 1,
+            padding: 10
           }}>
           {/* render org */}
           <View
@@ -377,12 +377,13 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
               style={{
                 flex: 0,
                 flexDirection: 'row',
+                marginBottom: 12
               }}>
               <View
                 style={{
                   flex: 1,
                 }}>
-                <Text>Phòng ban</Text>
+                <Text style={{ color: Color.mainColor, fontFamily: 'Roboto-Regular' }}>Phòng ban</Text>
                 {Platform.OS === 'ios' ? (
                   <TouchableOpacity
                     activeOpacity={0.7}
@@ -392,7 +393,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
                     }}
                     style={{
                       padding: 10,
-                      marginTop: 5,
+                      marginTop: 8,
                       backgroundColor: Color.white,
                       justifyContent: 'center',
                       borderRadius: 8,
@@ -400,6 +401,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
                     <Text
                       style={{
                         color: Color.mainColor,
+                        fontFamily: 'Roboto-Medium',
                       }}>
                       {selectedCurrentOrg.code_nm}
                     </Text>
@@ -419,7 +421,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
                       <Text
                         numberOfLines={1}
                         size={16}
-                        style={{color: Color.mainColor}}>
+                        style={{ color: Color.mainColor }}>
                         {labelPb}
                       </Text>
                     </Block>
@@ -466,23 +468,25 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
             <View
               style={{
                 flex: 0,
-                marginTop: 5,
                 flexDirection: 'row',
                 zIndex: 1,
+                paddingBottom: 12
               }}>
               <View
                 style={{
                   flex: 1,
                 }}>
-                <Text>Nhân viên</Text>
+                <Text style={{ fontFamily: 'Roboto-Regular', fontSize: 14, color: Color.mainColor }}>Nhân viên</Text>
                 <TextInput
                   onChangeText={newText => setSelectedCurrentEmployee(newText)}
                   style={{
                     padding: Platform.OS === 'ios' ? 10 : 6,
-                    marginTop: 5,
+                    marginTop: 8,
                     backgroundColor: Color.white,
                     justifyContent: 'center',
                     borderRadius: 8,
+                    color: Color.mainColor,
+                    fontFamily: 'Roboto-Bold',
                   }}
                 />
               </View>
@@ -561,7 +565,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
             )}
           </View>
           <TouchableOpacity
-            style={{zIndex: 999}}
+            style={{ zIndex: 999 }}
             onPress={() => {
               navigate('MBHRMN001_CREATE_NEW_EMPLOYEE');
             }}>
@@ -585,7 +589,7 @@ const MBHRMN001_NhanVien = ({navigation: {goBack, navigate}}) => {
 };
 
 //render one item
-const RenderItem = ({item, onUpdate}) => {
+const RenderItem = ({ item, onUpdate }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   const [isShow, setIsShow] = useState(false);
   const [oldItem, setOldItem] = useState(item);
@@ -613,7 +617,7 @@ const RenderItem = ({item, onUpdate}) => {
         return Alert.alert(
           'Thông báo',
           'Xin hãy cấp quyền truy cập camera cho ứng dụng.',
-          [{text: 'Đóng'}],
+          [{ text: 'Đóng' }],
         );
       }
     }
@@ -652,7 +656,7 @@ const RenderItem = ({item, onUpdate}) => {
                 },
               },
             ],
-            {cancelable: false},
+            { cancelable: false },
           );
         } catch (error) {
           console.log(error);
@@ -741,7 +745,7 @@ const RenderItem = ({item, onUpdate}) => {
                 },
               },
             ],
-            {cancelable: true},
+            { cancelable: true },
           );
         }
         console.log(error);
@@ -795,7 +799,7 @@ const RenderItem = ({item, onUpdate}) => {
               <Icon name={'camera'} color={'#ccc'} size={20} />
             </View>
           </TouchableOpacity>
-          <View style={{justifyContent: 'center'}}>
+          <View style={{ justifyContent: 'center' }}>
             <Text
               style={{
                 color: Color.mainColor,
@@ -811,7 +815,7 @@ const RenderItem = ({item, onUpdate}) => {
         </View>
         <FlatList
           data={Object.entries(item)}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return item[0].substr(0, 1) === '_' ? null : (
               <View
                 style={{
@@ -848,7 +852,7 @@ const RenderItem = ({item, onUpdate}) => {
           borderRadius: 10,
           marginBottom: 10,
         }}>
-        <View style={{width: 60, height: 80}}>
+        <View style={{ width: 60, height: 80 }}>
           {item._image ? (
             <Image
               style={{
@@ -1062,11 +1066,12 @@ const Filter = ({
       title={'CHỌN CHỨC VỤ'}
       maxHeight={400}
       isShow={modalPosVisible}
-      onHide={() => setModalPosVisible(false)}>
+      onHide={() => setModalPosVisible(false)}
+      backgroundColor='red'>
       <FlatList
         data={dataPos}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <TouchableOpacity
               onPress={() => {
@@ -1076,7 +1081,7 @@ const Filter = ({
                 backgroundColor: '#F3F6F9',
                 padding: 10,
                 borderRadius: 6,
-                marginBottom: 3,
+                marginBottom: 8,
               }}>
               <Text>{item.code_nm}</Text>
             </TouchableOpacity>
@@ -1093,7 +1098,7 @@ const Filter = ({
       <FlatList
         data={dataStatus}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <TouchableOpacity
               onPress={() => {
@@ -1105,7 +1110,7 @@ const Filter = ({
                 borderRadius: 6,
                 marginBottom: 3,
               }}>
-              <Text>{item.code_nm}</Text>
+              <Text style={{ fontFamily: "Roboto-Regular" }}>{item.code_nm}</Text>
             </TouchableOpacity>
           );
         }}
@@ -1120,7 +1125,7 @@ const Filter = ({
       <FlatList
         data={dataDateType}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <TouchableOpacity
               onPress={() => {
@@ -1143,10 +1148,13 @@ const Filter = ({
     <ANT.View
       style={{
         flex: 1,
+        backgroundColor: Color.white,
+        padding: 12,
+        borderRadius: 8
       }}
       animation={'fadeInDown'}
       duration={500}>
-      <View style={{flex: 0}}>
+      <View >
         <View>
           <View
             style={{
@@ -1154,9 +1162,9 @@ const Filter = ({
             }}>
             <View
               style={{
-                marginBottom: 10,
+                marginBottom: 12,
               }}>
-              <Text>Chức vụ</Text>
+              <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor, fontSize: 14 }}>Chức vụ</Text>
               {Platform.OS === 'ios' ? (
                 <TouchableOpacity
                   activeOpacity={0.7}
@@ -1166,18 +1174,23 @@ const Filter = ({
                     setIsShowStatus(false);
                   }}
                   style={{
-                    padding: 10,
                     marginTop: 5,
-                    backgroundColor: Color.white,
-                    justifyContent: 'center',
+                    padding: 8,
+                    backgroundColor: Color.gray,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'center',
                     borderRadius: 8,
                   }}>
                   <Text
                     style={{
                       color: Color.mainColor,
+                      fontFamily: 'Roboto-Medium',
                     }}>
                     {currentPos.code_nm}
                   </Text>
+                  <Icon name={"chevron-down"} color={Color.mainColor} size={24} />
+
                 </TouchableOpacity>
               ) : (
                 <Button
@@ -1194,7 +1207,7 @@ const Filter = ({
                     <Text
                       numberOfLines={1}
                       size={16}
-                      style={{color: Color.mainColor}}>
+                      style={{ color: Color.mainColor, fontFamily: 'Roboto-Medium' }}>
                       {labelPos}
                     </Text>
                   </Block>
@@ -1224,9 +1237,9 @@ const Filter = ({
             }}>
             <View
               style={{
-                marginBottom: 10,
+                marginBottom: 12,
               }}>
-              <Text>Trạng thái</Text>
+              <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor }}>Trạng thái</Text>
               {Platform.OS === 'ios' ? (
                 <TouchableOpacity
                   activeOpacity={0.7}
@@ -1235,18 +1248,22 @@ const Filter = ({
                     setIsShowDate(false);
                   }}
                   style={{
-                    padding: 10,
                     marginTop: 5,
-                    backgroundColor: Color.white,
-                    justifyContent: 'center',
+                    padding: 8,
+                    backgroundColor: Color.gray,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'center',
                     borderRadius: 8,
                   }}>
                   <Text
                     style={{
                       color: Color.mainColor,
+                      fontFamily: 'Roboto-Medium',
                     }}>
                     {currentStatus.code_nm}
                   </Text>
+                  <Icon name={"chevron-down"} color={Color.mainColor} size={24} />
                 </TouchableOpacity>
               ) : (
                 <Button
@@ -1263,7 +1280,7 @@ const Filter = ({
                     <Text
                       numberOfLines={1}
                       size={16}
-                      style={{color: Color.mainColor}}>
+                      style={{ color: Color.mainColor }}>
                       {labelStatus}
                     </Text>
                   </Block>
@@ -1296,7 +1313,7 @@ const Filter = ({
               style={{
                 marginBottom: 10,
               }}>
-              <Text>Loại ngày</Text>
+              <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor }}>Loại ngày</Text>
               {Platform.OS === 'ios' ? (
                 <TouchableOpacity
                   activeOpacity={0.7}
@@ -1304,18 +1321,22 @@ const Filter = ({
                     setIsShowDate(!isShowDate);
                   }}
                   style={{
-                    padding: 10,
                     marginTop: 5,
-                    backgroundColor: Color.white,
-                    justifyContent: 'center',
+                    padding: 8,
+                    backgroundColor: Color.gray,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'center',
                     borderRadius: 8,
                   }}>
                   <Text
                     style={{
                       color: Color.mainColor,
+                      fontFamily: 'Roboto-Medium',
                     }}>
                     {currentDate.code_nm}
                   </Text>
+                  <Icon name={"chevron-down"} color={Color.mainColor} size={24} />
                 </TouchableOpacity>
               ) : (
                 <Button
@@ -1332,7 +1353,7 @@ const Filter = ({
                     <Text
                       numberOfLines={1}
                       size={16}
-                      style={{color: Color.mainColor}}>
+                      style={{ color: Color.mainColor }}>
                       {labelDateType}
                     </Text>
                   </Block>
@@ -1361,11 +1382,11 @@ const Filter = ({
             />
           </View>
 
-          <View style={{zIndex: 7}}>
+          <View style={{ zIndex: 7 }}>
             <Block row justifyContent={'space-between'}>
               <Button nextScreen={showDatePickerStart} column flex>
                 <Block row marginBottom={4}>
-                  <Text>Từ ngày</Text>
+                  <Text style={{ color: Color.mainColor, fontFamily: 'Roboto-Regular' }}>Từ ngày</Text>
                 </Block>
                 <Block
                   row
@@ -1373,10 +1394,10 @@ const Filter = ({
                   alignCenter
                   style={{
                     padding: 10,
-                    backgroundColor: Color.white,
+                    backgroundColor: Color.gray,
                     borderRadius: 8,
                   }}>
-                  <Text style={{color: Color.mainColor}}>{fromDate}</Text>
+                  <Text style={{ color: Color.mainColor }}>{fromDate}</Text>
                   <IconDate />
                 </Block>
               </Button>
@@ -1406,7 +1427,7 @@ const Filter = ({
               </Block>
               <Button nextScreen={() => showDatePickerEnd()} column flex>
                 <Block row marginBottom={4}>
-                  <Text>Đến ngày</Text>
+                  <Text style={{ fontFamily: 'Roboto-Regular', color: Color.mainColor }}>Đến ngày</Text>
                 </Block>
                 <Block
                   row
@@ -1414,11 +1435,11 @@ const Filter = ({
                   alignCenter
                   style={{
                     padding: 10,
-                    backgroundColor: Color.white,
+                    backgroundColor: Color.gray,
                     borderRadius: 8,
                     color: Color.mainColor,
                   }}>
-                  <Text style={{color: Color.mainColor}}>{toDate}</Text>
+                  <Text style={{ color: Color.mainColor }}>{toDate}</Text>
                   <IconDate />
                 </Block>
               </Button>
@@ -1459,11 +1480,11 @@ const Filter = ({
               onPress={() => {
                 if (currentDate.code == '') {
                   return Alert.alert('Thông báo', 'Vui lòng chọn loại ngày.', [
-                    {text: 'Đóng'},
+                    { text: 'Đóng' },
                   ]);
                 } else if (currentPos.code == '') {
                   return Alert.alert('Thông báo', 'Vui lòng chọn chức vụ.', [
-                    {text: 'Đóng'},
+                    { text: 'Đóng' },
                   ]);
                 } else {
                   onFilter();

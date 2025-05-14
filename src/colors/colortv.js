@@ -12,8 +12,11 @@ export const Color = {
   darkGray1: '#B2BABB',
   darkGray: '#424949',
   oneContentBorder: '#E5E7E9',
-  mainColor: '#143678', //Màu chủ đạo
-  foreignColor: '#0000ff', //Màu phụ
+  //change color
+  mainColor: '#FA812F', //Màu chủ đạo
+  foreignColor: '#FFB22C', //Màu phụ
+  // mainColor: '#143678', //Màu chủ đạo
+  // foreignColor: '#0000ff', //Màu phụ
   backgroundColor: '#01acec', //Màu chính header của  ứng dụng
   foriegnBackgroundColor: '#FFFFFF', //Màu nền của content
   inputBackgroundColor: '#F6F5FF', //Màu nền input

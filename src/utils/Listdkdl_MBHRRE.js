@@ -18,7 +18,7 @@ const Item_MBHRRE = () => {
   try {
     dataMenuMBHRREs = state.menuReducer.data.data.menu;
     language = state.loginReducers.data.data.user_language;
-  } catch (error) {}
+  } catch (error) { }
 
   const [dataMenuMBHRRE, setDataMenuMBHRRE] = useState([]);
 
@@ -34,7 +34,7 @@ const Item_MBHRRE = () => {
         }
         setDataMenuMBHRRE(dataMenuMRREss);
       });
-    } catch (error) {}
+    } catch (error) { }
   }, []);
   const renderItem = ({ item, index }) => {
     // console.log("item 026 ", item);
@@ -46,15 +46,15 @@ const Item_MBHRRE = () => {
         <Button
           nextScreen={() => navigation.navigate(item.menu_cd)}
           shadow
-          height={60}
           justifyContent={"space-between"}
           alignCenter
-          marginLeft={20}
-          marginRight={20}
+          marginHorizontal={16}
           marginBottom={10}
           radius={8}
           row
           backgroundColor={Color.tabColor}
+          padding={6}
+
         >
           <Block
             marginLeft={10}
@@ -69,10 +69,9 @@ const Item_MBHRRE = () => {
           <Text
             flex
             paddingLeft={10}
-            height={60}
             size={16}
             color={Color.titleColor}
-            fontFamily={"Roboto-Medium"}
+            fontFamily={"Roboto-Regular"}
           >
             {setLanguageItem(item, language)}
           </Text>

@@ -104,10 +104,9 @@ const Item_MBHRSI = () => {
               <Text
                 numberOfLines={1}
                 paddingLeft={10}
-                height={60}
                 size={17}
                 color={Color.titleColor}
-                fontFamily={'Roboto-Medium'}>
+                fontFamily={'Roboto-Regular'}>
                 {setLanguageItem(item, language)}
                 {/* {item.menu_cd} */}
               </Text>

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
-import {Alert, Dimensions, Modal, ScrollView, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Dimensions, Modal, ScrollView, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AnimatedBar from '../../../components/AnimateBar';
 import Block from '../../../components/Block';
@@ -8,14 +8,14 @@ import Button from '../../../components/Button';
 import Dropdown from '../../../components/DropdowPb';
 import Text from '../../../components/Text';
 import TVSHeader from '../../../components/Tvs/Header';
-import {setHeaderChil2} from '../../../Language';
+import { setHeaderChil2 } from '../../../Language';
 import axios from 'axios';
-import {updateUserAction} from '../../../actions';
+import { updateUserAction } from '../../../actions';
 import RNRestart from 'react-native-restart';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import sysFetch from '../../../services/fetch';
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 const deviceWidth = Dimensions.get('window').width;
 const DELAY = 100;
 const arrayColor = [
@@ -71,7 +71,7 @@ const arrayColor = [
   '#dd9866',
 ];
 
-const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
+const TKNL_MBHRTK002 = ({ navigation: { goBack } }) => {
   const dispatch = useDispatch();
   const API = useSelector(state => state.SysConfigReducer.API_URL);
   const Color = useSelector(s => s.SystemReducer.theme);
@@ -141,7 +141,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
           console.log(error);
         });
     } catch (error) {
-      Alert.alert('Thông báo', 'Tải dữ liệu thất bại.', [{text: 'Xác nhận'}]);
+      Alert.alert('Thông báo', 'Tải dữ liệu thất bại.', [{ text: 'Xác nhận' }]);
     }
   };
   const getChart = (valuePbs, valueTypes) => {
@@ -250,7 +250,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
                 },
               },
             ],
-            {cancelable: true},
+            { cancelable: true },
           );
         }
         console.log(error);
@@ -295,7 +295,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
               paddingBottom={10}
               borderBottomColor={Color.mainColor}
               borderBottomWidth={1}>
-              <Text size={20} color={Color.mainColor} fontWeight={'bold'}>
+              <Text size={20} color={Color.mainColor} fontFamily={'Roboto-Bold'}>
                 CHỌN PHÒNG BAN
               </Text>
             </Block>
@@ -318,7 +318,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
                 nextScreen={() => setModalVisible(false)}
                 paddingLeft={20}
                 radius={5}>
-                <Text color={Color.white} alignCenter>
+                <Text color={Color.white} alignCenter fontFamily={'Roboto-Bold'}>
                   Đóng
                 </Text>
               </Button>
@@ -349,7 +349,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
               paddingBottom={10}
               borderBottomColor={Color.mainColor}
               borderBottomWidth={1}>
-              <Text size={20} color={Color.mainColor} fontWeight={'bold'}>
+              <Text size={20} color={Color.mainColor} fontFamily={'Roboto-Bold'}>
                 CHỌN LOẠI DỮ LIỆU
               </Text>
             </Block>
@@ -376,7 +376,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
                 nextScreen={() => setModalVisibleType(false)}
                 paddingLeft={20}
                 radius={5}>
-                <Text color={Color.white} alignCenter>
+                <Text color={Color.white} alignCenter fontFamily={'Roboto-Bold'}>
                   Đóng
                 </Text>
               </Button>
@@ -400,7 +400,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
       <Block flex backgroundColor={Color.gray} paddingTop={5}>
         <Block margin={10} backgroundColor={Color.white} padding={5} radius={5}>
           <Block row paddingBottom={3}>
-            <Text paddingLeft={5} color={Color.mainColor}>
+            <Text paddingLeft={5} color={Color.mainColor} fontFamily={'Roboto-Regular'}>
               Phòng ban
             </Text>
           </Block>
@@ -412,7 +412,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
             backgroundColor={'#F3F6F9'}
             radius={8}>
             <Block flex height={40} justifyCenter paddingLeft={10}>
-              <Text numberOfLines={1} size={16} color={Color.mainColor}>
+              <Text numberOfLines={1} size={16} color={Color.mainColor} fontFamily={'Roboto-Medium'}>
                 {labelPb}
               </Text>
             </Block>
@@ -433,7 +433,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
           padding={5}
           radius={5}>
           <Block row paddingBottom={3}>
-            <Text paddingLeft={5} color={Color.mainColor}>
+            <Text paddingLeft={5} color={Color.mainColor} fontFamily={'Roboto-Regular'}>
               Dữ liệu biểu đồ
             </Text>
           </Block>
@@ -445,7 +445,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
             backgroundColor={'#F3F6F9'}
             radius={8}>
             <Block flex height={40} justifyCenter paddingLeft={10}>
-              <Text numberOfLines={1} size={16} color={Color.mainColor}>
+              <Text numberOfLines={1} size={16} color={Color.mainColor} fontFamily={'Roboto-Medium'}>
                 {labelType}
               </Text>
             </Block>
@@ -462,7 +462,7 @@ const TKNL_MBHRTK002 = ({navigation: {goBack}}) => {
         {modalType}
         <Block flex marginLeft={10} marginRight={10} marginTop={4} radius={8}>
           <Block flex height={60} paddingTop={5} paddingLeft={5}>
-            <Text size={16} color={Color.mainColor} marginBottom={10}>
+            <Text size={16} color={Color.mainColor} marginBottom={10} fontFamily={'Roboto-Bold'}>
               Tổng số nhân viên: {totalWidth}
             </Text>
             <View

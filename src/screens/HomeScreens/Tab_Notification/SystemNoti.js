@@ -93,6 +93,8 @@ const SystemNoti = () => {
       tokenLogin
     )
       .then((rs) => {
+        console.log("res: ", rs.data);
+
         if (rs == "Token Expired") {
           refreshNewToken("getData");
         }
@@ -122,6 +124,7 @@ const SystemNoti = () => {
                     marginBottom: 10,
                     color: Color.mainColor,
                     fontSize: 20,
+                    fontFamily: "Roboto-Bold",
                   }}
                 >
                   Hôm nay
@@ -146,7 +149,7 @@ const SystemNoti = () => {
                       alignItems: "center",
                     }}
                   >
-                    <Text>Không có dữ liệu</Text>
+                    <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 16 }}>Không có dữ liệu</Text>
                   </View>
                 )}
               />
@@ -158,6 +161,7 @@ const SystemNoti = () => {
                     marginBottom: 10,
                     color: Color.mainColor,
                     fontSize: 20,
+                    fontFamily: "Roboto-Bold",
                   }}
                 >
                   Trước đó
@@ -181,7 +185,7 @@ const SystemNoti = () => {
               alignItems: "center",
             }}
           >
-            <Text>Không có dữ liệu</Text>
+            <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 16 }}>Không có dữ liệu</Text>
           </View>
         )}
       />

@@ -1,14 +1,14 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import Icon_back from '../../icons/Back';
-const TVSHeader = ({children, goBack = null}) => {
+const TVSHeader = ({ children, goBack = null }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   return (
     <LinearGradient
-      start={{x: 0, y: 0.3}}
-      end={{x: 0, y: 1.5}}
+      start={{ x: 0, y: 0.3 }}
+      end={{ x: 0, y: 1.5 }}
       // colors={['#0176C7', Color.mainColor, Color.mainColor]}
       colors={['#498DE3', '#25399F']}
       style={{
@@ -23,6 +23,7 @@ const TVSHeader = ({children, goBack = null}) => {
           justifyContentL: 'center',
           alignItems: 'center',
           paddingBottom: 10,
+          paddingTop: 8
         }}>
         <TouchableOpacity
           style={{

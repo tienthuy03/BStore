@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
+import moment from 'moment';
+import React from 'react';
+import { Dimensions } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import Block from '../components/Block';
 import Text from '../components/Text';
-import Button from '../components/Button';
-import {View, Dimensions} from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
-import moment from 'moment';
 
-const {width, height} = Dimensions.get('screen');
-const ListTTCT_MBHRIN003 = ({datas}) => {
+const { width, height } = Dimensions.get('screen');
+const ListTTCT_MBHRIN003 = ({ datas }) => {
   function setDateType(value) {
     if (value === 'Ngày lễ') {
       return value;
@@ -17,7 +16,7 @@ const ListTTCT_MBHRIN003 = ({datas}) => {
       return 'Thứ ' + value;
     }
   }
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
       <Block column marginLeft={20} marginRight={20} marginBottom={15}>
         <Block flex>

@@ -1,17 +1,14 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import moment from "moment";
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Block from '../../../components/Block';
-import TabBar from '../../../components/TabBar';
 import Text from '../../../components/Text';
-import BieuDoLuong from './BieuDoLuong';
-import moment from "moment";
-import HoatDong from './HoatDong';
-import TVSTab from '../../../components/Tvs/Tab'
+import TVSTab from '../../../components/Tvs/Tab';
 // import {Color} from '../../../colors/color';
+import CongTyNoti from './NotificationTab';
 import ThongKe from './ThongKe';
-import CongTyNoti from './NotificationTab'
 const Tab = createMaterialTopTabNavigator();
 const Dashboard = ({ navigation }) => {
   const Color = useSelector(s => s.SystemReducer.theme);

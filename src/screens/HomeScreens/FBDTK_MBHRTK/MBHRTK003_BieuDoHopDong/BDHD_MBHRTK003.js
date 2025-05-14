@@ -1,16 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect} from 'react';
-import {Platform, StatusBar, View, Alert} from 'react-native';
-import {Text} from 'react-native-svg';
-import {PieChart} from 'react-native-svg-charts';
+import React, { useEffect } from 'react';
+import { Platform, StatusBar, View, Alert } from 'react-native';
+import { Text } from 'react-native-svg';
+import { PieChart } from 'react-native-svg-charts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Block from '../../../../components/Block';
 import Button from '../../../../components/Button';
 import Texts from '../../../../components/Text';
 import TVSHeader from '../../../../components/Tvs/Header';
 import Icon_back from '../../../../icons/Back';
-import {setHeaderChil2} from '../../../../Language';
+import { setHeaderChil2 } from '../../../../Language';
 // import {Color} from '../../../../colors/color';
 import {
   HRTK003LayDanhSachPhongBan,
@@ -19,11 +19,11 @@ import {
 } from '../../../../services/redux/HRTK003_BieuDoHopDong/action';
 import PopUpPhongBan from './PopUpPhongBan';
 import axios from 'axios';
-import {updateUserAction} from '../../../../actions';
+import { updateUserAction } from '../../../../actions';
 import RNRestart from 'react-native-restart';
 import sysFetch from '../../../../services/fetch';
 
-const BDHD_MBHRMN003 = ({navigation: {goBack}}) => {
+const BDHD_MBHRMN003 = ({ navigation: { goBack } }) => {
   const dispatch = useDispatch();
   const API = useSelector(state => state.SysConfigReducer.API_URL);
   const Color = useSelector(s => s.SystemReducer.theme);
@@ -46,9 +46,9 @@ const BDHD_MBHRMN003 = ({navigation: {goBack}}) => {
   );
 
   const dataMenuMBHRs = useSelector(state => state.menuReducer.data.data.menu);
-  const Labels = ({slices}) => {
+  const Labels = ({ slices }) => {
     return slices.map((slice, index) => {
-      const {pieCentroid, data} = slice;
+      const { pieCentroid, data } = slice;
       return (
         <>
           {data.amount > 0 ? (
@@ -113,7 +113,7 @@ const BDHD_MBHRMN003 = ({navigation: {goBack}}) => {
                 },
               },
             ],
-            {cancelable: true},
+            { cancelable: true },
           );
         }
         console.log(error);
@@ -146,7 +146,7 @@ const BDHD_MBHRMN003 = ({navigation: {goBack}}) => {
         console.log(error);
       });
   };
-  function itemCircle({contract_no, svg, amount, contract_amount}) {
+  function itemCircle({ contract_no, svg, amount, contract_amount }) {
     return (
       <Block padding={5} row alignCenter key={contract_no}>
         <Block radius={5} width={25} height={25} backgroundColor={svg.fill} />
@@ -184,7 +184,7 @@ const BDHD_MBHRMN003 = ({navigation: {goBack}}) => {
             paddingBottom={10}
             marginRight={10}>
             <Block row>
-              <Texts paddingLeft={5} height={40} color={Color.mainColor}>
+              <Texts paddingLeft={5} marginBottom={8} color={Color.mainColor}>
                 Phòng ban
               </Texts>
             </Block>
@@ -231,12 +231,12 @@ const BDHD_MBHRMN003 = ({navigation: {goBack}}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Texts>Không có dữ liệu thống kê cho phòng ban này.</Texts>
+                <Texts fontFamily={"Roboto-Medium"}>Không có dữ liệu thống kê cho phòng ban này.</Texts>
               </View>
             ) : (
               <PieChart
-                style={{height: 300}}
-                valueAccessor={({item}) => item.amount}
+                style={{ height: 300 }}
+                valueAccessor={({ item }) => item.amount}
                 data={data}
                 spacing={0}
                 outerRadius={'95%'}>

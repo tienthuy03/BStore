@@ -52,7 +52,7 @@ const TVSButton = ({
               paddingHorizontal,
               paddingVertical,
               color: "white",
-              fontWeight: "bold",
+              fontFamily: 'Roboto-Bold'
             }}
           >
             {icon && <Icon name={icon} size={16} />} {children}{" "}

@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {Dimensions, FlatList} from 'react-native';
-import {useSelector} from 'react-redux';
+import React, { useState } from 'react';
+import { Dimensions, FlatList } from 'react-native';
+import { useSelector } from 'react-redux';
 import Block from '../components/Block';
 import OneField from '../components/OneFieldKeyValueNgayCong';
 import Text from '../components/Text';
-const {width, height} = Dimensions.get('screen');
-const ListTTNC_MBHRIN002 = ({datas, onReload}) => {
+const { width, height } = Dimensions.get('screen');
+const ListTTNC_MBHRIN002 = ({ datas, onReload }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   let [numberRecord, setNumberRecord] = useState(3);
   function setDateType(value) {
@@ -47,7 +47,7 @@ const ListTTNC_MBHRIN002 = ({datas, onReload}) => {
       </Block>
     );
   }
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
       <Block flex marginLeft={10} marginRight={10} marginBottom={10}>
         <Block row justifyContent={'space-between'}>
@@ -106,7 +106,7 @@ const ListTTNC_MBHRIN002 = ({datas, onReload}) => {
         extraData={datas}
         ListEmptyComponent={() => (
           <Block flex alignCenter justifyCenter marginTop={20}>
-            <Text>Không có dữ liệu !</Text>
+            <Text fontFamily={"Roboto-Medium"}>Không có dữ liệu !</Text>
           </Block>
         )}
       />
