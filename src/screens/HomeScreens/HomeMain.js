@@ -60,8 +60,7 @@ import SvgPerson from "../../icons/Person";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Color } from "../../colors/colortv";
 import CardShop, { ShopCard } from "../../components/Bstore/CardShop";
-import CachedImage from '../../components/CachedImage'; 
-import PostImage from "../../components/PostImage";
+
 
 const defaultAvatar = "https://i.pinimg .com/736x/99/d0/7f/99d07f72ea74f29fe21833964704cdc9.jpg" 
 
@@ -537,20 +536,13 @@ const HomeMain = ({ navigation }) => {
   }, [language, greeting]);
   const renderItem = ({ item }) => {
     return (
-      // <CardShop
-      //   onPress={() => navigation.navigate("Menu_Production")}
-      //   shop_image={"https://menuonline.vn/images/upload/news/789438234-Nha-hang-Hai-san.jpg"}
-      //   shop_address={"134 Trần Hưng Đạo, TP Hồ Chí Minh"}
-      //   shop_owner={"Thuỷ Tiên"}
-      //   shop_name={"Nhà hàng hải sản số 1"}
-      //   shop_phone={"0971761090"} />
-      
-    <CachedImage 
-      pk={7810}
-      table_nm="TC_FSBINARY"
-      column_nm="data"
-      token={tokenLogin}
-      api={API} />
+      <CardShop
+        onPress={() => navigation.navigate("Menu_Production")}
+        image_uri={item.image_uri}
+        shop_address={"134 Trần Hưng Đạo, TP Hồ Chí Minh"}
+        shop_owner={"Thuỷ Tiên"}
+        shop_name={"Nhà hàng hải sản số 1"}
+        shop_phone={"0971761090"} />
     );
   };
 

@@ -1,20 +1,23 @@
 // CachedImage.js
 import React from 'react';
 import FastImage from 'react-native-fast-image';
+import { useDispatch, useSelector } from "react-redux";
 
-const CachedImage = ({ pk, table_nm, column_nm, token, api}) => {
-  let uri = `${api}Exec/GetImageFromBlob?pk=${pk}&table_nm=${table_nm}&column_nm=${column_nm}`;
+const CachedImage = ({ image_uri, style}) => {
+  const API = useSelector((state) => state.SysConfigReducer.API_URL);
+  let tokenLogin = useSelector( (state) => state.loginReducers.data.data.tokenLogin);
+  let uri = `${API}Exec/GetImageFromBlob?${image_uri}`;
   return (
     <FastImage
       source={{
         uri,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${tokenLogin}`,
         },
         priority: FastImage.priority.normal,
         cache: FastImage.cacheControl.immutable,
       }}
-      style={{ width: 300, height: 300 }}
+      style={style}
       resizeMode={FastImage.resizeMode.cover}
     />
   );
