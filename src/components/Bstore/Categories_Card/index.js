@@ -62,7 +62,7 @@ const Categories_Card = () => {
 const styles = StyleSheet.create({
   categoriesWrapper: {
     backgroundColor: '#fff',
-    paddingVertical: 12,
+    paddingVertical: 8,
     zIndex: 10,
   },
   sectionTitle: {

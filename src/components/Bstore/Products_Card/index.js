@@ -10,76 +10,30 @@ import {
   Dimensions
 } from 'react-native';
 import { Color } from '../../../colors/colortv';
+import CachedImage from '../../CachedImage';
 
 const { width } = Dimensions.get('window');
 const ITEM_WIDTH = (width - 36) / 2; // 36 = padding (16*2) + gap between items (4)
 
-const Products_Card = () => {
-  const products = [
-    {
-      id: '1',
-      name: 'Organic Bananas',
-      price: '1.00',
-      image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'bunch'
-    },
-    {
-      id: '2',
-      name: 'Peach',
-      price: '1.99',
-      image: 'https://images.unsplash.com/photo-1595743825637-cdafc8ad4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'kg'
-    },
-    {
-      id: '3',
-      name: 'Kiwi',
-      price: '2.49',
-      image: 'https://images.unsplash.com/photo-1618897996318-5a901fa6ca71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: '4 pcs'
-    },
-    {
-      id: '4',
-      name: 'Oranges',
-      price: '3.99',
-      image: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'bag'
-    },
-    {
-      id: '5',
-      name: 'Apples',
-      price: '2.49',
-      image: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'kg'
-    },
-    {
-      id: '6',
-      name: 'Strawberries',
-      price: '4.99',
-      image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'box'
-    },
-  ];
+const Products_Card = ({ products, onPress }) => {
 
   const renderProductItem = ({ item }) => (
-    <View style={styles.productItem}>
+    <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={styles.productItem}>
       <View style={styles.productImageContainer}>
-        <Image
-          source={{ uri: item.image }}
-          style={styles.productImage}
-          resizeMode="contain"
+        <CachedImage
+          image_uri={item.image}
+          style={styles.image}
         />
       </View>
       <View style={styles.productInfo}>
         <Text style={styles.productUnit}>{item.unit}</Text>
         <Text style={styles.productName}>{item.name}</Text>
         <View style={styles.productPriceRow}>
-          <Text style={styles.productPrice}>${item.price}</Text>
-          <TouchableOpacity style={styles.addButton}>
-            <Text style={styles.addButtonText}>+</Text>
-          </TouchableOpacity>
+          <Text style={styles.productPrice}>đ{item.price}</Text>
+          <Text style={styles.productQuantity}>Số lượng: {item.price}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -116,7 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   productItem: {
-    backgroundColor: '#fff',
+    backgroundColor: Color.white,
     borderRadius: 12,
     width: ITEM_WIDTH,
     marginBottom: 12,
@@ -148,7 +102,7 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'Roboto-Medium',
     color: '#333',
     marginBottom: 6,
   },
@@ -159,8 +113,13 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontFamily: 'Roboto-Bold',
+    color: Color.mainColor,
+  },
+  productQuantity: {
+    fontSize: 12,
+    fontFamily: 'Roboto-Regular',
+    color: Color.textPrimary3,
   },
   addButton: {
     width: 24,
