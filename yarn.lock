@@ -6732,7 +6732,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-js@npm:4.2.0":
+"crypto-js@npm:4.2.0, crypto-js@npm:^4.2.0":
   version: 4.2.0
   resolution: "crypto-js@npm:4.2.0"
   checksum: f051666dbc077c8324777f44fbd3aaea2986f198fe85092535130d17026c7c2ccf2d23ee5b29b36f7a4a07312db2fae23c9094b644cc35f7858b1b4fcaf27774
@@ -7873,6 +7873,13 @@ __metadata:
   version: 3.1.1
   resolution: "exponential-backoff@npm:3.1.1"
   checksum: 3d21519a4f8207c99f7457287291316306255a328770d320b401114ec8481986e4e467e854cb9914dd965e0a1ca810a23ccb559c642c88f4c7f55c55778a9b48
+  languageName: node
+  linkType: hard
+
+"fast-base64-decode@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "fast-base64-decode@npm:1.0.0"
+  checksum: 4c59eb1775a7f132333f296c5082476fdcc8f58d023c42ed6d378d2e2da4c328c7a71562f271181a725dd17cdaa8f2805346cc330cdbad3b8e4b9751508bd0a3
   languageName: node
   linkType: hard
 
@@ -11739,13 +11746,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-crypto-js@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "react-native-crypto-js@npm:1.0.0"
-  checksum: 74aa3f16820b8d76fbb21a0bff720f0152e21ecc5e46edb4d1d01dcb86af4da934f4d8a1d5059bf8680bbc5090852b302b29bb742980c45137bfed6cef5991d3
-  languageName: node
-  linkType: hard
-
 "react-native-default-preference@npm:^1.4.4":
   version: 1.4.4
   resolution: "react-native-default-preference@npm:1.4.4"
@@ -11865,6 +11865,17 @@ __metadata:
   peerDependencies:
     react-native: ">=0.60"
   checksum: 69447e1605eae56c9d39844af46d23f74dffc06d376f243226174ae9ff924eb5a20e6b28998d48b7b5b94fd85485ab5d5e53a4d8272d58f56fbce406ecd1d871
+  languageName: node
+  linkType: hard
+
+"react-native-get-random-values@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "react-native-get-random-values@npm:1.11.0"
+  dependencies:
+    fast-base64-decode: ^1.0.0
+  peerDependencies:
+    react-native: ">=0.56"
+  checksum: 07729f70a007f7a3b8f98ebf687c1298ba288b87dd71d8ba385be6b5a377718b27b97547bbe1db6b225b83ee109dfce0b01721e6ed535d53892f3ac81e6bf975
   languageName: node
   linkType: hard
 
@@ -13565,6 +13576,7 @@ __metadata:
     axios: ^1.7.8
     babel-jest: ^29.6.3
     base64-arraybuffer: ^1.0.2
+    crypto-js: ^4.2.0
     eslint: ^8.19.0
     expo-image-manipulator: ^13.0.5
     jest: ^29.6.3
@@ -13585,7 +13597,6 @@ __metadata:
     react-native-camera: ^4.2.1
     react-native-canvas: ^0.1.40
     react-native-chart-kit: ^6.12.0
-    react-native-crypto-js: ^1.0.0
     react-native-default-preference: ^1.4.4
     react-native-device-info: ^14.0.1
     react-native-document-picker: ^9.3.1
@@ -13596,6 +13607,7 @@ __metadata:
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.21.2
     react-native-get-location: ^5.0.0
+    react-native-get-random-values: ^1.11.0
     react-native-hyperlink: ^0.0.22
     react-native-image-picker: ^7.2.3
     react-native-linear-gradient: ^2.8.3

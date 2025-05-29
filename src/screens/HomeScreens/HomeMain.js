@@ -53,7 +53,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUserAction } from "../../actions";
 import { APP_VERSION } from "../../config/Pro";
 import { selectLanguageDM } from "../../Language";
-import sysFetch from "../../services/fetch_v1";
+import sysFetch from "../../services/fetch_crypt";
 import { home } from "../../styles"
 import RowText from "../../components/RowText";
 import SvgPerson from "../../icons/Person";
@@ -73,7 +73,6 @@ const HomeMain = ({ navigation }) => {
   const numColumns = loginReducers.data.data.menu_type == 2 ? 2 : 3;
   const [loadMenu, setLoadMenu] = useState(true);
   const [dataMenuMBHR, setDataMenuMBHR] = useState([]);
-
   let dataMenuMBHRs;
   let dataLanguage;
   let language;
@@ -238,7 +237,7 @@ const HomeMain = ({ navigation }) => {
   useEffect(() => {
     setLoadMenu(true);
     getMenu();
-    checkBaoMat();
+    //checkBaoMat();
   }, []);
 
   const checkBaoMat = () => {
@@ -349,7 +348,7 @@ const HomeMain = ({ navigation }) => {
       });
   };
   const getMenu = () => {
-    console.log({
+    console.log('getMenu', {
       p1_varchar2: userPk,
       p2_varchar2: thr_emp_pk,
       p3_varchar2: APP_VERSION,
@@ -537,176 +536,172 @@ const HomeMain = ({ navigation }) => {
       <CardShop
         onPress={() => navigation.navigate("Menu_Production")}
         shop_image={"https://menuonline.vn/images/upload/news/789438234-Nha-hang-Hai-san.jpg"}
-        shop_address={"134 Trần Hưng Đạo, TP Hồ Chí Minh"}
-        shop_owner={"Thuỷ Tiên"}
-        shop_name={"Nhà hàng hải sản số 1"}
-        shop_phone={"0971761090"} />
+        shop_address={"134 Trần Hưng Đạo, TP Hồ Chí Minh"} />
     );
-  };
 
-  const renderItemV1 = ({ item }) => {
-    const isSelected = selectedItem === item;
-    if (item.parent === true) {
-      return (
-        <View
-          style={{
-            height: 120,
-            margin: 5,
-            flex: 1,
-            marginBottom: 12,
-          }}
-        ></View>
-      );
-    } else {
-      return (
-        <View style={{ height: 100, flex: 1, marginBottom: 16, marginTop: 12 }}>
-          <Block
-            shadow
-            marginHorizontal={12}
-            borderRadius={12}
-            justifyCenter
-            backgroundColor={Color.white}
-            paddingVertical={12}
+    const renderItemV1 = ({ item }) => {
+      const isSelected = selectedItem === item;
+      if (item.parent === true) {
+        return (
+          <View
             style={{
-              borderColor: isSelected ? '#25399F' : 'transparent',
-              borderWidth: isSelected ? 2 : 0,
+              height: 120,
+              margin: 5,
+              flex: 1,
+              marginBottom: 12,
             }}
-          >
-            <Button
-              nextScreen={() => {
-                setSelectedItem(item);
-                navigation.navigate(item.menu_cd);
-              }}>
-              {SetIcon(item.icon)}
-            </Button>
-          </Block>
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              numberOfLines={1}
-              fontWeight={"bold"}
-              size={12}
-              color={Color.mainColor}
-              paddingLeft={5}
-              paddingRight={5}
-              paddingTop={10}
+          ></View>
+        );
+      } else {
+        return (
+          <View style={{ height: 100, flex: 1, marginBottom: 16, marginTop: 12 }}>
+            <Block
+              shadow
+              marginHorizontal={12}
+              borderRadius={12}
+              justifyCenter
+              backgroundColor={Color.white}
+              paddingVertical={12}
+              style={{
+                borderColor: isSelected ? '#25399F' : 'transparent',
+                borderWidth: isSelected ? 2 : 0,
+              }}
             >
-              {selectLanguageDM(item, language)}
-            </Text>
-          </View>
-        </View >
-      );
+              <Button
+                nextScreen={() => {
+                  setSelectedItem(item);
+                  navigation.navigate(item.menu_cd);
+                }}>
+                {SetIcon(item.icon)}
+              </Button>
+            </Block>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Text
+                numberOfLines={1}
+                fontWeight={"bold"}
+                size={12}
+                color={Color.mainColor}
+                paddingLeft={5}
+                paddingRight={5}
+                paddingTop={10}
+              >
+                {selectLanguageDM(item, language)}
+              </Text>
+            </View>
+          </View >
+        );
+      }
+    };
+    const [selectedItem, setSelectedItem] = useState(null);
+    const ListHeaderComponent = () => {
+      return (
+        <Block>
+          <Text
+            paddingLeft={20}
+            // paddingTop={10}
+            size={22}
+            fontFamily={"Roboto-Bold"}
+            color={Color.mainColor}
+            paddingBottom={12}
+          >
+            {selectSystem(language, 0)}
+          </Text>
+        </Block>
+      )
     }
-  };
-  const [selectedItem, setSelectedItem] = useState(null);
-  const ListHeaderComponent = () => {
-    return (
-      <Block>
-        <Text
-          paddingLeft={20}
-          // paddingTop={10}
-          size={22}
-          fontFamily={"Roboto-Bold"}
-          color={Color.mainColor}
-          paddingBottom={12}
-        >
-          {selectSystem(language, 0)}
-        </Text>
-      </Block>
-    )
-  }
 
-  return (
-    <>
-      <View style={{ paddingHorizontal: 16, backgroundColor: "#F1F1F1", flex: 1 }}>
-        <View style={{ paddingTop: '15%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <View style={{ alignItems: 'center', gap: 12, flexDirection: 'row', flex: 1, justifyContent: 'flex-start' }}>
-            <Image
-              style={{ width: 40, height: 40, borderRadius: 100, borderWidth: 2, borderColor: Color.mainColor }}
-              source={{ uri: "https://i.pinimg.com/736x/3b/19/11/3b1911246fc66f81cbc8a0035014569b.jpg" }} />
-            <View style={{}}>
-              {/* <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 20, color: Color.textPrimary3 }}>Xin chào 👋</Text> */}
-              <MaskedView
-                maskElement={
-                  <Text
-                    style={{
-                      fontFamily: 'Roboto-Medium',
-                      fontSize: 20,
-                      color: 'black', // màu này không quan trọng vì sẽ bị che
-                      textAlign: 'center',
-                    }}
+    return (
+      <>
+        <View style={{ paddingHorizontal: 16, backgroundColor: "#F1F1F1", flex: 1 }}>
+          <View style={{ paddingTop: '15%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', gap: 12, flexDirection: 'row', flex: 1, justifyContent: 'flex-start' }}>
+              <Image
+                style={{ width: 40, height: 40, borderRadius: 100, borderWidth: 2, borderColor: Color.mainColor }}
+                source={{ uri: "https://i.pinimg.com/736x/3b/19/11/3b1911246fc66f81cbc8a0035014569b.jpg" }} />
+              <View style={{}}>
+                {/* <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 20, color: Color.textPrimary3 }}>Xin chào 👋</Text> */}
+                <MaskedView
+                  maskElement={
+                    <Text
+                      style={{
+                        fontFamily: 'Roboto-Medium',
+                        fontSize: 20,
+                        color: 'black', // màu này không quan trọng vì sẽ bị che
+                        textAlign: 'center',
+                      }}
+                    >
+                      Xin chào 👋
+                    </Text>
+                  }
+                >
+                  <LinearGradient
+                    colors={['#FF5E62', '#FA812F',]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                   >
-                    Xin chào 👋
-                  </Text>
+                    <Text
+                      style={{
+                        opacity: 0, // ẩn text gốc, chỉ dùng để lấy layout
+                        fontFamily: 'Roboto-Medium',
+                        fontSize: 20,
+                      }}
+                    >
+                      Xin chào 👋
+                    </Text>
+                  </LinearGradient>
+                </MaskedView>
+                <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>Thuỷ Tiên</Text>
+              </View>
+
+            </View>
+            <TouchableOpacity style={{ width: 24, height: 24 }}>
+              <MaskedView
+                style={{ flex: 1 }}
+                maskElement={
+                  <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                    <Icon name="cart" size={24} color="black" />
+                  </View>
                 }
               >
                 <LinearGradient
-                  colors={['#FF5E62', '#FA812F',]}
+                  colors={['#FF5E62', '#FA812F']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                >
-                  <Text
-                    style={{
-                      opacity: 0, // ẩn text gốc, chỉ dùng để lấy layout
-                      fontFamily: 'Roboto-Medium',
-                      fontSize: 20,
-                    }}
-                  >
-                    Xin chào 👋
-                  </Text>
-                </LinearGradient>
+                  style={{ flex: 1 }}
+                />
               </MaskedView>
-              <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>Thuỷ Tiên</Text>
-            </View>
+            </TouchableOpacity>
 
           </View>
-          <TouchableOpacity style={{ width: 24, height: 24 }}>
-            <MaskedView
-              style={{ flex: 1 }}
-              maskElement={
-                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                  <Icon name="cart" size={24} color="black" />
-                </View>
-              }
-            >
-              <LinearGradient
-                colors={['#FF5E62', '#FA812F']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ flex: 1 }}
-              />
-            </MaskedView>
-          </TouchableOpacity>
+          <Text style={{ paddingVertical: 12, fontFamily: "Roboto-Medium", fontSize: 16, color: Color.mainColor }}>Danh sách cửa hàng</Text>
 
-        </View>
-        <Text style={{ paddingVertical: 12, fontFamily: "Roboto-Medium", fontSize: 16, color: Color.mainColor }}>Danh sách cửa hàng</Text>
-
-        <Block flex={1} >
-          <Block flex>
-            {loadMenu ? (
-              <Block flex>
-                <ActivityIndicator size="large" color="grey" />
-              </Block>
-            ) : (
-              <Block flex={1}  >
-                <FlatList
-                  data={dataMenuMBHR.filter((x) => x !== "MBHRAN")}
-                  renderItem={
-                    loginReducers.data.data.menu_type == 2
-                      ? renderItemV1
-                      : renderItem
-                  }
-                  numColumns={1}
-                  keyExtractor={(_, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
-                // ListHeaderComponent={ListHeaderComponent}
-                />
-              </Block>
-            )}
+          <Block flex={1} >
+            <Block flex>
+              {loadMenu ? (
+                <Block flex>
+                  <ActivityIndicator size="large" color="grey" />
+                </Block>
+              ) : (
+                <Block flex={1}  >
+                  <FlatList
+                    data={dataMenuMBHR.filter((x) => x !== "MBHRAN")}
+                    renderItem={
+                      loginReducers.data.data.menu_type == 2
+                        ? renderItemV1
+                        : renderItem
+                    }
+                    numColumns={1}
+                    keyExtractor={(_, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                  // ListHeaderComponent={ListHeaderComponent}
+                  />
+                </Block>
+              )}
+            </Block>
           </Block>
-        </Block>
-      </View >
-    </>
-  );
-};
+        </View >
+      </>
+    );
+  };
 
-export default HomeMain;
+  export default HomeMain;

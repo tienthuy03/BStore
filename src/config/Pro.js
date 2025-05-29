@@ -44,11 +44,14 @@ export const SELSYSDICT0100 = "SELSYSDICT0100";
 export const APP_VERSION = "1.0.0";
 
 export const ServerIP = {
-  tvs: "http://115.73.215.94:8082/api/api",
+  tvs: "http://115.73.215.94:8082/new_api/api/",
+  // tvs: "http://26.241.193.222:8082/api/",
+
 };
 export const configAPI = [
   {
-    API_NAME: "http://115.73.215.94:8082/api/api/",
+    API_NAME: "http://115.73.215.94:8082/new_api/api/",
+    // API_NAME: "http://26.241.193.222:8082/api/",
     CLIENT_ID: "SYSHR",
     CLIENT_KEY: "syshr@2025",
   },

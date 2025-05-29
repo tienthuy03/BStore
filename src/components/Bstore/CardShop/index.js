@@ -2,12 +2,18 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Color } from '../../../colors/colortv';
+import CachedImage from '../../CachedImage';
 
-const CardShop = ({ onPress, shop_image, shop_name, shop_address, shop_owner, shop_phone }) => {
+const CardShop = ({ onPress, image_uri, shop_name, shop_address, shop_owner, shop_phone }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.card}>
-      <Image
+      {/* <Image
         source={{ uri: shop_image }} // đổi URL hình ảnh thật
+        style={styles.image}
+      /> */}
+
+      <CachedImage
+        image_uri={image_uri}
         style={styles.image}
       />
 
