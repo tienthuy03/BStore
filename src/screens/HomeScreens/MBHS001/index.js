@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -17,18 +17,32 @@ import Products_Card from '../../../components/Bstore/Products_Card';
 import SearchBar from '../../../components/Bstore/SearchBar';
 import Modal_Product from '../../../components/Bstore/ProductDetailModal';
 import ProductDetailModal from '../../../components/Bstore/ProductDetailModal';
+import sysFetch from '../../../services/fetch_crypt';
+import { useRoute } from '@react-navigation/native';
+import { APP_VERSION } from '../../../config/Pro';
+import { useSelector } from 'react-redux';
 
 const Menu_Production = () => {
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
-
+  const router = useRoute();
+  const { tco_depot_pk } = router.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [listCategories, setListCategories] = useState([]);
+  const [listProducts, setListProducts] = useState([]);
+  const [listImages, setListImages] = useState([]);
+
+  const Api = useSelector((state) => state.SysConfigReducer.API_URL);
+
+  let tokenLogin = useSelector(
+    (state) => state.loginReducers.data.data.tokenLogin
+  );
+  let userPk = useSelector(
+    (state) => state.loginReducers.data.data.tes_user_pk
+  );
+  let crt_by = useSelector((state) => state.loginReducers.data.data.crt_by);
 
   const openModal = (product) => {
+    console.log('Sản phẩm được chọn:', product);
     setSelectedProduct(product);
     setModalVisible(true);
   };
@@ -37,50 +51,6 @@ const Menu_Production = () => {
     setModalVisible(false);
     setSelectedProduct(null);
   };
-  const products = [
-    {
-      id: '1',
-      name: 'Organic Bananas',
-      price: '1.00',
-      image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'bunch'
-    },
-    {
-      id: '2',
-      name: 'Peach',
-      price: '1.99',
-      image: 'https://images.unsplash.com/photo-1595743825637-cdafc8ad4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'kg'
-    },
-    {
-      id: '3',
-      name: 'Kiwi',
-      price: '2.49',
-      image: 'https://images.unsplash.com/photo-1618897996318-5a901fa6ca71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: '4 pcs'
-    },
-    {
-      id: '4',
-      name: 'Oranges',
-      price: '3.99',
-      image: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'bag'
-    },
-    {
-      id: '5',
-      name: 'Apples',
-      price: '2.49',
-      image: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'kg'
-    },
-    {
-      id: '6',
-      name: 'Strawberries',
-      price: '4.99',
-      image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-      unit: 'box'
-    },
-  ];
 
   // Sections cho FlatList chính
   const sections = [
@@ -92,13 +62,60 @@ const Menu_Production = () => {
   const renderSection = ({ item }) => {
     switch (item.type) {
       case 'categories':
-        return <Categories_Card />;
+        return <Categories_Card categories={listCategories} onPress={(category) => {
+          console.log("Danh mục được chọn:", category);
+        }} />;
       case 'products':
-        return <Products_Card products={products} onPress={(product) => openModal(product)} />;
+        return <Products_Card
+          products={listProducts}
+          onPress={(product) => openModal(product)} // nhận sản phẩm khi nhấn
+        />
+
       default:
         return null;
     }
   };
+  console.log("listCategories", listCategories);
+  console.log("listProducts", listProducts);
+
+
+  const getListProduct = () => {
+    sysFetch(
+      Api,
+      {
+        pro: "STV_HR_SEL_MBI_HRDP00100_0",
+        in_par: {
+          p1_varchar2: userPk,
+          p2_varchar2: tco_depot_pk,
+          p3_varchar2: APP_VERSION,
+          p4_varchar2: crt_by,
+        },
+        out_par: {
+          p1_sys: "list_categories",
+          p2_sys: "list_products",
+          p3_sys: "list_images",
+        },
+      },
+      tokenLogin
+    )
+      .then((rs) => {
+        if (rs && rs.data.list_categories && rs.data.list_products && rs.data.list_images) {
+          // Cập nhật state hoặc xử lý dữ liệu ở đây
+          setListCategories(rs.data.list_categories);
+          setListProducts(rs.data.list_products);
+          setListImages(rs.data.list_images);
+        } else {
+          console.log("No data found");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getListProduct();
+  }, []);
 
 
   return (
@@ -132,8 +149,9 @@ const Menu_Production = () => {
       <ProductDetailModal
         visible={modalVisible}
         product={selectedProduct}
-        onClose={closeModal}
+        onClose={() => setModalVisible(false)}
       />
+
 
     </View>
   );

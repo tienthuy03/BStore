@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -10,19 +10,30 @@ import {
 import { Color } from '../../../colors/colortv';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
+import CachedImage from '../../CachedImage';
 
 const ProductDetailModal = ({ visible, product, onClose }) => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState('Small');
+  const [selectedSize, setSelectedSize] = useState('Loại 1');
   const [addedToCart, setAddedToCart] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      setQuantity(1);
+      setAddedToCart(false);
+      setSelectedSize('Loại 1');
+    }
+  }, [visible]);
 
   const increaseQuantity = () => setQuantity(prev => prev + 1);
   const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   const handleAddToCart = () => {
     setAddedToCart(true);
-    // xử lý thêm vào giỏ nếu cần
+    // Gọi API hoặc xử lý thêm vào giỏ hàng tại đây
   };
+
+  if (!product) return null;
 
   return (
     <Modal
@@ -33,32 +44,28 @@ const ProductDetailModal = ({ visible, product, onClose }) => {
     >
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          {/* Nút đóng (dấu X) */}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Icon name="close" size={24} color="#333" />
           </TouchableOpacity>
 
-          {/* Nội dung sản phẩm */}
           <View style={styles.contentRow}>
-            {/* Ảnh */}
-            <Image
-              source={{ uri: product?.image }}
+            {/* <Image
+              source={{ uri: product.image_uri }}
               style={styles.productImage}
               resizeMode="cover"
-            />
+            /> */}
+            <CachedImage image_uri={product.image_uri} style={styles.productImage} />
 
-            {/* Chi tiết */}
             <View style={styles.infoColumn}>
               <View style={styles.product_nm}>
-                <Text style={styles.productName}>Tôm sú</Text>
-                <Text style={styles.productPrice}>đ 250.000</Text>
+                <Text style={styles.productName}>{product.prod_nm}</Text>
+                <Text style={styles.productPrice}>đ{product.price?.toLocaleString()}</Text>
               </View>
 
               <Text style={styles.productDescription}>
-                The combination of coffee, milk, and palm sugar makes this drink have a delicious taste.
+                {product.description || 'Không có mô tả sản phẩm.'}
               </Text>
 
-              {/* Chọn size */}
               <View style={styles.sizeRow}>
                 <Text style={styles.sizeLabel}>Loại</Text>
                 <View style={styles.sizeOptions}>
@@ -83,12 +90,9 @@ const ProductDetailModal = ({ visible, product, onClose }) => {
                   ))}
                 </View>
               </View>
-
-
             </View>
-
           </View>
-          {/* Bộ đếm + nút */}
+
           <View style={styles.bottomRow}>
             <View style={styles.counterContainer}>
               <TouchableOpacity onPress={decreaseQuantity} style={styles.counterButton}>
@@ -102,17 +106,16 @@ const ProductDetailModal = ({ visible, product, onClose }) => {
 
             <TouchableOpacity onPress={handleAddToCart} style={{ flex: 1 }}>
               <LinearGradient
-                colors={addedToCart ? ['#ccc', '#aaa'] : ['#FA812F', '#FF9C49']}
+                colors={['#FA812F', '#FF9C49']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={[styles.addButton]}
               >
                 <Text style={styles.addButtonText}>
-                  {addedToCart ? 'Added to cart' : 'Add to cart'}
+                  {'Thêm vào giỏ'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
-
           </View>
         </View>
       </View>
@@ -124,6 +127,7 @@ const styles = StyleSheet.create({
   product_nm: {
     flexDirection: 'row',
     gap: 12,
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   overlay: {
@@ -174,7 +178,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   sizeRow: {
-    marginTop: 16,
+    marginTop: 12,
   },
   sizeLabel: {
     fontWeight: 'bold',
@@ -221,13 +225,9 @@ const styles = StyleSheet.create({
   },
   addButton: {
     flex: 1,
-    backgroundColor: '#FA812F',
     borderRadius: 20,
     paddingVertical: 10,
     alignItems: 'center',
-  },
-  addedButton: {
-    backgroundColor: '#ccc',
   },
   addButtonText: {
     color: '#fff',

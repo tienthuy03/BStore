@@ -7,20 +7,11 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Color } from '../../../colors/colorhp';
 
-const Categories_Card = () => {
+const Categories_Card = ({ categories, onPress }) => {
   const [activeCategory, setActiveCategory] = useState('3');
-
-  const categories = [
-    { id: '1', name: 'Nuts', icon: 'flower-outline' },
-    { id: '2', name: 'Vegetables', icon: 'flower-outline' },
-    { id: '3', name: 'Fruits', icon: 'basket-outline' },
-    { id: '4', name: 'Gluten Free', icon: 'flower-outline' },
-    { id: '5', name: 'Vegan', icon: 'flower-outline' },
-    { id: '6', name: 'Organic', icon: 'flower-outline' },
-  ];
 
   return (
     <View style={styles.categoriesWrapper}>
@@ -30,33 +21,48 @@ const Categories_Card = () => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.categoriesContainer}
       >
-        {categories.map((category) => (
+        {(categories || []).map((category) => (
           <TouchableOpacity
             key={category.id}
             style={styles.categoryItem}
-            onPress={() => setActiveCategory(category.id)}
+            onPress={() => {
+              setActiveCategory(category.id);
+              if (onPress) {
+                onPress(category);
+              }
+            }}
           >
-            <View style={[
-              styles.categoryIcon,
-              activeCategory === category.id && styles.categoryIconActive
-            ]}>
+            <View
+              style={[
+                styles.categoryIcon,
+                activeCategory === category.id && styles.categoryIconActive,
+              ]}
+            >
               <Icon
                 name={category.icon}
                 size={22}
                 color={activeCategory === category.id ? '#fff' : '#555'}
               />
             </View>
-            <Text style={[
-              styles.categoryText,
-              activeCategory === category.id && styles.categoryTextActive
-            ]}>
-              {category.name}
+            <Text
+              style={[
+                styles.categoryText,
+                activeCategory === category.id && styles.categoryTextActive,
+              ]}
+            >
+              {category.prod_type_nm}
             </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
     </View>
   );
+};
+
+// ✅ Giá trị mặc định nếu cha không truyền props
+Categories_Card.defaultProps = {
+  categories: [],
+  onPress: () => { },
 };
 
 const styles = StyleSheet.create({

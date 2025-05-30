@@ -80,9 +80,6 @@ const HomeMain = ({ navigation }) => {
   let empId;
   let urlImage;
 
-  console.log("dataMenuMBHR: ", dataMenuMBHR);
-
-
   // let loadMenu;
   function SetIcon(name) {
     if (loginReducers.data.data.menu_type == 2) {
@@ -301,6 +298,7 @@ const HomeMain = ({ navigation }) => {
         console.log(error);
       });
   };
+  console.log(dataMenuMBHRs);
 
   const refreshNewToken = (obj) => {
     axios
@@ -534,14 +532,21 @@ const HomeMain = ({ navigation }) => {
     );
   }, [language, greeting]);
   const renderItem = ({ item }) => {
+    console.log("item: ", item);
+
     return (
       <CardShop
-        onPress={() => navigation.navigate("Menu_Production")}
+        onPress={() => {
+          console.log("ID được truyền đi:", item.tco_depot_pk);  // ✅ Log ở đây
+          navigation.navigate("Menu_Production", { tco_depot_pk: item.tco_depot_pk });
+        }}
         image_uri={item.image_uri || "https://menuonline.vn/images/upload/news/789438234-Nha-hang-Hai-san.jpg"}
-        shop_address={"134 Trần Hưng Đạo, TP Hồ Chí Minh"}
-        shop_name={"Cá 001"}
-        shop_owner={"ABC"}
-        shop_phone={"0971761090"} />
+        shop_address={item.address}
+        shop_name={item.shop_name}
+        shop_owner={item.shop_owner}
+        shop_phone={item.mobile}
+      />
+
     );
   };
 
@@ -655,7 +660,7 @@ const HomeMain = ({ navigation }) => {
                   </Text>
                 </LinearGradient>
               </MaskedView>
-              <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>ABC</Text>
+              <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>{fullname}</Text>
             </View>
 
           </View>

@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   FlatList,
   Dimensions
 } from 'react-native';
@@ -16,21 +15,25 @@ const { width } = Dimensions.get('window');
 const ITEM_WIDTH = (width - 36) / 2; // 36 = padding (16*2) + gap between items (4)
 
 const Products_Card = ({ products, onPress }) => {
-
   const renderProductItem = ({ item }) => (
-    <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={styles.productItem}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => onPress(item)} // ✅ Truyền item khi nhấn
+      style={styles.productItem}
+    >
       <View style={styles.productImageContainer}>
         <CachedImage
-          image_uri={item.image}
-          style={styles.image}
+          image_uri={item.image_uri}
+          style={{ width: '100%', height: '100%' }}
+          resizeMode="cover"
         />
       </View>
       <View style={styles.productInfo}>
-        <Text style={styles.productUnit}>{item.unit}</Text>
-        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productUnit}>{item.uom}</Text>
+        <Text style={styles.productName}>{item.prod_nm}</Text>
         <View style={styles.productPriceRow}>
           <Text style={styles.productPrice}>đ{item.price}</Text>
-          <Text style={styles.productQuantity}>Số lượng: {item.price}</Text>
+          <Text style={styles.productQuantity}>Số lượng: 10</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -42,7 +45,7 @@ const Products_Card = ({ products, onPress }) => {
       <FlatList
         data={products}
         renderItem={renderProductItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         numColumns={2}
         columnWrapperStyle={styles.productRow}
         showsVerticalScrollIndicator={false}
@@ -57,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto-Regular',
     color: Color.textPrimary3,
-    paddingBottom: 8
+    paddingBottom: 8,
   },
   productsWrapper: {
     flex: 1,
@@ -88,10 +91,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
-  productImage: {
-    width: '100%',
-    height: '100%',
-  },
   productInfo: {
     padding: 12,
   },
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto-Medium',
     color: '#333',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   productPriceRow: {
     flexDirection: 'row',
@@ -120,19 +119,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Roboto-Regular',
     color: Color.textPrimary3,
-  },
-  addButton: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#555',
   },
 });
 
