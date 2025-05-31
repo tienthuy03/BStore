@@ -50,19 +50,12 @@ import Icon_BHLD from "../../icons/IconBHLD";
 import axios from "axios";
 import RNRestart from "react-native-restart";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserAction } from "../../actions";
+import sysFetch from "../../services/fetch_v1";
+import { home } from "../../styles";
 import { APP_VERSION } from "../../config/Pro";
-import { selectLanguageDM } from "../../Language";
-import sysFetch from "../../services/fetch_crypt";
-import { home } from "../../styles"
-import RowText from "../../components/RowText";
-import SvgPerson from "../../icons/Person";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Color } from "../../colors/colortv";
-import CardShop, { ShopCard } from "../../components/Bstore/CardShop";
 
-
-const defaultAvatar = "https://i.pinimg .com/736x/99/d0/7f/99d07f72ea74f29fe21833964704cdc9.jpg" 
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Svg, { Path } from "react-native-svg";
 
 const HomeMain = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -73,8 +66,6 @@ const HomeMain = ({ navigation }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
   const numColumns = loginReducers.data.data.menu_type == 2 ? 2 : 3;
   const [loadMenu, setLoadMenu] = useState(true);
-  const [dataMenuMBHR, setDataMenuMBHR] = useState([]);
- 
   let dataMenuMBHRs;
   let dataLanguage;
   let language;
@@ -360,9 +351,8 @@ const HomeMain = ({ navigation }) => {
       API,
       {
         // pro: 'SELHRMENU0100',
-        // pro: "SELHRMENU1",
-        pro: "STV_HR_SEL_MBI_HRMENU_1",
-        in_par: { 
+        pro: "SELHRMENU0",
+        in_par: {
           p1_varchar2: userPk,
           p2_varchar2: thr_emp_pk,
           p3_varchar2: APP_VERSION,
@@ -535,17 +525,45 @@ const HomeMain = ({ navigation }) => {
     );
   }, [language, greeting]);
   const renderItem = ({ item }) => {
-    return (
-      <CardShop
-        onPress={() => navigation.navigate("Menu_Production")}
-        image_uri={item.image_uri}
-        shop_address={"134 Trần Hưng Đạo, TP Hồ Chí Minh"}
-        shop_owner={"Thuỷ Tiên"}
-        shop_name={"Nhà hàng hải sản số 1"}
-        shop_phone={"0971761090"} />
-    );
+    if (item.parent === true) {
+      return (
+        <Block flex height={120} margin={10} borderRadius={20} justifyCenter />
+      );
+    } else {
+      return (
+        <Block
+          shadow
+          flex={1}
+          height={120}
+          margin={10}
+          borderRadius={20}
+          justifyCenter
+          backgroundColor={Color.white}
+        >
+          <Button nextScreen={() => navigation.navigate(item.menu_cd)}>
+            <Block
+              row
+              justifyContent={"space-between"}
+              paddingLeft={15}
+              paddingRight={15}
+            >
+              {SetIcon(item.icon)}
+            </Block>
+            <Text
+              numberOfLines={1}
+              fontWeight={"bold"}
+              size={14}
+              color={Color.mainColor}
+              paddingLeft={10}
+              paddingTop={3}
+            >
+              {selectLanguageDM(item, language)}
+            </Text>
+          </Button>
+        </Block>
+      );
+    }
   };
-
   const renderItemV1 = ({ item }) => {
     const isSelected = selectedItem === item;
     if (item.parent === true) {
