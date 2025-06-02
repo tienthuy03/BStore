@@ -12,9 +12,9 @@ const CardShop = ({ onPress, image_uri, shop_name, shop_address, shop_owner, sho
         style={styles.image}
       /> */}
 
-    <CachedImage 
-          image_uri={image_uri}
-          style={styles.image} 
+      <CachedImage
+        image_uri={image_uri}
+        style={styles.image}
       />
 
       <View style={styles.infoContainer}>

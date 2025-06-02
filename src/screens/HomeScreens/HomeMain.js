@@ -50,12 +50,18 @@ import Icon_BHLD from "../../icons/IconBHLD";
 import axios from "axios";
 import RNRestart from "react-native-restart";
 import { useDispatch, useSelector } from "react-redux";
-import sysFetch from "../../services/fetch_v1";
-import { home } from "../../styles";
+import { updateUserAction } from "../../actions";
 import { APP_VERSION } from "../../config/Pro";
+import { selectLanguageDM } from "../../Language";
+import sysFetch from "../../services/fetch_crypt";
+import { home } from "../../styles"
+import RowText from "../../components/RowText";
+import SvgPerson from "../../icons/Person";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Color } from "../../colors/colortv";
+import CardShop, { ShopCard } from "../../components/Bstore/CardShop";
 
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Svg, { Path } from "react-native-svg";
+const defaultAvatar = "https://i.pinimg.com/736x/99/d0/7f/99d07f72ea74f29fe21833964704cdc9.jpg"
 
 const HomeMain = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -66,6 +72,7 @@ const HomeMain = ({ navigation }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
   const numColumns = loginReducers.data.data.menu_type == 2 ? 2 : 3;
   const [loadMenu, setLoadMenu] = useState(true);
+  const [dataMenuMBHR, setDataMenuMBHR] = useState([]);
   let dataMenuMBHRs;
   let dataLanguage;
   let language;
@@ -218,7 +225,6 @@ const HomeMain = ({ navigation }) => {
   try {
     dataLanguage = languageReducer.data.data.language;
   } catch (error) { }
-
   try {
     language = loginReducers.data.data.user_language;
     urlImage = loginReducers.data.data.avatar;
@@ -234,7 +240,7 @@ const HomeMain = ({ navigation }) => {
   }, []);
 
   const checkBaoMat = () => {
-    const pro = "SELHRHM001000"; 
+    const pro = "SELHRHM001000";
     const in_par = {
       p1_varchar2: userPk,
       p2_varchar2: thr_emp_pk,
@@ -292,6 +298,7 @@ const HomeMain = ({ navigation }) => {
         console.log(error);
       });
   };
+  console.log(dataMenuMBHRs);
 
   const refreshNewToken = (obj) => {
     axios
@@ -351,7 +358,7 @@ const HomeMain = ({ navigation }) => {
       API,
       {
         // pro: 'SELHRMENU0100',
-        pro: "SELHRMENU0",
+        pro: "STV_HR_SEL_MBI_HRMENU_1",
         in_par: {
           p1_varchar2: userPk,
           p2_varchar2: thr_emp_pk,
@@ -493,44 +500,22 @@ const HomeMain = ({ navigation }) => {
 
 
   const renderItem = ({ item }) => {
-    if (item.parent === true) {
-      return (
-        <Block flex height={120} margin={10} borderRadius={20} justifyCenter />
-      );
-    } else {
-      return (
-        <Block
-          shadow
-          flex={1}
-          height={120}
-          margin={10}
-          borderRadius={20}
-          justifyCenter
-          backgroundColor={Color.white}
-        >
-          <Button nextScreen={() => navigation.navigate(item.menu_cd)}>
-            <Block
-              row
-              justifyContent={"space-between"}
-              paddingLeft={15}
-              paddingRight={15}
-            >
-              {SetIcon(item.icon)}
-            </Block>
-            <Text
-              numberOfLines={1}
-              fontWeight={"bold"}
-              size={14}
-              color={Color.mainColor}
-              paddingLeft={10}
-              paddingTop={3}
-            >
-              {selectLanguageDM(item, language)}
-            </Text>
-          </Button>
-        </Block>
-      );
-    }
+    console.log("item: ", item);
+
+    return (
+      <CardShop
+        onPress={() => {
+          console.log("ID được truyền đi:", item.tco_depot_pk);  // ✅ Log ở đây
+          navigation.navigate("Menu_Production", { tco_depot_pk: item.tco_depot_pk });
+        }}
+        image_uri={item.image_uri || "https://menuonline.vn/images/upload/news/789438234-Nha-hang-Hai-san.jpg"}
+        shop_address={item.address}
+        shop_name={item.shop_name}
+        shop_owner={item.shop_owner}
+        shop_phone={item.mobile}
+      />
+
+    );
   };
   const renderItemV1 = ({ item }) => {
     const isSelected = selectedItem === item;
@@ -606,21 +591,20 @@ const HomeMain = ({ navigation }) => {
   return (
     <>
       <View style={{ paddingHorizontal: 16, backgroundColor: "#F1F1F1", flex: 1 }}>
-        <View style={{ paddingTop: '15%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ paddingTop: '12%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ alignItems: 'center', gap: 12, flexDirection: 'row', flex: 1, justifyContent: 'flex-start' }}>
             <Image
               style={{ width: 40, height: 40, borderRadius: 100, borderWidth: 2, borderColor: Color.mainColor }}
               source={{ uri: "https://i.pinimg.com/736x/3b/19/11/3b1911246fc66f81cbc8a0035014569b.jpg" }} />
             <View style={{}}>
-              {/* <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 20, color: Color.textPrimary3 }}>Xin chào 👋</Text> */}
               <MaskedView
                 maskElement={
                   <Text
                     style={{
                       fontFamily: 'Roboto-Medium',
-                      fontSize: 20,
+                      fontSize: 16,
                       color: 'black', // màu này không quan trọng vì sẽ bị che
-                      textAlign: 'center',
+
                     }}
                   >
                     Xin chào 👋
@@ -643,7 +627,7 @@ const HomeMain = ({ navigation }) => {
                   </Text>
                 </LinearGradient>
               </MaskedView>
-              <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>Thuỷ Tiên</Text>
+              <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 18, color: Color.textPrimary2 }}>{fullname}</Text>
             </View>
 
           </View>
