@@ -28,13 +28,8 @@ import { SetApiURL } from "../../../services/redux/SysConfig/action"
 import { sysLoadTheme } from "../../../services/redux/System/action"
 import CaptchaComponent from "./CaptchaComponent"
 import ScanQR from "./ScanQR"
-<<<<<<< HEAD
-// import CryptoJS from "crypto-js";
-import CryptoJS from "react-native-crypto-js"
-=======
 import CryptoJS from "crypto-js";
 // import CryptoJS from "react-native-crypto-js"
->>>>>>> TienDev_V1
 import Load from "../../../components/Loading"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import ButtonV2 from "../../../components/ButtonV2"
