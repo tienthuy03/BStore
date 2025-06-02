@@ -491,39 +491,7 @@ const HomeMain = ({ navigation }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const infor = useMemo(() => {
-    return (
-      <Block row justifyStart alignCenter paddingLeft={20}>
-        <View style={home.boxI}>
-          {urlImage !== "data:;base64," ? (
-            <Image
-              style={home.img}
-              source={{ uri: urlImage }}
-              resizeMode='stretch'
-            />
-          ) : (
-            <View style={home.imgNo}>
-              <SvgPerson />
-            </View>
 
-          )}
-        </View>
-        <Block column paddingLeft={12}>
-          <Text
-            size={20}
-            marginBottom={4}
-            color={Color.white}
-            fontFamily={"Roboto-Bold"}
-          >
-            {greeting}
-          </Text>
-          <View style={{ gap: 4, justifyContent: 'center' }}>
-            <RowText text={fullname} iconColor={Color.white} iconName={""} iconSize={24} textStyle={{ fontFamily: 'Roboto-Bold', fontSize: 16, color: Color.white }} />
-          </View>
-        </Block>
-      </Block>
-    );
-  }, [language, greeting]);
   const renderItem = ({ item }) => {
     if (item.parent === true) {
       return (
