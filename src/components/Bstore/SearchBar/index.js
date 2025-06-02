@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { default as Icon } from "react-native-vector-icons/MaterialCommunityIcons";
+import { Color } from '../../../colors/colortv';
 
 const SearchBar = ({ value, onChange }) => {
     const Color = useSelector((s) => s.SystemReducer.theme);
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     },
     searchIcon: {
         position: 'absolute',
-        left: 16,
+        left: 24,
         top: '55%',
         transform: [{ translateY: -10 }],
     },
@@ -54,9 +55,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         padding: Platform.OS === 'ios' ? 10 : 6,
         marginTop: 5,
-        borderRadius: 8,
-        height: 44,
-        paddingLeft: 32
+        borderRadius: 100,
+        height: 42,
+        paddingLeft: 40,
+        fontFamily: 'Roboto-Regular',
+        color: Color.textPrimary2,
     },
     clearButton: {
         position: 'absolute',

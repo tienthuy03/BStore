@@ -21,8 +21,9 @@ import sysFetch from '../../../services/fetch_crypt';
 import { useRoute } from '@react-navigation/native';
 import { APP_VERSION } from '../../../config/Pro';
 import { useSelector } from 'react-redux';
+import Header from '../../../components/Bstore/Header/Header';
 
-const Menu_Production = () => {
+const Menu_Production = ({ navigation: { goBack } }) => {
   const router = useRoute();
   const { tco_depot_pk } = router.params;
   const [modalVisible, setModalVisible] = useState(false);
@@ -75,9 +76,6 @@ const Menu_Production = () => {
         return null;
     }
   };
-  console.log("listCategories", listCategories);
-  console.log("listProducts", listProducts);
-
 
   const getListProduct = () => {
     sysFetch(
@@ -121,24 +119,13 @@ const Menu_Production = () => {
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      <View style={styles.headerTopRow}>
-        <TouchableOpacity style={styles.backButton}>
-          <Icon name="chevron-left" size={24} color={Color.mainColor} />
-        </TouchableOpacity>
-        <View
-          style={styles.storeInfoHeader}
-        >
-          <Text
-            style={{}}
-            numberOfLines={1}
-          >
-            Nhà hàng hải sản số 1
-          </Text>
-
-        </View>
-        <View />
+      <Header goBack={goBack} >
+        Danh mục sản phẩm
+      </Header>
+      <View style={{ paddingTop: 8 }}>
+        <SearchBar />
       </View>
-      <SearchBar />
+
       <FlatList
         data={sections}
         renderItem={renderSection}
@@ -151,8 +138,6 @@ const Menu_Production = () => {
         product={selectedProduct}
         onClose={() => setModalVisible(false)}
       />
-
-
     </View>
   );
 };

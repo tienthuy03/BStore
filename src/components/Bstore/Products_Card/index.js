@@ -25,7 +25,7 @@ const Products_Card = ({ products, onPress }) => {
         <CachedImage
           image_uri={item.image_uri}
           style={{ width: '100%', height: '100%' }}
-          resizeMode="cover"
+
         />
       </View>
       <View style={styles.productInfo}>
@@ -86,10 +86,9 @@ const styles = StyleSheet.create({
   },
   productImageContainer: {
     backgroundColor: '#f5f5f5',
-    height: 120,
+    height: 140,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
   },
   productInfo: {
     padding: 12,

@@ -49,13 +49,7 @@ const ProductDetailModal = ({ visible, product, onClose }) => {
           </TouchableOpacity>
 
           <View style={styles.contentRow}>
-            {/* <Image
-              source={{ uri: product.image_uri }}
-              style={styles.productImage}
-              resizeMode="cover"
-            /> */}
             <CachedImage image_uri={product.image_uri} style={styles.productImage} />
-
             <View style={styles.infoColumn}>
               <View style={styles.product_nm}>
                 <Text style={styles.productName}>{product.prod_nm}</Text>
@@ -80,8 +74,8 @@ const ProductDetailModal = ({ visible, product, onClose }) => {
                     >
                       <Text
                         style={{
-                          color: selectedSize === size ? '#fff' : '#000',
-                          fontWeight: '500',
+                          color: selectedSize === size ? Color.white : Color.textPrimary2,
+                          fontFamily: 'Roboto-Medium',
                         }}
                       >
                         {size}
@@ -112,7 +106,7 @@ const ProductDetailModal = ({ visible, product, onClose }) => {
                 style={[styles.addButton]}
               >
                 <Text style={styles.addButtonText}>
-                  {'Thêm vào giỏ'}
+                  {'Thêm vào giỏ hàng'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -126,7 +120,7 @@ const ProductDetailModal = ({ visible, product, onClose }) => {
 const styles = StyleSheet.create({
   product_nm: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 4,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -189,15 +183,15 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   sizeButton: {
-    paddingVertical: 6,
+    paddingVertical: 4,
     paddingHorizontal: 14,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Color.gray,
   },
   sizeButtonSelected: {
-    backgroundColor: '#000',
-    borderColor: '#000',
+    backgroundColor: Color.mainColor2,
+    borderColor: Color.mainColor2,
   },
   bottomRow: {
     flexDirection: 'row',
@@ -224,7 +218,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   addButton: {
-    flex: 1,
     borderRadius: 20,
     paddingVertical: 10,
     alignItems: 'center',
