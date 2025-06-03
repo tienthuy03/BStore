@@ -260,6 +260,47 @@ const HomeMain = ({ navigation }) => {
       });
   };
 
+  function selectSystem(params, index) {
+    let data = [];
+    try {
+      dataLanguage.map((item) => {
+        if (item.field_name === "welcome" || item.field_name === "menu") {
+          data.push(item);
+        }
+      });
+      return data[index][params.toString().toLowerCase()];
+    } catch (error) { }
+  }
+  const [greeting, setGreeting] = useState("");
+  // Hàm xác định lời chào dựa trên giờ hiện tại
+  const getGreeting = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    if (hour >= 0 && hour < 12) {
+      return "Chào buổi sáng! 🌞";
+    } else if (hour >= 12 && hour < 18) {
+      return "Chào buổi chiều! 🌤️";
+    } else {
+      return "Chào buổi tối! 🌙";
+    }
+  };
+  useEffect(() => {
+    // Hàm cập nhật lời chào
+    const updateGreeting = () => {
+      setGreeting(getGreeting());
+    };
+
+    // Gọi ngay khi component mount
+    updateGreeting();
+
+    // Cập nhật lời chào sau 5 phút
+    const interval = setInterval(updateGreeting, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   const renderItem = ({ item }) => {
     return (
       <CardShop
@@ -276,6 +317,76 @@ const HomeMain = ({ navigation }) => {
 
     );
   };
+  const renderItemV1 = ({ item }) => {
+    const isSelected = selectedItem === item;
+    if (item.parent === true) {
+      return (
+        <View
+          style={{
+            height: 120,
+            margin: 5,
+            flex: 1,
+            marginBottom: 12,
+          }}
+        ></View>
+      );
+    } else {
+      return (
+        <View style={{ height: 100, flex: 1, marginBottom: 16, marginTop: 12 }}>
+          <Block
+            shadow
+            marginHorizontal={12}
+            borderRadius={12}
+            justifyCenter
+            backgroundColor={Color.white}
+            paddingVertical={12}
+            style={{
+              borderColor: isSelected ? '#25399F' : 'transparent',
+              borderWidth: isSelected ? 2 : 0,
+            }}
+          >
+            <Button
+              nextScreen={() => {
+                setSelectedItem(item);
+                navigation.navigate(item.menu_cd);
+              }}>
+              {SetIcon(item.icon)}
+            </Button>
+          </Block>
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <Text
+              numberOfLines={1}
+              fontWeight={"bold"}
+              size={12}
+              color={Color.mainColor}
+              paddingLeft={5}
+              paddingRight={5}
+              paddingTop={10}
+            >
+              {selectLanguageDM(item, language)}
+            </Text>
+          </View>
+        </View >
+      );
+    }
+  };
+  const [selectedItem, setSelectedItem] = useState(null);
+  const ListHeaderComponent = () => {
+    return (
+      <Block>
+        <Text
+          paddingLeft={20}
+          // paddingTop={10}
+          size={22}
+          fontFamily={"Roboto-Bold"}
+          color={Color.mainColor}
+          paddingBottom={12}
+        >
+          {selectSystem(language, 0)}
+        </Text>
+      </Block>
+    )
+  }
 
   return (
     <>

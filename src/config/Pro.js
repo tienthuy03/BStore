@@ -46,7 +46,6 @@ export const APP_VERSION = "1.0.0";
 export const ServerIP = {
   tvs: "http://115.73.215.94:8082/new_api/api/",
   // tvs: "http://26.241.193.222:8082/api/",
-
 };
 export const configAPI = [
   {
