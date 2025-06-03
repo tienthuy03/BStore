@@ -391,7 +391,7 @@ const HomeMain = ({ navigation }) => {
   return (
     <>
       <View style={{ paddingHorizontal: 16, backgroundColor: "#F1F1F1", flex: 1 }}>
-        <View style={{ paddingTop: '4%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ paddingTop: '10%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ alignItems: 'center', gap: 12, flexDirection: 'row', flex: 1, justifyContent: 'flex-start' }}>
             <Image
               style={{ width: 40, height: 40, borderRadius: 100, borderWidth: 2, borderColor: Color.mainColor }}

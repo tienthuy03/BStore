@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Header from '../../../components/Bstore/Header/Header';
 import CartItem from '../../../components/Bstore/CartItem';
 import CartSummary from '../../../components/Bstore/CartSummary';
 import { Color } from '../../../colors/colortv';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const mockData = [
   {
     id: '1',
@@ -63,6 +63,11 @@ const CartScreen = ({ navigation: { goBack } }) => {
   return (
     <View style={styles.container}>
       <Header goBack={goBack}>Giỏ hàng của bạn</Header>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 12, paddingTop: 4 }}>
+        <Icon name="account-edit" size={24} color={Color.mainColor3} />
+        <Text style={styles.txtNote}>Số lượng hàng có thể nhập bằng tay</Text>
+      </View>
+
       <View style={styles.body}>
         <FlatList
           data={items}
@@ -76,13 +81,22 @@ const CartScreen = ({ navigation: { goBack } }) => {
           )}
           contentContainerStyle={{ padding: 12 }}
           showsVerticalScrollIndicator={false}
+          ListHeaderComponent={() => {
+
+          }}
         />
       </View>
       <CartSummary total={getTotal()} />
-    </View>
+    </View >
   );
 };
 const styles = StyleSheet.create({
+  txtNote: {
+    fontSize: 14,
+    color: Color.mainColor3,
+    fontFamily: 'Roboto-Regular',
+
+  },
   container: { flex: 1, backgroundColor: Color.gray },
   body: { flex: 1 },
 });

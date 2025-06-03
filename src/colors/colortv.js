@@ -15,6 +15,7 @@ export const Color = {
   //change color
   mainColor: '#FA812F', //Màu chủ đạo
   mainColor2: '#FF9C49', //Màu chủ đạo
+  mainColor3: '#FF5E62',
   foreignColor: '#FFB22C', //Màu phụ
   // mainColor: '#143678', //Màu chủ đạo
   // foreignColor: '#0000ff', //Màu phụ

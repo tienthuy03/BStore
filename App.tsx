@@ -150,7 +150,7 @@ import RegisterAccount from "./src/screens/SystemScreens/RegisterAccount";
 import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
 import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQuestionSecurity";
 
-import { LogBox } from "react-native";
+import { LogBox, StatusBar } from "react-native";
 import Menu_Production from "./src/screens/HomeScreens/MBHS001";
 import CartScreen from "./src/screens/HomeScreens/CartScreen";
 
@@ -166,6 +166,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       {/* <NotificationAlert visible={visible} content={content} /> */}
       <SafeAreaProvider>
         <GlobalLoading>{null}</GlobalLoading>

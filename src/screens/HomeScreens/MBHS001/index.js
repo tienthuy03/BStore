@@ -30,7 +30,8 @@ const Menu_Production = ({ navigation: { goBack } }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [listCategories, setListCategories] = useState([]);
   const [listProducts, setListProducts] = useState([]);
-  const [listImages, setListImages] = useState([]);
+  const [listDetailPriduct, setListDetailProduct] = useState([]);
+  const [listCategoryProduct, setListCategoryProduct] = useState([]);
 
   const Api = useSelector((state) => state.SysConfigReducer.API_URL);
 
@@ -42,11 +43,19 @@ const Menu_Production = ({ navigation: { goBack } }) => {
   );
   let crt_by = useSelector((state) => state.loginReducers.data.data.crt_by);
 
+  // const openModal = (product) => {
+  //   console.log('Sản phẩm được chọn:', product);
+  //   setSelectedProduct(product);
+  //   setModalVisible(true);
+  // };
+
   const openModal = (product) => {
     console.log('Sản phẩm được chọn:', product);
     setSelectedProduct(product);
+    getDetailProduct(product.product_pk); // gọi API lấy chi tiết
     setModalVisible(true);
   };
+
 
   const closeModal = () => {
     setModalVisible(false);
@@ -76,7 +85,6 @@ const Menu_Production = ({ navigation: { goBack } }) => {
         return null;
     }
   };
-
   const getListProduct = () => {
     sysFetch(
       Api,
@@ -91,20 +99,55 @@ const Menu_Production = ({ navigation: { goBack } }) => {
         out_par: {
           p1_sys: "list_categories",
           p2_sys: "list_products",
-          p3_sys: "list_images",
         },
       },
       tokenLogin
     )
       .then((rs) => {
-        if (rs && rs.data.list_categories && rs.data.list_products && rs.data.list_images) {
+        if (rs && rs.data.list_categories && rs.data.list_products) {
+          console.log("Response data:", rs.data.list_categories);
+
           // Cập nhật state hoặc xử lý dữ liệu ở đây
           setListCategories(rs.data.list_categories);
           setListProducts(rs.data.list_products);
-          setListImages(rs.data.list_images);
         } else {
           console.log("No data found");
         }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const getDetailProduct = (product_pk) => {
+    sysFetch(
+      Api,
+      {
+        pro: "STV_HR_SEL_MBI_HRDP00100_1",
+        in_par: {
+          p1_varchar2: userPk,
+          p2_varchar2: 'SP001',
+          p3_varchar2: APP_VERSION,
+          p4_varchar2: crt_by,
+        },
+        out_par: {
+          p1_sys: "list_detail_product",
+          p2_sys: "list_category_product",
+        },
+      },
+      tokenLogin
+    )
+      .then((rs) => {
+        console.log("Response data:", rs.data);
+        // if (rs && rs.data.list_detail_product && rs.data.list_category_product) {
+
+
+        //   // Cập nhật state hoặc xử lý dữ liệu ở đây
+        //   setListDetailProduct(rs.data.list_detail_product);
+        //   setListCategoryProduct(rs.data.list_category_product);
+        // } else {
+        //   console.log("No data found");
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -118,7 +161,6 @@ const Menu_Production = ({ navigation: { goBack } }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <Header goBack={goBack} >
         Danh mục sản phẩm
       </Header>

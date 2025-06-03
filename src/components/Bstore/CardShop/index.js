@@ -3,20 +3,15 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Color } from '../../../colors/colortv';
 import CachedImage from '../../CachedImage';
+import LinearGradient from 'react-native-linear-gradient';
 
 const CardShop = ({ onPress, image_uri, shop_name, shop_address, shop_owner, shop_phone }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.card}>
-      {/* <Image
-        source={{ uri: shop_image }} // đổi URL hình ảnh thật
-        style={styles.image}
-      /> */}
-
       <CachedImage
         image_uri={image_uri}
         style={styles.image}
       />
-
       <View style={styles.infoContainer}>
         <Text style={styles.shopName}>{shop_name}</Text>
         <Text style={styles.detail}>Địa chỉ: {shop_address}</Text>
@@ -24,8 +19,9 @@ const CardShop = ({ onPress, image_uri, shop_name, shop_address, shop_owner, sho
         <Text style={styles.detail}>SĐT: {shop_phone}</Text>
 
         <TouchableOpacity style={styles.enterButton}>
-          <Icon name="arrow-right-bold-circle" size={28} color="#FA812F" />
+          <Icon name="arrow-right-bold-circle" size={28} color={Color.mainColor} />
         </TouchableOpacity>
+
       </View>
     </TouchableOpacity>
   );

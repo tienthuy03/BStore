@@ -24,7 +24,7 @@ const CartSummary = ({ total }) => (
         <Text style={styles.totalValue}>đ{total}</Text>
       </View>
       <LinearGradient
-        colors={['#FA812F', '#FFB84C']}
+        colors={[Color.mainColor, Color.mainColor3]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.processButton}
