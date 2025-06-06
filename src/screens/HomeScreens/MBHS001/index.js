@@ -13,10 +13,10 @@ import { APP_VERSION } from "../../../config/Pro"
 import { useSelector } from "react-redux"
 import Header from "../../../components/Bstore/Header/Header"
 
-const Menu_Production = ({ navigation: { goBack } }) => {
+const Menu_Production = ({ navigation }) => {
   const router = useRoute()
   const { tco_depot_pk } = router.params
-  const [modalVisible, setModalVisible] = useState(false)
+
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [listCategories, setListCategories] = useState([])
   const [listProducts, setListProducts] = useState([])
@@ -67,13 +67,24 @@ const Menu_Production = ({ navigation: { goBack } }) => {
         return (
           <Products_Card
             products={listProducts}
-            onPress={openModal} // This will now pass the product object
+            onPress={(product) => {
+              console.log("Sản phẩm được chọn để điều hướng:", product);
+              navigation.navigate('DetailProduct',
+                {
+                  tdp_production_pk: product.tdp_production_pk,
+                  prod_nm: product.prod_nm,
+                  prod_price: product.price,
+                  prod_desc: product.description,
+                  prod_uom: product.uom
+                });
+            }}
           />
         )
       default:
         return null
     }
   }
+  console.log(listProducts);
 
   const getListProduct = () => {
     sysFetch(
@@ -152,7 +163,7 @@ const Menu_Production = ({ navigation: { goBack } }) => {
 
   return (
     <View style={styles.container}>
-      <Header goBack={goBack}>Danh mục sản phẩm</Header>
+      <Header goBack={navigation.goBack}>Danh mục sản phẩm</Header>
       <View style={{ paddingTop: 8 }}>
         <SearchBar />
       </View>
@@ -165,12 +176,7 @@ const Menu_Production = ({ navigation: { goBack } }) => {
         contentContainerStyle={styles.scrollViewContent}
       />
 
-      <ProductDetailModal
-        visible={modalVisible}
-        product={listProducts}
-        listCategory={listCategoryProduct}
-        onClose={closeModal}
-      />
+
     </View>
   )
 }
