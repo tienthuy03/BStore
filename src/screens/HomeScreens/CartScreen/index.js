@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Header from '../../../components/Bstore/Header/Header';
 import CartItem from '../../../components/Bstore/CartItem';
-import CartSummary from '../../../components/Bstore/CartSummary';
 import { Color } from '../../../colors/colortv';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import CartSummary from '../../../components/Bstore/CartSummary';
 const mockData = [
   {
     id: '1',

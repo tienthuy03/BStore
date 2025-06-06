@@ -43,6 +43,7 @@
     "react-native-camera": "^4.2.1",
     "react-native-canvas": "^0.1.40",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-crypto-js": "^1.0.0",
     "react-native-default-preference": "^1.4.4",
     "react-native-device-info": "^14.0.1",
     "react-native-document-picker": "^9.3.1",
