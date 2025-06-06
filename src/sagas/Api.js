@@ -57,13 +57,7 @@ function* logintUserFromApi(username, password, machine_id) {
     AsyncStorage.setItem("API_URL", "http://apihr.hoaphatdungquat.vn/api/");
     URL = "http://apihr.hoaphatdungquat.vn/api/";
   }
-  // if (username.toLowerCase().startsWith("tvs-")) {
-  //   yield put(SetApiURL("http://tinvietsoft.com/tinviet_api/api/"));
-  //   AsyncStorage.setItem("API_URL", "http://tinvietsoft.com/tinviet_api/api/");
-  //   URL = "http://tinvietsoft.com/tinviet_api/api/";
-  // }
-  // SetApiURL
-  // yield put(SetApiURL(''));
+  
   const urlLogin = URL + "User/Login/";
   console.log(urlLogin);
   let param = {

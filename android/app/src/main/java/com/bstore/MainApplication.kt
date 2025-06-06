@@ -1,4 +1,4 @@
-package com.tinvietsoft
+package com.bstore
 
 import android.app.Application
 import com.facebook.react.PackageList

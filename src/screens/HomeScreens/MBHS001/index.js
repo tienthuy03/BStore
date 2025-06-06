@@ -89,27 +89,15 @@ const Menu_Production = ({ navigation: { goBack } }) => {
         out_par: {
           p1_sys: "list_categories",
           p2_sys: "list_products",
-<<<<<<< HEAD
-          // p3_sys: "list_images",
-=======
->>>>>>> TienDev_V1
         },
       },
       tokenLogin,
     )
       .then((rs) => {
-<<<<<<< HEAD
-        if (rs && rs.data.list_categories && rs.data.list_products ) {
-          // Cập nhật state hoặc xử lý dữ liệu ở đây
-          setListCategories(rs.data.list_categories);
-          setListProducts(rs.data.list_products);
-          // setListImages(rs.data.list_images);
-=======
         if (rs && rs.data.list_categories && rs.data.list_products) {
           console.log("Response data:", rs.data.list_categories)
           setListCategories(rs.data.list_categories)
           setListProducts(rs.data.list_products)
->>>>>>> TienDev_V1
         } else {
           console.log("No data found")
         }
