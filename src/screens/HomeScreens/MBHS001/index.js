@@ -93,17 +93,17 @@ const Menu_Production = () => {
         out_par: {
           p1_sys: "list_categories",
           p2_sys: "list_products",
-          p3_sys: "list_images",
+          // p3_sys: "list_images",
         },
       },
       tokenLogin
     )
       .then((rs) => {
-        if (rs && rs.data.list_categories && rs.data.list_products && rs.data.list_images) {
+        if (rs && rs.data.list_categories && rs.data.list_products ) {
           // Cập nhật state hoặc xử lý dữ liệu ở đây
           setListCategories(rs.data.list_categories);
           setListProducts(rs.data.list_products);
-          setListImages(rs.data.list_images);
+          // setListImages(rs.data.list_images);
         } else {
           console.log("No data found");
         }

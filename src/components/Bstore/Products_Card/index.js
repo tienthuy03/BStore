@@ -33,7 +33,7 @@ const Products_Card = ({ products, onPress }) => {
         <Text style={styles.productName}>{item.prod_nm}</Text>
         <View style={styles.productPriceRow}>
           <Text style={styles.productPrice}>đ{item.price}</Text>
-          <Text style={styles.productQuantity}>Số lượng: 10</Text>
+          <Text style={styles.productQuantity}>Số lượng: {item.qty}{item.uom}</Text>
         </View>
       </View>
     </TouchableOpacity>
