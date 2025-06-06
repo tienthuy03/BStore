@@ -39,7 +39,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         />
       </Svg>
 
-      {/* Icon giữa nổi lên */}
+      {/* Nút giữa */}
       <TouchableOpacity
         onPress={() => navigation.navigate(state.routes[middleIndex].name)}
         style={styles.middleButton}
@@ -50,7 +50,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         </LinearGradient>
       </TouchableOpacity>
 
-      {/* Các tab còn lại */}
+      {/* Các tab */}
       <View style={styles.tabWrapper}>
         {state.routes.map((route, index) => {
           if (index === middleIndex) return <View key={route.key} style={{ width: 70 }} />;
@@ -64,6 +64,13 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
             System: 'cog-outline',
           }[route.name];
 
+          const label = {
+            Home: 'Trang chủ',
+            Dashboard: 'Thống kê',
+            Noti: 'Thông báo',
+            System: 'Hệ thống',
+          }[route.name] || route.name;
+
           const color = isFocused ? '#fff' : 'rgba(255,255,255,0.6)';
 
           return (
@@ -74,7 +81,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
             >
               <Icon name={iconName} size={24} color={color} />
               <Text style={[styles.tabLabel, { color }]}>
-                {route.name}
+                {label}
               </Text>
             </TouchableOpacity>
           );
@@ -88,7 +95,6 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontFamily: 'Roboto-Medium',
     fontSize: 12,
-    // marginTop: 4,
   },
   container: {
     position: 'absolute',

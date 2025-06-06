@@ -3,9 +3,9 @@ import React from 'react';
 import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from "react-redux";
 
-const CachedImage = ({ image_uri, style}) => {
+const CachedImage = ({ image_uri, style }) => {
   const API = useSelector((state) => state.SysConfigReducer.API_URL);
-  let tokenLogin = useSelector( (state) => state.loginReducers.data.data.tokenLogin);
+  let tokenLogin = useSelector((state) => state.loginReducers.data.data.tokenLogin);
   let uri = `${API}Exec/GetImageFromBlob?${image_uri}`;
   return (
     <FastImage

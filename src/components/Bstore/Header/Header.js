@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { useSelector } from 'react-redux';
 // import Icon_back from '../../icons/Back';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-const TVSHeader = ({ children, goBack = null }) => {
+const Header = ({ children, goBack = null }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   return (
     <View
@@ -66,4 +66,4 @@ const TVSHeader = ({ children, goBack = null }) => {
   );
 };
 
-export default TVSHeader;
+export default Header;

@@ -25,7 +25,7 @@ const Products_Card = ({ products, onPress }) => {
         <CachedImage
           image_uri={item.image_uri}
           style={{ width: '100%', height: '100%' }}
-          resizeMode="cover"
+
         />
       </View>
       <View style={styles.productInfo}>
@@ -33,7 +33,11 @@ const Products_Card = ({ products, onPress }) => {
         <Text style={styles.productName}>{item.prod_nm}</Text>
         <View style={styles.productPriceRow}>
           <Text style={styles.productPrice}>đ{item.price}</Text>
+<<<<<<< HEAD
           <Text style={styles.productQuantity}>Số lượng: {item.qty}{item.uom}</Text>
+=======
+          <Text style={styles.productQuantity}>Số lượng: {item.qty}</Text>
+>>>>>>> TienDev_V1
         </View>
       </View>
     </TouchableOpacity>
@@ -86,10 +90,9 @@ const styles = StyleSheet.create({
   },
   productImageContainer: {
     backgroundColor: '#f5f5f5',
-    height: 120,
+    height: 140,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
   },
   productInfo: {
     padding: 12,

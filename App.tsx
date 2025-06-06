@@ -150,8 +150,9 @@ import RegisterAccount from "./src/screens/SystemScreens/RegisterAccount";
 import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
 import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQuestionSecurity";
 
-import { LogBox } from "react-native";
+import { LogBox, StatusBar } from "react-native";
 import Menu_Production from "./src/screens/HomeScreens/MBHS001";
+import CartScreen from "./src/screens/HomeScreens/CartScreen";
 
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -165,10 +166,11 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       {/* <NotificationAlert visible={visible} content={content} /> */}
       <SafeAreaProvider>
-        <GlobalLoading />
-        <Popup />
+        <GlobalLoading>{null}</GlobalLoading>
+        <Popup cusStyle={undefined} />
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="ConfigThemeScreen"
@@ -177,15 +179,20 @@ const App = () => {
             }}
           >
             <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} />
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen
+              name="LoginScreen"
+              // If you need to pass reloadConfig, do it via initialParams or a wrapper
+              // component={LoginScreen}
+              children={(props) => <LoginScreen {...props} reloadConfig={undefined} />}
+            />
             <Stack.Screen name="ForgotPass" component={ForgotPass} />
             <Stack.Screen name="RegisterAccount" component={RegisterAccount} />
             <Stack.Screen name="CheckLogin" component={CheckLogin} />
             <Stack.Screen name="UpdatePass" component={UpdatePass} />
             <Stack.Screen name="UpdatePassQuestionSecurity" component={UpdatePassQuestionSecurity} />
-            {/* <Stack.Screen name="SysConfig" component={SysConfig} /> */}
             <Stack.Screen name="Index" component={Index} options={{ gestureEnabled: false, }} />
             <Stack.Screen name="Menu_Production" component={Menu_Production} options={{ gestureEnabled: false, }} />
+            <Stack.Screen name="CartScreen" component={CartScreen} options={{ gestureEnabled: false, }} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

@@ -38,11 +38,7 @@ const Categories_Card = ({ categories, onPress }) => {
                 activeCategory === category.id && styles.categoryIconActive,
               ]}
             >
-              <Icon
-                name={category.icon}
-                size={22}
-                color={activeCategory === category.id ? '#fff' : '#555'}
-              />
+              <Text style={{ fontSize: 24 }}>{category.icon}</Text>
             </View>
             <Text
               style={[
