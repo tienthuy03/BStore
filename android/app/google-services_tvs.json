@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1071229681935",
-    "project_id": "bstore-3328e",
-    "storage_bucket": "bstore-3328e.firebasestorage.app"
+    "project_number": "135064105370",
+    "project_id": "tinvietsoft-73232",
+    "storage_bucket": "tinvietsoft-73232.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1071229681935:android:35d8996efd23f9381d7e7a",
+        "mobilesdk_app_id": "1:135064105370:android:a9fa8504b65842f6ef8a23",
         "android_client_info": {
-          "package_name": "com.bstore"
+          "package_name": "com.tinvietsoft"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5Th5F8RhtJZFWLzSqheddmV3KRk3mmLQ"
+          "current_key": "AIzaSyDkL_foS39rJk0tV59wg_5HUA--C_X-mFw"
         }
       ],
       "services": {

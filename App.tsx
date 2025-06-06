@@ -102,8 +102,8 @@ yarn add react-native-screens
   npm install patch-package -D --legacy-peer-deps
   npx patch-package react-native-action-button 
 
-  adb shell pm grant com.tinvietsoft android.permission.WRITE_EXTERNAL_STORAGE
- adb shell pm grant com.tinvietsoft android.permission.READ_EXTERNAL_STORAGE
+  adb shell pm grant com.bstore android.permission.WRITE_EXTERNAL_STORAGE
+  adb shell pm grant com.bstore android.permission.READ_EXTERNAL_STORAGE
  */
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
