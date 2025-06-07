@@ -153,7 +153,7 @@ import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQu
 import { LogBox, StatusBar } from "react-native";
 import Menu_Production from "./src/screens/HomeScreens/MBHS001";
 import CartScreen from "./src/screens/HomeScreens/CartScreen";
-
+import DetailProduct from "./src/screens/DetailProduct";
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 const sagaMiddleware = createSagaMiddleware();
@@ -193,6 +193,7 @@ const App = () => {
             <Stack.Screen name="Index" component={Index} options={{ gestureEnabled: false, }} />
             <Stack.Screen name="Menu_Production" component={Menu_Production} options={{ gestureEnabled: false, }} />
             <Stack.Screen name="CartScreen" component={CartScreen} options={{ gestureEnabled: false, }} />
+            <Stack.Screen name="DetailProduct" component={DetailProduct} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
