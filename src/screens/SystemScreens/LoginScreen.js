@@ -28,7 +28,7 @@ import Icon_user from "../../icons/User";
 import LinearGradient from "react-native-linear-gradient";
 import axios from "axios";
 import { updateUserAction } from "../../actions";
-import sysFetch from "../../services/fetch";
+import sysFetch from "../../services/fetch_crypt";
 import TVSControlPopup from "../../components/Tvs/ControlPopup2";
 import Swiper from "react-native-swiper";
 import { Linking } from "react-native";
@@ -157,7 +157,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
     sysFetch(
       api,
       {
-        pro: "SELCHKTOKEN1100",
+        pro: "STV_HR_SEL_MBI_CHKTOKEN_1_100",
         in_par: {
           p1_varchar2: username,
           p2_varchar2: APP_VERSION,
@@ -355,7 +355,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
           sysFetch(
             API,
             {
-              pro: "UPDDEVICE0100",
+              pro: "STV_HR_UPD_MBI_DEVICE_0_100",
               in_par: {
                 p1_varchar2: action,
                 p2_varchar2: p_thr_emp_pk,
