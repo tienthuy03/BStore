@@ -118,29 +118,7 @@ import createSagaMiddleware from "redux-saga";
 import { GlobalLoading, Popup } from "./src/components/Base";
 import allReducers from "./src/reducers";
 import rootSaga from "./src/sagas/rootSaga";
-import BDTK from "./src/screens/HomeScreens/FBDTK_MBHRTK/index";
-import MBHRTK001 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK001_ThongKeNhanLuc";
-import MBHRTK002 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK002_ThongKeLuong/MBHRTK002";
-import MBHRTK003 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK003_BieuDoHopDong/BDHD_MBHRTK003";
-import MBHRTK004 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK004_BieuDoLaoDong/TKTQ_MBHRTK004";
-import CCKM from "./src/screens/HomeScreens/FCCKM_MBHRTI/index";
-import QLDL from "./src/screens/HomeScreens/FQLDL_MBHRMN/index";
-import MBHRMN001 from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN001_NhanVien";
-import CreateNewEmployee from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN001_NhanVien/createNewEmployee";
-import MBHRMN006 from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN006_DiemDanh";
-import MBHRMN012 from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN012_Folder";
-import QLDT from "./src/screens/HomeScreens/FQLDT_MBHRDT/index";
-import MBHRDT001 from "./src/screens/HomeScreens/FQLDT_MBHRDT/MBHRDT001_DonThoiViec";
-import MBHRDT002 from "./src/screens/HomeScreens/FQLDT_MBHRDT/MBHRDT002_DonDieuChuyen";
 import Index from "./src/screens/HomeScreens/index";
-
-import SecurityMethod from "./src/screens/HomeScreens/SecurityMethod";
-import SystemSecurity from "./src/screens/HomeScreens/SecurityMethod/SystemSecurity";
-import UpdatePassword from "./src/screens/HomeScreens/SecurityMethod/UpdatePassword";
-
-import QuestionSecurity from "./src/screens/HomeScreens/SecurityMethod/QuestionSecurity";
-import EmailSecurity from "./src/screens/HomeScreens/SecurityMethod/EmailSecurity";
-
 import CheckLogin from "./src/screens/SystemScreens/CheckLogin";
 import ConfigThemeScreen from "./src/screens/SystemScreens/ConfigTheme/index";
 import ForgotPass from "./src/screens/SystemScreens/ForgotPassword";
@@ -150,10 +128,11 @@ import RegisterAccount from "./src/screens/SystemScreens/RegisterAccount";
 import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
 import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQuestionSecurity";
 
-import { LogBox, StatusBar } from "react-native";
+import { Alert, LogBox, StatusBar } from "react-native";
 import Menu_Production from "./src/screens/HomeScreens/MBHS001";
 import CartScreen from "./src/screens/HomeScreens/CartScreen";
 import DetailProduct from "./src/screens/DetailProduct";
+import messaging from '@react-native-firebase/messaging';
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 const sagaMiddleware = createSagaMiddleware();
@@ -162,6 +141,14 @@ const Stack = createStackNavigator();
 const App = () => {
   useEffect(() => {
     SplashScreen.hide();
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert(
+        remoteMessage.notification?.title ?? 'Thông báo',
+        remoteMessage.notification?.body ?? ''
+      );
+    });
+    return unsubscribe; // hủy listener khi App unmount
   }, []);
 
   return (
