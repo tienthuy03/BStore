@@ -68,14 +68,15 @@ const Menu_Production = ({ navigation }) => {
           <Products_Card
             products={listProducts}
             onPress={(product) => {
-              console.log("Sản phẩm được chọn để điều hướng:", product);
               navigation.navigate('DetailProduct',
                 {
                   tdp_production_pk: product.tdp_production_pk,
                   prod_nm: product.prod_nm,
                   prod_price: product.price,
                   prod_desc: product.description,
-                  prod_uom: product.uom
+                  prod_uom: product.uom,
+                  prod_unit_price: product.unit_price
+
                 });
             }}
           />

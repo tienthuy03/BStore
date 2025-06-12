@@ -108,45 +108,20 @@ yarn add react-native-screens
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect } from "react";
-// import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import SplashScreen from "react-native-splash-screen";
-//import store from './src/store';
 import { Provider } from "react-redux";
 import { applyMiddleware, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { GlobalLoading, Popup } from "./src/components/Base";
 import allReducers from "./src/reducers";
 import rootSaga from "./src/sagas/rootSaga";
-import BDTK from "./src/screens/HomeScreens/FBDTK_MBHRTK/index";
-import MBHRTK001 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK001_ThongKeNhanLuc";
-import MBHRTK002 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK002_ThongKeLuong/MBHRTK002";
-import MBHRTK003 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK003_BieuDoHopDong/BDHD_MBHRTK003";
-import MBHRTK004 from "./src/screens/HomeScreens/FBDTK_MBHRTK/MBHRTK004_BieuDoLaoDong/TKTQ_MBHRTK004";
-import CCKM from "./src/screens/HomeScreens/FCCKM_MBHRTI/index";
-import QLDL from "./src/screens/HomeScreens/FQLDL_MBHRMN/index";
-import MBHRMN001 from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN001_NhanVien";
-import CreateNewEmployee from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN001_NhanVien/createNewEmployee";
-import MBHRMN006 from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN006_DiemDanh";
-import MBHRMN012 from "./src/screens/HomeScreens/FQLDL_MBHRMN/MBHRMN012_Folder";
-import QLDT from "./src/screens/HomeScreens/FQLDT_MBHRDT/index";
-import MBHRDT001 from "./src/screens/HomeScreens/FQLDT_MBHRDT/MBHRDT001_DonThoiViec";
-import MBHRDT002 from "./src/screens/HomeScreens/FQLDT_MBHRDT/MBHRDT002_DonDieuChuyen";
 import Index from "./src/screens/HomeScreens/index";
-
-import SecurityMethod from "./src/screens/HomeScreens/SecurityMethod";
-import SystemSecurity from "./src/screens/HomeScreens/SecurityMethod/SystemSecurity";
-import UpdatePassword from "./src/screens/HomeScreens/SecurityMethod/UpdatePassword";
-
-import QuestionSecurity from "./src/screens/HomeScreens/SecurityMethod/QuestionSecurity";
-import EmailSecurity from "./src/screens/HomeScreens/SecurityMethod/EmailSecurity";
-
 import CheckLogin from "./src/screens/SystemScreens/CheckLogin";
 import ConfigThemeScreen from "./src/screens/SystemScreens/ConfigTheme/index";
 import ForgotPass from "./src/screens/SystemScreens/ForgotPassword";
 import LoginScreen from "./src/screens/SystemScreens/LoginScreen";
 import RegisterAccount from "./src/screens/SystemScreens/RegisterAccount";
-// import SysConfig from "./src/screens/SystemScreens/SysConfig";
 import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
 import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQuestionSecurity";
 

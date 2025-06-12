@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   Modal,
@@ -8,33 +9,35 @@ import {
   Image,
   TextInput,
   Keyboard,
+  ToastAndroid,
+  Platform,
+  Alert,
 } from 'react-native';
 import { Color } from '../../../colors/colortv';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import CachedImage from '../../CachedImage';
 
-const ProductDetailModal = ({ visible, product, onClose, listCategory }) => {
+// Thêm prop onAddToCart để nhận callback từ component cha
+const ProductDetailModal = ({ visible, product, onClose, listCategory, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedSize, setSelectedSize] = useState(null);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [manualQuantity, setManualQuantity] = useState('1');
+  const [manualQuantity, setManualQuantity] = useState('');
+  console.log("product: ", product);
+
+  // Kiểm tra xem có category hay không
+  const hasCategories = Array.isArray(listCategory) && listCategory.length > 0;
+  console.log("product: ", product);
 
   useEffect(() => {
     if (visible) {
-      setQuantity(0.5);
-      setManualQuantity('0.5');
+      setQuantity(1);
+      setManualQuantity('1');
       setAddedToCart(false);
-      setSelectedSize('');
+      setSelectedSize(null);
     }
   }, [visible]);
-
-  // Set default selected category when modal opens
-  useEffect(() => {
-    if (visible && Array.isArray(listCategory) && listCategory.length > 0 && !selectedSize) {
-      setSelectedSize(listCategory[0]);
-    }
-  }, [visible, listCategory]);
 
   const handleQuantityChange = (text) => {
     // Cho phép nhập số và dấu thập phân
@@ -54,41 +57,69 @@ const ProductDetailModal = ({ visible, product, onClose, listCategory }) => {
       if (!isNaN(num) && num > 0) {
         setQuantity(num);
       } else {
-        setQuantity(0.5); // Giá trị mặc định tối thiểu
+        setQuantity(1);
       }
     } else {
-      setQuantity(0.5);
+      setQuantity(1);
     }
   };
 
   const handleQuantityBlur = () => {
-    if (!manualQuantity || parseFloat(manualQuantity) < 0.5 || isNaN(parseFloat(manualQuantity))) {
-      setManualQuantity('0.5');
-      setQuantity(0.5);
+    if (!manualQuantity || parseFloat(manualQuantity) <= 0 || isNaN(parseFloat(manualQuantity))) {
+      setManualQuantity('1');
+      setQuantity(1);
     }
   };
 
   const increaseQuantity = () => {
-    const newQuantity = quantity + 0.5;
+    const newQuantity = quantity + 1;
     setQuantity(newQuantity);
     setManualQuantity(newQuantity.toString());
   };
 
   const decreaseQuantity = () => {
-    const newQuantity = quantity > 0.5 ? quantity - 0.5 : 0.5;
+    const newQuantity = quantity > 1 ? quantity - 1 : 1;
     setQuantity(newQuantity);
     setManualQuantity(newQuantity.toString());
   };
 
+  // Hiển thị thông báo thành công
+  const showSuccessMessage = (message) => {
+    if (Platform.OS === 'android') {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    } else {
+      Alert.alert('Thông báo', message);
+    }
+  };
+  console.log("product: ", product);
+  console.log("selected: ", selectedSize);
+
+
   const handleAddToCart = () => {
+    if (hasCategories && !selectedSize) {
+      return Alert.alert('Thông báo', 'Vui lòng chọn loại hàng trước khi thêm vào giỏ hàng');
+    }
+
+    const source = (hasCategories && selectedSize) ? selectedSize : product;
+    const cartItem = {
+      id: selectedSize ? `${product.tdp_production_pk}_${selectedSize.pk}` : product.tdp_production_pk,
+      productId: product.tdp_production_pk,
+      name: product.prod_nm,
+      image: product.image_uri,
+      price: source.price || product.prod_price,
+      price_unit: source.unit_price || product.prod_unit_price,
+      uom: source.price_type_uom || product.prod_uom,
+      quantity,
+      category: selectedSize,
+      categoryName: source.price_type_mn || null,
+      totalPrice: (source.unit_price || product.prod_unit_price) * quantity,
+      selected: false
+    };
+
+    onAddToCart?.(cartItem);
     setAddedToCart(true);
-    // Gọi API hoặc xử lý thêm vào giỏ hàng tại đây
-    console.log('Added to cart:', {
-      product: product,
-      selectedCategory: selectedSize,
-      quantity: quantity,
-      totalPrice: selectedSize?.price * quantity
-    });
+    showSuccessMessage('Đã thêm sản phẩm vào giỏ hàng');
+    setTimeout(onClose, 1000);
   };
 
   const handleCategorySelect = (category) => {
@@ -100,6 +131,10 @@ const ProductDetailModal = ({ visible, product, onClose, listCategory }) => {
     if (selectedSize && selectedSize.price) {
       return `đ${selectedSize.price.toLocaleString()}`;
     }
+    // Hiển thị giá từ product gốc
+    if (product && product.prod_price) {
+      return `đ${product.prod_price.toLocaleString()}`;
+    }
     return 'đ0';
   };
 
@@ -110,8 +145,15 @@ const ProductDetailModal = ({ visible, product, onClose, listCategory }) => {
     if (selectedSize && selectedSize.price_type_description) {
       return selectedSize.price_type_description;
     }
+    // Hiển thị mô tả từ product gốc
+    if (product && product.prod_desc) {
+      return product.prod_desc;
+    }
     return 'Không có mô tả sản phẩm.';
   };
+
+  // Kiểm tra xem button có nên được disable hay không
+  const isAddButtonDisabled = hasCategories && !selectedSize;
 
   if (!product) return null;
 
@@ -141,30 +183,38 @@ const ProductDetailModal = ({ visible, product, onClose, listCategory }) => {
             </View>
           </View>
 
-          <View style={styles.sizeRow}>
-            <Text style={styles.sizeLabel}>Loại hàng</Text>
-            <View style={styles.sizeOptions}>
-              {Array.isArray(listCategory) && listCategory.map((item) => (
-                <TouchableOpacity
-                  key={item.pk}
-                  onPress={() => handleCategorySelect(item)}
-                  style={[
-                    styles.sizeButton,
-                    selectedSize?.pk === item.pk && styles.sizeButtonSelected,
-                  ]}
-                >
-                  <Text
-                    style={{
-                      color: selectedSize?.pk === item.pk ? Color.white : Color.textPrimary2,
-                      fontFamily: 'Roboto-Medium',
-                    }}
+          {/* Chỉ hiển thị phần category nếu có categories */}
+          {hasCategories && (
+            <View style={styles.sizeRow}>
+              <Text style={styles.sizeLabel}>
+                Loại hàng {!selectedSize && <Text style={styles.requiredText}>*</Text>}
+              </Text>
+              <View style={styles.sizeOptions}>
+                {listCategory.map((item) => (
+                  <TouchableOpacity
+                    key={item.pk}
+                    onPress={() => handleCategorySelect(item)}
+                    style={[
+                      styles.sizeButton,
+                      selectedSize?.pk === item.pk && styles.sizeButtonSelected,
+                    ]}
                   >
-                    {item.price_type_mn}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text
+                      style={{
+                        color: selectedSize?.pk === item.pk ? Color.white : Color.textPrimary2,
+                        fontFamily: 'Roboto-Medium',
+                      }}
+                    >
+                      {item.price_type_mn}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {!selectedSize && (
+                <Text style={styles.warningText}>Vui lòng chọn loại hàng</Text>
+              )}
             </View>
-          </View>
+          )}
 
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
             <View>
@@ -180,8 +230,9 @@ const ProductDetailModal = ({ visible, product, onClose, listCategory }) => {
                 onChangeText={handleQuantityChange}
                 onBlur={handleQuantityBlur}
                 keyboardType="decimal-pad"
-                maxLength={5}
+                maxLength={6}
                 onSubmitEditing={Keyboard.dismiss}
+                selectTextOnFocus={true}
               />
               <TouchableOpacity onPress={increaseQuantity} style={styles.counterButton}>
                 <Text style={styles.counterText}>+</Text>
@@ -192,13 +243,13 @@ const ProductDetailModal = ({ visible, product, onClose, listCategory }) => {
           <View style={styles.bottomRow}>
             <TouchableOpacity onPress={handleAddToCart} style={{ flex: 1 }}>
               <LinearGradient
-                colors={[Color.mainColor, Color.mainColor3]}
+                colors={isAddButtonDisabled ? ['#ccc', '#999'] : [Color.mainColor, Color.mainColor3]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={[styles.addButton]}
+                style={[styles.addButton, isAddButtonDisabled && styles.disabledButton]}
               >
-                <Text style={styles.addButtonText}>
-                  Thêm vào giỏ hàng
+                <Text style={[styles.addButtonText, isAddButtonDisabled && styles.disabledButtonText]}>
+                  {addedToCart ? 'Đã thêm vào giỏ hàng' : 'Thêm vào giỏ hàng'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -274,6 +325,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
   },
+  requiredText: {
+    color: 'red',
+    fontSize: 16,
+  },
+  warningText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
   sizeOptions: {
     flexDirection: 'row',
     gap: 10,
@@ -324,6 +385,12 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  disabledButton: {
+    opacity: 0.6,
+  },
+  disabledButtonText: {
+    color: '#fff',
   },
 });
 
