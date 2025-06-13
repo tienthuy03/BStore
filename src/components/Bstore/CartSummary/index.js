@@ -3,12 +3,12 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Color } from '../../../colors/colortv';
 import LinearGradient from 'react-native-linear-gradient';
 
-const CartSummary = ({ total }) => (
+const CartSummary = ({ total, quantityProd, handleCheckout }) => (
   <View style={styles.footerContainer}>
-    <Text style={styles.summaryTitle}>Chi tiết đơn hàng</Text>
+    <Text style={styles.summaryTitle}>Tổng đơn hàng</Text>
     <View style={styles.row}>
-      <Text style={styles.label}>Tổng số mặt hàng</Text>
-      <Text style={styles.value}>đ{total}</Text>
+      <Text style={styles.label}>Tổng số sản phẩm</Text>
+      <Text style={styles.value}>{quantityProd}</Text>
     </View>
     <View style={styles.row}>
       <Text style={styles.label}>Giảm giá</Text>
@@ -29,7 +29,7 @@ const CartSummary = ({ total }) => (
         end={{ x: 1, y: 0 }}
         style={styles.processButton}
       >
-        <TouchableOpacity style={styles.buttonContent}>
+        <TouchableOpacity style={styles.buttonContent} onPress={handleCheckout}>
           <Text style={styles.processText}>Xác nhận</Text>
         </TouchableOpacity>
       </LinearGradient>

@@ -108,10 +108,8 @@ yarn add react-native-screens
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect } from "react";
-// import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import SplashScreen from "react-native-splash-screen";
-//import store from './src/store';
 import { Provider } from "react-redux";
 import { applyMiddleware, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
@@ -124,7 +122,6 @@ import ConfigThemeScreen from "./src/screens/SystemScreens/ConfigTheme/index";
 import ForgotPass from "./src/screens/SystemScreens/ForgotPassword";
 import LoginScreen from "./src/screens/SystemScreens/LoginScreen";
 import RegisterAccount from "./src/screens/SystemScreens/RegisterAccount";
-// import SysConfig from "./src/screens/SystemScreens/SysConfig";
 import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
 import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQuestionSecurity";
 
