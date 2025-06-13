@@ -128,26 +128,70 @@ import RegisterAccount from "./src/screens/SystemScreens/RegisterAccount";
 import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
 import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQuestionSecurity";
 
-import { Alert, LogBox, StatusBar } from "react-native";
+import { Alert, LogBox, StatusBar, PermissionsAndroid, Platform } from "react-native";
 import Menu_Production from "./src/screens/HomeScreens/MBHS001";
 import CartScreen from "./src/screens/HomeScreens/CartScreen";
 import DetailProduct from "./src/screens/DetailProduct";
 import messaging from '@react-native-firebase/messaging';
+import notifee, { AndroidColor, AndroidImportance  } from '@notifee/react-native';
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 const sagaMiddleware = createSagaMiddleware();
 let store = createStore(allReducers, applyMiddleware(sagaMiddleware));
 const Stack = createStackNavigator();
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+  console.log('Data', remoteMessage.data);
+  await notifee.displayNotification({
+    title: String(remoteMessage.data?.title),
+    body: String(remoteMessage.data?.body),
+    android: {
+      channelId: 'default',
+      sound: 'default',
+      smallIcon: 'ic_notification', // drawable/ic_notification.png
+      color: '#FF9800'// AndroidColor.ORANGE, // hoặc dùng '#FF9800'
+    },
+  });
+});
+
+const createNotificationChannel = async () => {
+  console.log('createNotificationChannel----------');
+  await requestPermission();
+  await notifee.createChannel({
+    id: 'default',
+    name: 'Thông báo mặc định',
+    sound: 'default', // phải chỉ rõ
+    importance: AndroidImportance.HIGH, // hoặc 4
+  });
+};
+const requestPermission = async () => {
+  console.log('requestPermission----------');
+  if (Platform.OS === 'android') {
+    const settings = await notifee.requestPermission();
+    console.log('Notification permission:', settings);
+  } else {
+    await messaging().requestPermission(); // iOS
+  }
+};
 const App = () => {
   useEffect(() => {
     SplashScreen.hide();
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert(
-        remoteMessage.notification?.title ?? 'Thông báo',
-        remoteMessage.notification?.body ?? ''
-      );
+    // Tạo channel 1 lần khi app khởi động
+  console.log('createNotificationChannel+++++++++++');
+    createNotificationChannel();
+  const unsubscribe = messaging().onMessage(async remoteMessage => {
+    await notifee.displayNotification({
+      title: String(remoteMessage.data?.title),
+      body: String(remoteMessage.data?.body),
+      android: {
+        channelId: 'default',
+        sound: 'default', // quan trọng
+        smallIcon: 'ic_notification', // drawable/ic_notification.png
+        color: '#FF9800'// AndroidColor.ORANGE, // hoặc dùng '#FF9800'
+      },
     });
+  });
     return unsubscribe; // hủy listener khi App unmount
   }, []);
 
