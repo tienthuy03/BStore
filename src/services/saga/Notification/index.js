@@ -9,7 +9,7 @@ import {
   NT_PRORESS_NOTIFICATION,
   NT_RESET_COUNT_NOTI_TAB,
 } from "../../redux/Notification/action";
-import sysFetch from "../../fetch";
+import sysFetch from "../../fetch_crypt";
 import DefaultPreference from "react-native-default-preference";
 
 function* watchingNofitication() {
@@ -125,7 +125,7 @@ function* fetchNotification() {
       (state) => state.loginReducers.data.data.thr_emp_pk
     );
     let params = {
-      pro: "SELHRAN0010101",
+      pro: "STV_HR_SEL_MBI_HRDP_ANNOUNCE",
       in_par: {
         p1_varchar2: thr_emp_pk,
       },
@@ -137,7 +137,9 @@ function* fetchNotification() {
     };
     const responses = yield sysFetch(URL, params, token);
     console.log(responses);
+    console.log("ntSetNotification",responses.data);
     yield put(ntSetNotification(responses.data));
+    console.log("ntProcessNotification");
     yield put(ntProcessNotification());
   } catch (error) {}
 }

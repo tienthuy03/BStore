@@ -130,68 +130,122 @@ import Menu_Production from "./src/screens/HomeScreens/MBHS001";
 import CartScreen from "./src/screens/HomeScreens/CartScreen";
 import DetailProduct from "./src/screens/DetailProduct";
 import messaging from '@react-native-firebase/messaging';
-import notifee, { AndroidColor, AndroidImportance  } from '@notifee/react-native';
+import notifee, { AndroidColor, AndroidImportance, AuthorizationStatus, EventType   } from '@notifee/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 const sagaMiddleware = createSagaMiddleware();
 let store = createStore(allReducers, applyMiddleware(sagaMiddleware));
 const Stack = createStackNavigator();
+const noti_sound = 'default'; // Tên file âm thanh thông báo, không cần đuôi .mp3
+const noti_icon = 'ic_notification'; // Tên icon thông báo, cần có trong thư mục drawable
+const noti_color = '#FF9800'; // Màu sắc thông báo, có thể dùng AndroidColor hoặc mã màu hex
+
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+  console.log('[BackgroundEvent] type:', type, detail.notification);
+  console.log('🌒 onBackgroundEvent', type);
+  await updateBadge();
+
+  // if (type === EventType.DELIVERED || type === EventType.PRESS) {
+  //   await updateBadge(); // ✅ Gọi ở đây cũng tăng badge nếu người dùng bấm/tương tác
+  // }
+});
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
+  // console.log('Message handled in the background!', remoteMessage);
   console.log('Data', remoteMessage.data);
   await notifee.displayNotification({
     title: String(remoteMessage.data?.title),
     body: String(remoteMessage.data?.body),
     android: {
       channelId: 'default',
-      sound: 'default',
-      smallIcon: 'ic_notification', // drawable/ic_notification.png
-      color: '#FF9800'// AndroidColor.ORANGE, // hoặc dùng '#FF9800'
+      sound: noti_sound,
+      smallIcon: noti_icon, // drawable/ic_notification.png
+      color: noti_color// AndroidColor.ORANGE, // hoặc dùng '#FF9800'
     },
   });
+  console.log('🌙 Background message:', remoteMessage);
+  updateBadge(); // ✅ Tăng badge
 });
+async function requestNotificationPermission() {
+  const settings = await notifee.requestPermission();
 
+  if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
+    console.log('✅ Notification permission granted:', settings);
+  } else {
+    console.warn('🚫 Notification permission denied:', settings);
+  }
+}
 const createNotificationChannel = async () => {
-  console.log('createNotificationChannel----------');
-  await requestPermission();
+  await notifee.deleteChannel('default'); // 🧨 xóa cũ
   await notifee.createChannel({
     id: 'default',
     name: 'Thông báo mặc định',
-    sound: 'default', // phải chỉ rõ
-    importance: AndroidImportance.HIGH, // hoặc 4
+    sound: noti_sound,
+    importance: AndroidImportance.HIGH,
+    badge: true, // ✅ cần có
   });
 };
-const requestPermission = async () => {
-  console.log('requestPermission----------');
-  if (Platform.OS === 'android') {
-    const settings = await notifee.requestPermission();
-    console.log('Notification permission:', settings);
-  } else {
-    await messaging().requestPermission(); // iOS
+async function updateBadge() {
+  try {
+    let current = parseInt(await AsyncStorage.getItem('badge_count') || '0', 10);
+    current += 1;
+    await AsyncStorage.setItem('badge_count', current.toString());
+    await notifee.setBadgeCount(current);
+    console.log("🔢 Badge count hiện tại:", current);
+  } catch (e) {
+    console.log("❌ Badge update error", e);
   }
-};
+}
+
+async function clearBadge() {
+  try {
+    await AsyncStorage.setItem('badge_count', '0');
+    await notifee.setBadgeCount(0);
+    console.log("🧹 Đã reset badge");
+  } catch (e) {
+    console.log("❌ Error clearing badge", e);
+  }
+}
+
 const App = () => {
   useEffect(() => {
     SplashScreen.hide();
-    // Tạo channel 1 lần khi app khởi động
-  console.log('createNotificationChannel+++++++++++');
-    createNotificationChannel();
-  const unsubscribe = messaging().onMessage(async remoteMessage => {
-    await notifee.displayNotification({
-      title: String(remoteMessage.data?.title),
-      body: String(remoteMessage.data?.body),
-      android: {
-        channelId: 'default',
-        sound: 'default', // quan trọng
-        smallIcon: 'ic_notification', // drawable/ic_notification.png
-        color: '#FF9800'// AndroidColor.ORANGE, // hoặc dùng '#FF9800'
-      },
-    });
-  });
-    return unsubscribe; // hủy listener khi App unmount
+  
+    let unsubscribe: (() => void) | undefined; // ✅ Khai báo trước
+  
+    (async () => {
+      await createNotificationChannel();
+      await requestNotificationPermission();
+  
+      unsubscribe = messaging().onMessage(async remoteMessage => {
+        await notifee.displayNotification({
+          title: String(remoteMessage.data?.title),
+          body: String(remoteMessage.data?.body),
+          android: {
+            channelId: 'default',
+            sound: noti_sound,
+            smallIcon: noti_icon,
+            color: noti_color,
+          },
+        });
+        console.log('🔥 Foreground message:', remoteMessage);
+        await updateBadge();
+      });
+  
+      const settings = await notifee.getNotificationSettings();
+      // console.log('Notification permission:', settings);
+    })();
+  
+    return () => {
+      if (unsubscribe) unsubscribe(); // ✅ Chỉ gọi nếu có
+    };
   }, []);
 
+  useEffect(() => {
+    clearBadge(); // reset khi mở app
+  }, []);
   return (
     <Provider store={store}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
