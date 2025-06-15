@@ -28,7 +28,7 @@ import Icon_user from "../../icons/User";
 import LinearGradient from "react-native-linear-gradient";
 import axios from "axios";
 import { updateUserAction } from "../../actions";
-import sysFetch from "../../services/fetch";
+import sysFetch from "../../services/fetch_crypt";
 import TVSControlPopup from "../../components/Tvs/ControlPopup2";
 import Swiper from "react-native-swiper";
 import { Linking } from "react-native";
@@ -68,6 +68,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
   let fullnames;
   let userPk;
   let refreshToken;
+  let crt_by;
   try {
     loadings = state.isLoading;
     results = state.data.results;
@@ -79,6 +80,8 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
     login_status = state.data.data.login_status;
     userPk = state.data.data.tes_user_pk;
     refreshToken = state.data.data.refreshToken;
+    crt_by = state.data.data.crt_by;
+    // console.log("LoginScreen", state.data.data);
   } catch (error) {
     console.log(error);
   }
@@ -157,7 +160,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
     sysFetch(
       api,
       {
-        pro: "SELCHKTOKEN1100",
+        pro: "STV_HR_SEL_MBI_CHKTOKEN_1_100",
         in_par: {
           p1_varchar2: username,
           p2_varchar2: APP_VERSION,
@@ -226,7 +229,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       if (login_status === "0") {
         navigation.navigate("UpdatePass", { password });
       } else if (login_status !== 0) {
-        getTokens(thr_emp_pk, device_id);
+        getTokens(thr_emp_pk, device_id, crt_by);
         // DefaultPreference.set('username', username);
         TouchID.isSupported(optionalConfigObject)
           .then((biometryType) => {
@@ -276,7 +279,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
     }
   }, [results]);
 
-  const refreshNewToken = (obj, p1, p2, p3) => {
+  const refreshNewToken = (obj, p1, p2, p3, p_crt_by) => {
     axios
       .post(API + "User/RefreshToken/", {
         token: tokenLogin,
@@ -301,7 +304,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
         tokenLogin = response.data.token;
         refreshToken = response.data.refreshToken;
         if (obj == "getTokens") {
-          getTokens(p1, p2);
+          getTokens(p1, p2, p_crt_by);
         }
         if (obj == "checkValidToken") {
           checkValidToken(p1, p2, p3);
@@ -338,7 +341,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       });
   }
 
-  async function getTokens(p_thr_emp_pk, device_id) {
+  async function getTokens(p_thr_emp_pk, device_id, p_crt_by) {
     const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -352,16 +355,17 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       if (fcmToken) {
         if (device_id !== fcmToken) {
           const action = "UPDATE";
+          const  in_par = {
+            p1_varchar2: action,
+            p2_varchar2: p_thr_emp_pk,
+            p3_varchar2: fcmToken,
+            p4_varchar2: p_crt_by
+          };
           sysFetch(
             API,
             {
-              pro: "UPDDEVICE0100",
-              in_par: {
-                p1_varchar2: action,
-                p2_varchar2: p_thr_emp_pk,
-                p3_varchar2: fcmToken,
-                p4_varchar2: ""
-              },
+              pro: "STV_HR_UPD_MBI_DEVICE_0_100",
+              in_par:  in_par,
               out_par: {
                 p1_varchar2: "update_device",
               },
@@ -370,8 +374,9 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
           )
             .then((rs) => {
               if (rs == "Token Expired") {
-                refreshNewToken("getTokens", p_thr_emp_pk, device_id);
+                refreshNewToken("getTokens", p_thr_emp_pk, device_id, p_crt_by);
               } else {
+                // console.log("in_par", in_par);
                 console.log("Token res", rs);
               }
             })

@@ -10,7 +10,7 @@ import OneNotificationItem from "./OneNotificationItem";
 import axios from "axios";
 import { updateUserAction } from "../../../actions";
 import RNRestart from "react-native-restart";
-import sysFetch from "../../../services/fetch";
+import sysFetch from "../../../services/fetch_crypt";
 const SystemNoti = () => {
   const dispatch = useDispatch();
   const API = useSelector((state) => state.SysConfigReducer.API_URL);
@@ -76,11 +76,11 @@ const SystemNoti = () => {
       });
   };
   const getData = () => {
-    console.log("get data noti");
+    console.log("get data noti thr_emp_pk:",thr_emp_pk);
     sysFetch(
       API,
       {
-        pro: "SELHRAN0010101",
+        pro: "STV_HR_SEL_MBI_HRDP_ANNOUNCE",
         in_par: {
           p1_varchar2: thr_emp_pk,
         },
@@ -93,7 +93,7 @@ const SystemNoti = () => {
       tokenLogin
     )
       .then((rs) => {
-        console.log("res: ", rs.data);
+        console.log("res STV_HR_SEL_MBI_HRDP_ANNOUNCE: ", rs.data);
 
         if (rs == "Token Expired") {
           refreshNewToken("getData");

@@ -3,4 +3,7 @@
     <color name="splashscreen_bg">#FFF</color>
     <color name="app_bg">#FFF</color>
     <color name="white">#FFF</color>
+
+    <!-- Màu cam dùng cho notification -->
+    <color name="notification_color">#00FF00</color>
 </resources>
