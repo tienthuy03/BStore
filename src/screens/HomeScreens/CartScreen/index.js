@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import CartSummary from '../../../components/Bstore/CartSummary';
 import AsyncStorage from '@react-native-community/async-storage';
 import useAppConfig from '../../../utils/useAppConfig';
 import sysFetch from '../../../services/fetch_crypt';
+import CustomerInfo from '../../../components/Bstore/CustomerInfo';
 
 const CartScreen = ({ navigation }) => {
   const [cartItems, setCartItems] = useState([]);
@@ -27,7 +28,25 @@ const CartScreen = ({ navigation }) => {
   const [shippingFree, setShippingFree] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("Thanh toán khi nhận hàng");
   const [customerNote, setCustomerNote] = useState("");
+  // Add customer data state in your CartScreen component
+  const [customerData, setCustomerData] = useState({
+    name: "Nguyễn Văn An",
+    phone: "0971761090",
+    address: "Đường C1, Tân bình"
+  });
+  // Trong CartScreen component, thêm state để lưu checkout data
+  const [checkoutData, setCheckoutData] = useState({});
 
+  // Callback function để nhận data từ CartSummary
+  const handleCartSummaryDataChange = useCallback((data) => {
+    // Chỉ log hoặc lưu data, không setState để tránh re-render
+    console.log('Checkout Data Updated:', data);
+  }, []);
+  // Add this function to handle customer info editing
+  const handleEditCustomerInfo = () => {
+    // Navigate to customer info edit screen or show modal
+    Alert.alert('Thông báo', 'Chức năng chỉnh sửa thông tin khách hàng');
+  };
   // Lấy giỏ hàng từ AsyncStorage
   const getCartItems = async () => {
     try {
@@ -113,33 +132,20 @@ const CartScreen = ({ navigation }) => {
       return;
     }
 
-    // Format selectedItems thành cấu trúc JSON mà stored procedure mong đợi
-    const productsJson = {
-      products: selectedItems.map(item => ({
-        id: item.id,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price_unit, // hoặc item.price tùy thuộc vào cấu trúc dữ liệu của bạn
-        price_type: item.price_type || "", // nếu có
-        uom: item.uom || "", // đơn vị tính
-        note: item.note || "" // ghi chú sản phẩm
-      }))
-    };
-
     const in_par = {
       p1_varchar2: "INSERT",
       p2_varchar2: "438", // tco_depot_pk
       p3_varchar2: JSON.stringify(cartItems), // Convert thành JSON string
-      p4_varchar2: totalPrice.toString(),
-      p5_varchar2: shippingFree.toString(),
+      p4_varchar2: checkoutData.total.toString(),
+      p5_varchar2: checkoutData.paymentMethod,
       p6_varchar2: paymentMethod,
       p7_varchar2: "32085", // customer_id
-      p8_varchar2: "Nguyễn Văn An", // customer_name
-      p9_varchar2: "0971761090", // customer_phone
-      p10_varchar2: "Đường C1, Tân bình", // customer_address
-      p11_varchar2: "Cần gấp", // customer_note
-      p12_varchar2: "20250613", // delivery_dt
-      p13_varchar2: "12:04", // delivery_time
+      p8_varchar2: customerData.name, // customer_name
+      p9_varchar2: customerData.phone, // customer_phone
+      p10_varchar2: customerData.address, // customer_address
+      p11_varchar2: checkoutData.customerNote, // customer_note
+      p12_varchar2: checkoutData.deliveryDate, // delivery_dt
+      p13_varchar2: checkoutDatadeliveryTime, // delivery_time
       p14_varchar2: APP_VERSION,
       p15_varchar2: crt_by
     }
@@ -241,7 +247,6 @@ const CartScreen = ({ navigation }) => {
 
   useEffect(() => {
     getCartItems();
-
     // Lắng nghe sự kiện focus để cập nhật giỏ hàng khi quay lại màn hình
     const unsubscribe = navigation.addListener('focus', () => {
       getCartItems();
@@ -249,6 +254,7 @@ const CartScreen = ({ navigation }) => {
 
     return unsubscribe;
   }, [navigation]);
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -266,42 +272,51 @@ const CartScreen = ({ navigation }) => {
           <ActivityIndicator size="large" color={Color.mainColor} />
         </View>
       ) : (
-        <>
-          {/* Thêm nút chọn tất cả */}
-          {cartItems.length > 0 && (
-            <View style={styles.selectAllContainer}>
-              <TouchableOpacity
-                style={styles.selectAllButton}
-                onPress={handleSelectAll}
-              >
-                <Icon
-                  name={cartItems.every(item => item.selected) ? "checkbox-marked" : "checkbox-blank-outline"}
-                  size={20}
-                  color={Color.mainColor3}
-                />
-                <Text style={styles.selectAllText}>
-                  {cartItems.every(item => item.selected) ? "Bỏ chọn tất cả" : "Chọn tất cả"}
-                </Text>
-              </TouchableOpacity>
+        <FlatList
+          data={cartItems}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.listContainer}
+          ListHeaderComponent={() => (
+            <View>
+              {/* Customer Info */}
+              <CustomerInfo
+                customerData={customerData}
+                onEdit={handleEditCustomerInfo}
+              />
+
+              {/* Select All Button - chỉ hiển thị khi có sản phẩm */}
+              {cartItems.length > 0 && (
+                <View style={styles.selectAllContainer}>
+                  <TouchableOpacity
+                    style={styles.selectAllButton}
+                    onPress={handleSelectAll}
+                  >
+                    <Icon
+                      name={cartItems.every(item => item.selected) ? "checkbox-marked" : "checkbox-blank-outline"}
+                      size={20}
+                      color={Color.mainColor3}
+                    />
+                    <Text style={styles.selectAllText}>
+                      {cartItems.every(item => item.selected) ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           )}
-
-          <FlatList
-            data={cartItems}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            contentContainerStyle={styles.listContainer}
-            ListEmptyComponent={renderEmptyCart}
-          />
-
-          {cartItems.length > 0 && (
-            <CartSummary
-              total={totalPrice.toLocaleString()}
-              quantityProd={selectedItemsCount}
-              handleCheckout={handleCheckout}
-            />
-          )}
-        </>
+          ListEmptyComponent={renderEmptyCart}
+          ListFooterComponent={() =>
+            cartItems.length > 0 ? (
+              <CartSummary
+                total={totalPrice.toLocaleString()}
+                quantityProd={selectedItemsCount}
+                handleCheckout={handleCheckout}
+                onDataChange={handleCartSummaryDataChange}
+              />
+            ) : null
+          }
+        />
       )}
     </SafeAreaView>
   );
@@ -318,11 +333,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectAllContainer: {
-    backgroundColor: Color.white,
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginHorizontal: 8,
-    marginTop: 8,
+    marginVertical: 8,
     borderRadius: 8,
   },
   selectAllButton: {
@@ -336,7 +348,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     padding: 8,
-    paddingBottom: 100,
+    paddingBottom: 20, // Thêm padding bottom để tạo khoảng cách
   },
   emptyContainer: {
     flex: 1,

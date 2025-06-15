@@ -286,7 +286,7 @@ const CartItem = ({
 
       <View style={styles.info}>
         <View style={styles.headerRow}>
-          <Text style={styles.title}>{item.name}</Text>
+          <Text style={styles.title}>{item.name}{item.categoryName ? " - " : ""}{item.categoryName}</Text>
           <TouchableOpacity onPress={() => onRemove(item.id)}>
             <Icon name="delete-forever" size={24} color={Color.mainColor3} />
           </TouchableOpacity>

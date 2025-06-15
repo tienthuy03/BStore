@@ -90,11 +90,6 @@ yarn add react-native-pager-view
 
 yarn add react-native-screens
 
-
-
-
- * 
-
 -- sua file node_modules/react-native-action-button/ActionButton.js
 
   buttonTextStyle: PropTypes.object,
@@ -128,7 +123,7 @@ import UpdatePassQuestionSecurity from "./src/screens/SystemScreens/UpdatePassQu
 import { LogBox, StatusBar } from "react-native";
 import Menu_Production from "./src/screens/HomeScreens/MBHS001";
 import CartScreen from "./src/screens/HomeScreens/CartScreen";
-import DetailProduct from "./src/screens/DetailProduct";
+import DetailProduct from "./src/screens/HomeScreens/DetailProduct";
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 const sagaMiddleware = createSagaMiddleware();
