@@ -9,13 +9,15 @@ const useAppConfig = () => {
   const userPk = useSelector((state) => state.loginReducers.data.data.tes_user_pk)
   const crt_by = useSelector((state) => state.loginReducers.data.data.crt_by)
   const full_Name = useSelector((state) => state.loginReducers.data.data.full_name)
+  const thr_emp_pk = useSelector((state) => state.loginReducers.data.data.thr_emp_pk)
   return {
     Api,
     tokenLogin,
     userPk,
     crt_by,
     APP_VERSION,
-    full_Name
+    full_Name,
+    thr_emp_pk
   }
 }
 

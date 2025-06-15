@@ -75,7 +75,8 @@ const Menu_Production = ({ navigation }) => {
                   prod_price: product.price,
                   prod_desc: product.description,
                   prod_uom: product.uom,
-                  prod_unit_price: product.unit_price
+                  prod_unit_price: product.unit_price,
+                  tco_depot_pk: product.tco_depot_pk
 
                 });
             }}
@@ -176,7 +177,6 @@ const Menu_Production = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       />
-
 
     </View>
   )

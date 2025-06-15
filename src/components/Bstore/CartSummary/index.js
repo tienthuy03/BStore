@@ -1,154 +1,195 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, Platform, TextInput } from 'react-native';
-import { Color } from '../../../colors/colortv';
-import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+"use client"
+
+import { useState, useCallback } from "react"
+import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, Platform, TextInput } from "react-native"
+import { Color } from "../../../colors/colortv"
+import LinearGradient from "react-native-linear-gradient"
+import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+import DateTimePicker from "@react-native-community/datetimepicker"
 
 const CartSummary = ({
   total,
   quantityProd,
   handleCheckout,
-  onDataChange // Callback để truyền data ra ngoài
+  onDataChange, // Callback để truyền data ra ngoài
 }) => {
-  const [paymentMethod, setPaymentMethod] = useState('Thanh toán khi nhận hàng');
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [customerNote, setCustomerNote] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState("Cod")
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+
+  // ← SỬA: Khởi tạo ngày từ ngày mai thay vì hôm nay
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    return tomorrow
+  })
+
+  // ← SỬA: Thêm state để track xem user đã chọn thời gian chưa
+  const [selectedTime, setSelectedTime] = useState(() => {
+    const defaultTime = new Date()
+    defaultTime.setHours(9, 0, 0, 0) // Set default 9:00 AM
+    return defaultTime
+  })
+  const [hasSelectedTime, setHasSelectedTime] = useState(false) // Track user selection
+
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [showTimePicker, setShowTimePicker] = useState(false)
+  const [customerNote, setCustomerNote] = useState("")
 
   const paymentMethods = [
-    { id: 1, name: 'Thanh toán khi nhận hàng', icon: 'cash' },
-    { id: 2, name: 'Chuyển khoản ngân hàng', icon: 'bank' },
-    { id: 3, name: 'Ví điện tử MoMo', icon: 'wallet' },
-    { id: 4, name: 'Thẻ tín dụng/ghi nợ', icon: 'credit-card' },
-  ];
+    { id: 1, name: "Cod", icon: "cash" },
+    { id: 2, name: "Chuyển khoản ngân hàng", icon: "bank" },
+    { id: 3, name: "Ví điện tử MoMo", icon: "wallet" },
+    { id: 4, name: "Thẻ tín dụng/ghi nợ", icon: "credit-card" },
+  ]
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('vi-VN');
-  };
+    return date.toLocaleDateString("vi-VN")
+  }
 
   const formatTime = (time) => {
-    return time.toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-  };
+    return time.toLocaleTimeString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+  }
+
+  // ← SỬA: Function để hiển thị thời gian hoặc placeholder
+  const getTimeDisplayText = () => {
+    if (!hasSelectedTime) {
+      return "Chọn giờ giao hàng"
+    }
+    return formatTime(selectedTime)
+  }
 
   // Function để tạo checkout data
   const getCheckoutData = useCallback(() => {
     return {
       paymentMethod,
       deliveryDate: formatDate(selectedDate),
-      deliveryTime: formatTime(selectedTime),
+      deliveryTime: hasSelectedTime ? formatTime(selectedTime) : "", // ← SỬA: Chỉ trả về time nếu user đã chọn
       customerNote,
       total,
-      quantityProd
-    };
-  }, [paymentMethod, selectedDate, selectedTime, customerNote, total, quantityProd]);
+      quantityProd,
+    }
+  }, [paymentMethod, selectedDate, selectedTime, hasSelectedTime, customerNote, total, quantityProd])
 
   // Function để notify parent component
   const notifyDataChange = useCallback(() => {
     if (onDataChange) {
-      onDataChange(getCheckoutData());
+      onDataChange(getCheckoutData())
     }
-  }, [onDataChange, getCheckoutData]);
+  }, [onDataChange, getCheckoutData])
 
   const handlePaymentMethodSelect = (method) => {
-    setPaymentMethod(method.name);
-    setShowPaymentModal(false);
-    // Notify parent after state update
-    setTimeout(() => notifyDataChange(), 0);
-  };
+    setPaymentMethod(method.name)
+    setShowPaymentModal(false)
+    setTimeout(() => notifyDataChange(), 0)
+  }
 
   const onDateChange = (event, date) => {
-    if (Platform.OS === 'android') {
-      setShowDatePicker(false);
+    if (Platform.OS === "android") {
+      setShowDatePicker(false)
     }
     if (date) {
-      setSelectedDate(date);
-      // Notify parent after state update
-      setTimeout(() => notifyDataChange(), 0);
+      setSelectedDate(date)
+      setTimeout(() => notifyDataChange(), 0)
     }
-  };
+  }
 
+  // ← SỬA: Cập nhật onTimeChange để track user selection
   const onTimeChange = (event, time) => {
-    if (Platform.OS === 'android') {
-      setShowTimePicker(false);
+    if (Platform.OS === "android") {
+      setShowTimePicker(false)
     }
     if (time) {
-      setSelectedTime(time);
-      // Notify parent after state update
-      setTimeout(() => notifyDataChange(), 0);
+      setSelectedTime(time)
+      setHasSelectedTime(true) // ← Đánh dấu user đã chọn thời gian
+      setTimeout(() => notifyDataChange(), 0)
     }
-  };
+  }
 
   const handleNoteChange = (text) => {
-    setCustomerNote(text);
-    // Notify parent after state update
-    setTimeout(() => notifyDataChange(), 0);
-  };
+    setCustomerNote(text)
+    setTimeout(() => notifyDataChange(), 0)
+  }
 
   const handleCheckoutPress = () => {
-    const checkoutData = getCheckoutData();
-    handleCheckout(checkoutData);
-  };
+    // ← SỬA: Kiểm tra xem user đã chọn thời gian chưa
+    // if (!hasSelectedTime) {
+    //   alert("Vui lòng chọn giờ giao hàng")
+    //   return
+    // }
+
+    const checkoutData = getCheckoutData()
+    handleCheckout(checkoutData)
+  }
 
   const renderPaymentMethod = ({ item }) => (
-    <TouchableOpacity
-      style={styles.paymentMethodItem}
-      onPress={() => handlePaymentMethodSelect(item)}
-    >
+    <TouchableOpacity style={styles.paymentMethodItem} onPress={() => handlePaymentMethodSelect(item)}>
       <Icon name={item.icon} size={24} color={Color.mainColor} />
       <Text style={styles.paymentMethodText}>{item.name}</Text>
-      {paymentMethod === item.name && (
-        <Icon name="check-circle" size={20} color={Color.mainColor} />
-      )}
+      {paymentMethod === item.name && <Icon name="check-circle" size={20} color={Color.mainColor} />}
     </TouchableOpacity>
-  );
+  )
 
   return (
     <View style={styles.footerContainer}>
       <Text style={styles.summaryTitle}>Tổng đơn hàng</Text>
+      <View style={styles.row}>
+        <Text style={styles.label}>Tổng số sản phẩm</Text>
+        <Text style={styles.value}>{quantityProd}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Giảm giá</Text>
+        <Text style={styles.value}>đ0</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Phí vận chuyển</Text>
+        <Text style={[styles.value, { color: "#28a745" }]}>Miễn phí</Text>
+      </View>
 
       {/* Payment Method Selection */}
-      <View style={styles.selectionContainer}>
+      {/* <View style={styles.selectionContainer}>
         <Text style={styles.selectionLabel}>Phương thức thanh toán</Text>
-        <TouchableOpacity
-          style={styles.selectionButton}
-          onPress={() => setShowPaymentModal(true)}
-        >
+        <TouchableOpacity style={styles.selectionButton} onPress={() => setShowPaymentModal(true)}>
           <Text style={styles.selectionText}>{paymentMethod}</Text>
           <Icon name="chevron-down" size={20} color={Color.textPrimary3} />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {/* Date Selection */}
-      <View style={styles.selectionContainer}>
+      {/* <View style={styles.selectionContainer}>
         <Text style={styles.selectionLabel}>Ngày giao hàng</Text>
-        <TouchableOpacity
-          style={styles.selectionButton}
-          onPress={() => setShowDatePicker(true)}
-        >
+        <TouchableOpacity style={styles.selectionButton} onPress={() => setShowDatePicker(true)}>
           <Text style={styles.selectionText}>{formatDate(selectedDate)}</Text>
           <Icon name="calendar" size={20} color={Color.textPrimary3} />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      {/* Time Selection */}
-      <View style={styles.selectionContainer}>
-        <Text style={styles.selectionLabel}>Giờ giao hàng</Text>
+      {/* Time Selection - SỬA: Hiển thị placeholder hoặc thời gian đã chọn */}
+      {/* <View style={styles.selectionContainer}>
+        <Text style={styles.selectionLabel}>
+          Giờ giao hàng <Text style={styles.requiredMark}>*</Text>
+        </Text>
         <TouchableOpacity
-          style={styles.selectionButton}
+          style={[
+            styles.selectionButton,
+            !hasSelectedTime && styles.selectionButtonPlaceholder, // ← Style khác cho placeholder
+          ]}
           onPress={() => setShowTimePicker(true)}
         >
-          <Text style={styles.selectionText}>{formatTime(selectedTime)}</Text>
+          <Text
+            style={[
+              styles.selectionText,
+              !hasSelectedTime && styles.placeholderText, // ← Style khác cho placeholder text
+            ]}
+          >
+            {getTimeDisplayText()}
+          </Text>
           <Icon name="clock-outline" size={20} color={Color.textPrimary3} />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {/* Customer Note */}
       <View style={styles.selectionContainer}>
@@ -164,18 +205,6 @@ const CartSummary = ({
         />
       </View>
 
-      <View style={styles.row}>
-        <Text style={styles.label}>Tổng số sản phẩm</Text>
-        <Text style={styles.value}>{quantityProd}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Giảm giá</Text>
-        <Text style={styles.value}>đ0</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Phí vận chuyển</Text>
-        <Text style={[styles.value, { color: '#28a745' }]}>Miễn phí</Text>
-      </View>
       <View style={styles.separator} />
       <View style={styles.totalMoneyRow}>
         <View style={styles.totalPay}>
@@ -223,7 +252,7 @@ const CartSummary = ({
         <DateTimePicker
           value={selectedDate}
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display={Platform.OS === "ios" ? "spinner" : "default"}
           onChange={onDateChange}
           minimumDate={new Date()}
         />
@@ -234,13 +263,13 @@ const CartSummary = ({
         <DateTimePicker
           value={selectedTime}
           mode="time"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display={Platform.OS === "ios" ? "spinner" : "default"}
           onChange={onTimeChange}
         />
       )}
 
       {/* iOS Date Picker Modal */}
-      {Platform.OS === 'ios' && showDatePicker && (
+      {Platform.OS === "ios" && showDatePicker && (
         <Modal
           transparent={true}
           animationType="slide"
@@ -272,7 +301,7 @@ const CartSummary = ({
       )}
 
       {/* iOS Time Picker Modal */}
-      {Platform.OS === 'ios' && showTimePicker && (
+      {Platform.OS === "ios" && showTimePicker && (
         <Modal
           transparent={true}
           animationType="slide"
@@ -302,8 +331,8 @@ const CartSummary = ({
         </Modal>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   processButton: {
@@ -314,22 +343,22 @@ const styles = StyleSheet.create({
   },
   buttonContent: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   processText: {
     color: Color.white,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: "Roboto-Bold",
     fontSize: 16,
   },
   footerContainer: {
     backgroundColor: Color.white,
     padding: 12,
     borderTopWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
   },
   summaryTitle: {
-    fontFamily: 'Roboto-Bold',
+    fontFamily: "Roboto-Bold",
     fontSize: 16,
     marginBottom: 12,
   },
@@ -340,113 +369,128 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Color.textPrimary3,
     marginBottom: 6,
-    fontFamily: 'Roboto-Medium',
+    fontFamily: "Roboto-Medium",
+  },
+  // ← SỬA: Thêm style cho required mark
+  requiredMark: {
+    color: "#ff4444",
+    fontSize: 14,
   },
   selectionButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
     borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
+  },
+  // ← SỬA: Style cho placeholder button
+  selectionButtonPlaceholder: {
+    borderColor: "#ddd",
+    borderStyle: "dashed",
   },
   selectionText: {
     fontSize: 14,
     color: Color.textPrimary,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: "Roboto-Regular",
+  },
+  // ← SỬA: Style cho placeholder text
+  placeholderText: {
+    color: "#999",
+    fontStyle: "italic",
   },
   noteInput: {
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     fontSize: 14,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: "Roboto-Regular",
     color: Color.textPrimary,
     minHeight: 80,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
   },
   label: {
-    color: '#888',
+    color: "#888",
     fontSize: 14,
   },
   value: {
     fontSize: 14,
-    fontFamily: 'Roboto-Medium',
+    fontFamily: "Roboto-Medium",
   },
   separator: {
     height: 1,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
     marginVertical: 10,
   },
   totalMoneyRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   totalPay: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
     flex: 1,
   },
   totalLabel: {
-    fontFamily: 'Roboto-Medium',
+    fontFamily: "Roboto-Medium",
     color: Color.textPrimary3,
     fontSize: 16,
   },
   totalValue: {
-    fontFamily: 'Roboto-Bold',
+    fontFamily: "Roboto-Bold",
     color: Color.mainColor,
     fontSize: 16,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
   },
   modalContent: {
     backgroundColor: Color.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 20,
-    maxHeight: '70%',
+    maxHeight: "70%",
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   modalTitle: {
     fontSize: 18,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: "Roboto-Bold",
     color: Color.textPrimary,
   },
   paymentMethodItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: "#f0f0f0",
   },
   paymentMethodText: {
     flex: 1,
     marginLeft: 12,
     fontSize: 16,
     color: Color.textPrimary,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: "Roboto-Regular",
   },
   pickerModalContent: {
     backgroundColor: Color.white,
@@ -454,16 +498,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
   },
   pickerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   pickerTitle: {
     fontSize: 18,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: "Roboto-Bold",
     color: Color.textPrimary2,
   },
   pickerButton: {
@@ -473,6 +517,6 @@ const styles = StyleSheet.create({
   picker: {
     height: 200,
   },
-});
+})
 
-export default CartSummary;
+export default CartSummary

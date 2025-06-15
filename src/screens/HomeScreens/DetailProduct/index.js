@@ -19,12 +19,13 @@ import CachedImage from "../../../components/CachedImage"
 import ProductDetailModal from "../../../components/Bstore/ProductDetailModal"
 import { Color } from "../../../colors/colortv"
 import Header from "../../../components/Bstore/Header/Header"
+import sysFetch from "../../../services/fetch_crypt"
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window")
 
 const DetailProduct = ({ navigation }) => {
   const route = useRoute()
-  const { tdp_production_pk, prod_nm, prod_price, prod_desc, prod_uom, prod_unit_price } = route.params
+  const { tco_depot_pk, tdp_production_pk, prod_nm, prod_price, prod_desc, prod_uom, prod_unit_price } = route.params
   const { Api, tokenLogin, userPk, crt_by, APP_VERSION } = useAppConfig()
 
   // States
@@ -108,15 +109,17 @@ const DetailProduct = ({ navigation }) => {
     const newCartItems = [...cartItems];
 
     // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-    const existingItemIndex = newCartItems.findIndex(cartItem => cartItem.id === item.id);
+    // Phải kiểm tra cả tdp_production_PK và price_type để xác định đúng sản phẩm
+    const existingItemIndex = newCartItems.findIndex(cartItem =>
+      cartItem.tdp_production_PK === item.tdp_production_PK &&
+      cartItem.price_type === item.price_type
+    );
 
     if (existingItemIndex !== -1) {
-      // Nếu sản phẩm đã tồn tại, cập nhật số lượng
+      // Nếu sản phẩm đã tồn tại (cùng ID và cùng loại), cập nhật số lượng
       newCartItems[existingItemIndex].quantity += item.quantity;
-      newCartItems[existingItemIndex].totalPrice =
-        newCartItems[existingItemIndex].price * newCartItems[existingItemIndex].quantity;
     } else {
-      // Nếu sản phẩm chưa tồn tại, thêm mới
+      // Nếu sản phẩm chưa tồn tại hoặc khác loại, thêm mới
       newCartItems.push(item);
     }
 
@@ -164,6 +167,7 @@ const DetailProduct = ({ navigation }) => {
   const getProductDataForModal = () => {
     return {
       tdp_production_pk,
+      tco_depot_pk,
       prod_nm,
       prod_price,
       prod_desc,
