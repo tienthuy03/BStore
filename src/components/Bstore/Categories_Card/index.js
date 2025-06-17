@@ -1,13 +1,10 @@
-// components/Categories.js
 import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Color } from '../../../colors/colorhp';
 
 const Categories_Card = ({ categories, onPress }) => {
@@ -16,15 +13,14 @@ const Categories_Card = ({ categories, onPress }) => {
   return (
     <View style={styles.categoriesWrapper}>
       <Text style={styles.sectionTitle}>Categories</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoriesContainer}
-      >
+      <View style={styles.categoriesGrid}>
         {(categories || []).map((category) => (
           <TouchableOpacity
             key={category.id}
-            style={styles.categoryItem}
+            style={[
+              styles.categoryItem,
+              activeCategory === category.id && styles.categoryItemActive,
+            ]}
             onPress={() => {
               setActiveCategory(category.id);
               if (onPress) {
@@ -32,30 +28,25 @@ const Categories_Card = ({ categories, onPress }) => {
               }
             }}
           >
-            <View
-              style={[
-                styles.categoryIcon,
-                activeCategory === category.id && styles.categoryIconActive,
-              ]}
-            >
-              <Text style={{ fontSize: 24 }}>{category.icon}</Text>
+            <View style={styles.categoryContent}>
+              <Text style={styles.categoryIcon}>{category.icon}</Text>
+              <Text
+                style={[
+                  styles.categoryText,
+                  activeCategory === category.id && styles.categoryTextActive,
+                ]}
+                numberOfLines={1}
+              >
+                {category.prod_type_nm}
+              </Text>
             </View>
-            <Text
-              style={[
-                styles.categoryText,
-                activeCategory === category.id && styles.categoryTextActive,
-              ]}
-            >
-              {category.prod_type_nm}
-            </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
-// ✅ Giá trị mặc định nếu cha không truyền props
 Categories_Card.defaultProps = {
   categories: [],
   onPress: () => { },
@@ -64,45 +55,65 @@ Categories_Card.defaultProps = {
 const styles = StyleSheet.create({
   categoriesWrapper: {
     backgroundColor: '#fff',
-    paddingVertical: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     zIndex: 10,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontFamily: 'Roboto-Regular',
+    fontSize: 16,
+    fontFamily: 'Roboto-Medium',
     color: Color.textPrimary3,
-    paddingHorizontal: 12,
-    paddingBottom: 8,
+    paddingBottom: 12,
   },
-  categoriesContainer: {
-    paddingHorizontal: 4,
+  categoriesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    gap: 8,
   },
   categoryItem: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    // Bỏ width cố định, để item tự động mở rộng theo nội dung
+    flexShrink: 0, // Không cho phép thu nhỏ
+    alignSelf: 'flex-start',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  categoryItemActive: {
+    backgroundColor: '#FF7E1B',
+    shadowColor: '#FF7E1B',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  categoryContent: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 2,
-    width: 70,
+    justifyContent: 'center',
+    gap: 4,
   },
   categoryIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  categoryIconActive: {
-    backgroundColor: '#FF7E1B',
+    fontSize: 16,
   },
   categoryText: {
     fontSize: 12,
     fontFamily: 'Roboto-Medium',
-    color: Color.textPrimary3,
+    color: '#666',
     textAlign: 'center',
+    // Text sẽ không bị cắt, item sẽ mở rộng theo độ dài text
   },
   categoryTextActive: {
-    color: '#333',
-    fontWeight: '500',
+    color: '#fff',
+    fontWeight: '600',
   },
 });
 
