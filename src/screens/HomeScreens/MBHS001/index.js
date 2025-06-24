@@ -209,7 +209,7 @@ const Menu_Production = ({ navigation }) => {
       p3_sys: "list_payment_method",
       p4_sys: "list_area",
     }
-    console.log("in_par: ", in_par);
+    console.log("in_par STV_HR_SEL_MBI_HRDP00100_0: ", in_par);
 
     sysFetch(
       Api,
@@ -279,9 +279,9 @@ const Menu_Production = ({ navigation }) => {
       })
   }
 
-  // useEffect(() => {
-  //   getListProduct()
-  // }, [])
+  useEffect(() => {
+    getListProduct()
+  }, [])
 
   return (
     <View style={styles.container}>

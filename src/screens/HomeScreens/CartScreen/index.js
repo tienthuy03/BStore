@@ -449,7 +449,11 @@ const CartScreen = ({ navigation }) => {
     console.log("Checkout data từ CartSummary:", checkoutDataFromSummary)
     console.log("Checkout data từ state:", checkoutData)
 
-    const selectedItems = cartItems.filter((item) => item.selected)
+    const selectedItems = cartItems.filter((item) => item.selected);
+    const selItems = selectedItems.map(({image, selected, ...rest}) => rest); // Loại bỏ trường image nếu không cần thiết
+    // console.log("Selected items for checkout: ", selItems);
+    let strItems = JSON.stringify(selItems);
+    // console.log("Selected items: ", strItems);
     if (selectedItems.length === 0) {
       Alert.alert("Thông báo", "Vui lòng chọn ít nhất một sản phẩm để thanh toán")
       return
@@ -461,12 +465,12 @@ const CartScreen = ({ navigation }) => {
 
     const totalAmount = typeof finalCheckoutData.total === 'string'
       ? parseFloat(finalCheckoutData.total.replace(/,/g, ''))
-      : finalCheckoutData.total
+      : finalCheckoutData.total;
     const in_par = {
 
       p1_varchar2: "INSERT", // action
-      p2_varchar2: cartItems[0].tco_depot_pk, // tco_depot_pk - pk của vựa
-      p3_varchar2: JSON.stringify(selectedItems), // ds sản phẩm được chọn
+      p2_varchar2: '',//cartItems[0].tco_depot_pk, // tco_depot_pk - pk của vựa
+      p3_varchar2: strItems,// JSON.stringify(selectedItems), // ds sản phẩm được chọn
       p4_varchar2: totalAmount, // tổng tiền
       p5_varchar2: shippingFree.toString(), // phí ship
       p6_varchar2: finalCheckoutData.paymentMethod, // pp thanh toán
@@ -497,7 +501,7 @@ const CartScreen = ({ navigation }) => {
       )
       console.log("Payment response: ", response)
 
-      if (response && response.success) {
+      if (response && response.results === "S") {
         // Xóa giỏ hàng sau khi thanh toán thành công
         setCartItems([])
         saveCartItems([])
