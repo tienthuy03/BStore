@@ -8,7 +8,7 @@ import {
 import { Color } from '../../../colors/colorhp';
 
 const Categories_Card = ({ categories, onPress }) => {
-  const [activeCategory, setActiveCategory] = useState('3');
+  const [activeCategory, setActiveCategory] = useState("");
 
   return (
     <View style={styles.categoriesWrapper}>
@@ -16,13 +16,13 @@ const Categories_Card = ({ categories, onPress }) => {
       <View style={styles.categoriesGrid}>
         {(categories || []).map((category) => (
           <TouchableOpacity
-            key={category.id}
+            key={category.code}
             style={[
               styles.categoryItem,
-              activeCategory === category.id && styles.categoryItemActive,
+              activeCategory === category.code && styles.categoryItemActive,
             ]}
             onPress={() => {
-              setActiveCategory(category.id);
+              setActiveCategory(category.code);
               if (onPress) {
                 onPress(category);
               }
@@ -33,7 +33,7 @@ const Categories_Card = ({ categories, onPress }) => {
               <Text
                 style={[
                   styles.categoryText,
-                  activeCategory === category.id && styles.categoryTextActive,
+                  activeCategory === category.code && styles.categoryTextActive,
                 ]}
                 numberOfLines={1}
               >

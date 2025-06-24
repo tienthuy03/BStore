@@ -135,10 +135,9 @@ const CartSummary = ({
 
   return (
     <View style={styles.footerContainer}>
-      <Text style={styles.summaryTitle}>Tổng đơn hàng</Text>
       <View style={styles.row}>
-        <Text style={styles.label}>Tổng số sản phẩm</Text>
-        <Text style={styles.value}>{quantityProd}</Text>
+        <Text style={styles.label}>Tổng tiền</Text>
+        <Text style={styles.value}>đ{total}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Giảm giá</Text>
@@ -207,20 +206,13 @@ const CartSummary = ({
 
       <View style={styles.separator} />
       <View style={styles.totalMoneyRow}>
-        <View style={styles.totalPay}>
-          <Text style={styles.totalLabel}>Tổng tiền</Text>
-          <Text style={styles.totalValue}>đ{total}</Text>
-        </View>
-        <LinearGradient
-          colors={[Color.mainColor, Color.mainColor3]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+        <View
           style={styles.processButton}
         >
           <TouchableOpacity style={styles.buttonContent} onPress={handleCheckoutPress}>
             <Text style={styles.processText}>Xác nhận</Text>
           </TouchableOpacity>
-        </LinearGradient>
+        </View>
       </View>
 
       {/* Payment Method Modal */}
@@ -337,22 +329,24 @@ const CartSummary = ({
 const styles = StyleSheet.create({
   processButton: {
     flex: 1,
-    marginTop: 16,
+    // marginTop: 16,
     borderRadius: 24,
     height: 44,
+    backgroundColor: Color.white,
   },
   buttonContent: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 24,
   },
   processText: {
-    color: Color.white,
+    color: Color.mainColor,
     fontFamily: "Roboto-Bold",
     fontSize: 16,
   },
   footerContainer: {
-    backgroundColor: Color.white,
+    backgroundColor: Color.mainColor,
     padding: 12,
     borderTopWidth: 1,
     borderColor: "#eee",
@@ -363,11 +357,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   selectionContainer: {
-    marginBottom: 12,
+    // marginBottom: 8,
   },
   selectionLabel: {
     fontSize: 14,
-    color: Color.textPrimary3,
+    color: Color.white,
     marginBottom: 6,
     fontFamily: "Roboto-Medium",
   },
@@ -394,7 +388,7 @@ const styles = StyleSheet.create({
   },
   selectionText: {
     fontSize: 14,
-    color: Color.textPrimary,
+    color: Color.textPrimary2,
     fontFamily: "Roboto-Regular",
   },
   // ← SỬA: Style cho placeholder text
@@ -411,8 +405,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
     fontSize: 14,
     fontFamily: "Roboto-Regular",
-    color: Color.textPrimary,
-    minHeight: 80,
+    color: Color.textPrimary2,
   },
   row: {
     flexDirection: "row",
@@ -420,17 +413,20 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   label: {
-    color: "#888",
+    color: Color.white,
     fontSize: 14,
+    fontFamily: "Roboto-Medium",
   },
   value: {
     fontSize: 14,
     fontFamily: "Roboto-Medium",
+    color: Color.white,
   },
   separator: {
-    height: 1,
-    backgroundColor: "#eee",
-    marginVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    marginVertical: 8,
   },
   totalMoneyRow: {
     flexDirection: "row",
@@ -449,7 +445,7 @@ const styles = StyleSheet.create({
   },
   totalValue: {
     fontFamily: "Roboto-Bold",
-    color: Color.mainColor,
+    color: Color.white,
     fontSize: 16,
   },
   modalOverlay: {
