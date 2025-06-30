@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View
 } from "react-native"
@@ -21,6 +22,7 @@ import ProductDetailModal from "../../../components/Bstore/ProductDetailModal"
 import CachedImage from "../../../components/CachedImage"
 import sysFetch from "../../../services/fetch_crypt"
 import useAppConfig from "../../../utils/useAppConfig"
+import ButtonGradient from '../../../components/Bstore/ButtonGradient'
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window")
 
@@ -115,32 +117,45 @@ const DetailProduct = ({ navigation }) => {
   };
 
   // Thêm sản phẩm vào giỏ hàng
-  const handleAddToCart = (item) => {
-    const newCartItems = [...cartItems];
+  const handleAddToCart = () => {
+    if (detailCategory.length > 0 && !selectedSize) {
+      alert("Vui lòng chọn loại sản phẩm trước khi thêm vào giỏ hàng");
+      return;
+    }
 
-    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-    // Phải kiểm tra cả tdp_production_PK và price_type để xác định đúng sản phẩm
+    const newItem = {
+      tdp_production_PK: item.tdp_production_pk,
+      tco_depot_pk: item.tco_depot_pk,
+      image_uri: getCurrentProductImage(),
+      prod_nm: item.prod_nm,
+      quantity: 1,
+      unit_price: selectedSize ? selectedSize?.unit_price : item.unit_price,
+      price: selectedSize ? selectedSize?.unit_price : item.unit_price,
+      price_type: selectedSize ? selectedSize?.price_type : (item.price_type || "01"),
+      uom: selectedSize ? selectedSize?.price_type_uom : item.uom,
+      note: note,
+      selected: false,
+    };
+
+    const newCartItems = [...cartItems];
     const existingItemIndex = newCartItems.findIndex(cartItem =>
-      cartItem.tdp_production_PK === item.tdp_production_PK &&
-      cartItem.price_type === item.price_type
+      cartItem.tdp_production_PK === newItem.tdp_production_PK &&
+      cartItem.price_type === newItem.price_type
     );
 
     if (existingItemIndex !== -1) {
-      // Nếu sản phẩm đã tồn tại (cùng ID và cùng loại), cập nhật số lượng
-      newCartItems[existingItemIndex].quantity += item.quantity;
+      newCartItems[existingItemIndex].quantity += newItem.quantity;
     } else {
-      // Nếu sản phẩm chưa tồn tại hoặc khác loại, thêm mới
-      newCartItems.push(item);
+      newCartItems.push(newItem);
     }
 
-    // Cập nhật state và lưu vào AsyncStorage
     setCartItems(newCartItems);
     setCartCount(newCartItems.length);
     saveCartItems(newCartItems);
 
-    // Đóng modal
-    setModalVisible(false);
+    ToastAndroid.show("Sản phẩm đã được thêm vào giỏ hàng", ToastAndroid.SHORT);
   };
+
 
   // Event Handlers
   const handleScroll = (event) => {
@@ -149,11 +164,6 @@ const DetailProduct = ({ navigation }) => {
     const roundIndex = Math.round(index)
     setCurrentImageIndex(roundIndex)
   }
-
-  // const handleAddToCartButton = () => {
-  //   // console.log("Thêm vào giỏ hàng")
-  //   // setModalVisible(true)
-  // }
 
   // Chuyển đến màn hình giỏ hàng
   const goToCart = () => {
@@ -167,20 +177,6 @@ const DetailProduct = ({ navigation }) => {
     }
     // Fallback image nếu không có ảnh từ API
     return "https://i.pinimg.com/736x/4f/7a/f1/4f7af1a4320430ed976593fd0fea02b4.jpg"
-  }
-
-  // Prepare product data for modal
-  const getProductDataForModal = () => {
-    return {
-      tdp_production_pk,
-      tco_depot_pk,
-      prod_nm,
-      prod_price,
-      prod_desc,
-      prod_uom,
-      prod_unit_price,
-      image_uri: getCurrentProductImage(),
-    }
   }
 
   // Component Functions
@@ -323,17 +319,14 @@ const DetailProduct = ({ navigation }) => {
 
   const renderFooter = () => (
     <View style={styles.footerContainer}>
-      <TouchableOpacity onPress={handleAddToCart} activeOpacity={0.8}>
-        <LinearGradient
-          colors={[Color.mainColor, Color.mainColor3]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={[styles.footerButton, styles.buyNowButton]}
-        >
-          <Icon name="cart-arrow-down" size={18} color={Color.white} style={{ marginRight: 8 }} />
-          <Text style={styles.buyNowText}>Thêm vào giỏ hàng</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <ButtonGradient
+        onPress={handleAddToCart}
+        icon="cart-arrow-down"
+        style={[styles.footerButton, styles.buyNowButton]}
+        textStyle={styles.buyNowText}
+      >
+        Thêm vào giỏ hàng
+      </ButtonGradient>
     </View>
   )
   // Effects
@@ -363,13 +356,6 @@ const DetailProduct = ({ navigation }) => {
         {renderProductInfo()}
       </ScrollView>
       {renderFooter()}
-      {/* <ProductDetailModal
-        visible={modalVisible}
-        product={item}
-        listCategory={detailCategory}
-        onClose={closeModal}
-        onAddToCart={handleAddToCart}
-      /> */}
     </SafeAreaView>
   )
 }
@@ -653,9 +639,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   footerContainer: {
-    padding: 16,
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#eee",
+    width: '100%'
   },
 })

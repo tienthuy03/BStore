@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react"
 import {
   View,
@@ -87,7 +86,7 @@ const CartScreen = ({ navigation }) => {
   const calculateTotal = (items) => {
     console.log(items)
     const selectedItems = items.filter((item) => item.selected)
-    const total = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const total = selectedItems.reduce((sum, item) => sum + (item.unit_price || item.price) * item.quantity, 0)
     const selectedCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0)
 
     setTotalPrice(total)
@@ -189,10 +188,13 @@ const CartScreen = ({ navigation }) => {
     ])
   }
 
+  // Hàm tạo key cho item
+  const getItemId = (item) => `${item.tdp_production_PK}_${item.price_type || "01"}`
+
   // Check chọn sản phẩm trong giỏ hàng
   const handleToggleSelect = (itemId) => {
     const newCartItems = cartItems.map((item) => {
-      const currentItemId = `${item.tdp_production_PK}_${item.price_type}`
+      const currentItemId = getItemId(item)
       if (currentItemId === itemId) {
         return { ...item, selected: !item.selected }
       }
@@ -206,7 +208,7 @@ const CartScreen = ({ navigation }) => {
   // Cập nhật số lượng sản phẩm
   const handleUpdateQuantity = (itemId, newQuantity) => {
     const newCartItems = cartItems.map((item) => {
-      const currentItemId = `${item.tdp_production_PK}_${item.price_type}`
+      const currentItemId = getItemId(item)
       if (currentItemId === itemId) {
         return { ...item, quantity: newQuantity }
       }
@@ -220,7 +222,7 @@ const CartScreen = ({ navigation }) => {
   // Xóa sản phẩm khỏi giỏ hàng
   const handleRemoveItem = (itemId) => {
     const newCartItems = cartItems.filter((item) => {
-      const currentItemId = `${item.tdp_production_PK}_${item.price_type}`
+      const currentItemId = getItemId(item)
       return currentItemId !== itemId
     })
     setCartItems(newCartItems)
@@ -241,15 +243,32 @@ const CartScreen = ({ navigation }) => {
     calculateTotal(updatedItems)
   }
 
+  // Sửa lại hàm chuyển sang CheckoutScreen để truyền thêm tco_depot_pk
+  const handleCheckoutPress = () => {
+    const depotPk = cartItems && cartItems.length > 0 ? cartItems[0].tco_depot_pk : '';
+    if (navigation) {
+      navigation.navigate("CheckoutScreen", {
+        total: totalPrice,
+        quantityProd: selectedItemsCount,
+        cartItems,
+        tco_depot_pk: depotPk,
+      })
+    }
+  }
+
   // Render item cho FlatList
-  const renderItem = ({ item }) => (
-    <CartItem
-      item={item}
-      onRemove={handleRemoveItem}
-      onToggleSelect={handleToggleSelect}
-      onUpdateQuantity={handleUpdateQuantity}
-    />
-  )
+  const renderItem = ({ item }) => {
+    const key = getItemId(item)
+    console.log('Render item key:', key, 'item:', item)
+    return (
+      <CartItem
+        item={item}
+        onRemove={handleRemoveItem}
+        onToggleSelect={handleToggleSelect}
+        onUpdateQuantity={handleUpdateQuantity}
+      />
+    )
+  }
 
   // Render khi giỏ hàng trống
   const renderEmptyCart = () => (
@@ -261,6 +280,11 @@ const CartScreen = ({ navigation }) => {
       </TouchableOpacity>
     </View>
   )
+
+  // NOTE: Debug các vấn đề liên quan đến key và dữ liệu cartItems
+  useEffect(() => {
+    console.log('Current cartItems:', cartItems)
+  }, [cartItems])
 
   useEffect(() => {
     getCartItems()
@@ -292,7 +316,7 @@ const CartScreen = ({ navigation }) => {
             <FlatList
               data={cartItems}
               renderItem={renderItem}
-              keyExtractor={(item) => `${item.tdp_production_PK}_${item.price_type}`}
+              keyExtractor={(item) => getItemId(item)}
               contentContainerStyle={styles.listContainer}
               ListHeaderComponent={() => (
                 <View>
@@ -329,7 +353,8 @@ const CartScreen = ({ navigation }) => {
                 total={totalPrice.toLocaleString()}
                 quantityProd={selectedItemsCount}
                 handleCheckout={handleCheckout}
-                onDataChange={handleCartSummaryDataChange}
+                handleOnCheckOut={handleCheckoutPress}
+              // onDataChange={handleCartSummaryDataChange}
               />
             </View>
           )}

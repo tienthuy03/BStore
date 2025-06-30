@@ -67,8 +67,6 @@ const Menu_Production = ({ navigation }) => {
     const out_par = {
       p1_sys: "list_categories",
       p2_sys: "list_products",
-      p3_sys: "list_payment_method",
-      p4_sys: "list_area",
     }
     console.log("in_par: ", in_par);
 
@@ -85,13 +83,13 @@ const Menu_Production = ({ navigation }) => {
         console.log("rs lisst prod: ", rs);
 
         if (rs && rs.data.list_categories && rs.data.list_products
-          && rs.data.list_payment_method && rs.data.list_area
+          // && rs.data.list_payment_method && rs.data.list_area
         ) {
           console.log("Response data:", rs.data.list_categories)
           setListCategories(rs.data.list_categories)
           setListProducts(rs.data.list_products)
-          setListPaymentMethod(rs.data.list_payment_method)
-          setListArea(rs.data.list_area)
+          // setListPaymentMethod(rs.data.list_payment_method)
+          // setListArea(rs.data.list_area)
           console.log("listPaymentMethod: ", rs.data.list_payment_method);
           console.log("listArea: ", rs.data.list_area);
 
@@ -116,8 +114,8 @@ const Menu_Production = ({ navigation }) => {
     } else {
       navigation.navigate('DetailProduct', {
         item: product,
-        item_Payment_Method: listPaymentMethod,
-        item_Area: listArea,
+        // item_Payment_Method: listPaymentMethod,
+        // item_Area: listArea,
       });
     }
   }

@@ -20,23 +20,19 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
     }
   }, [item.quantity])
 
-  // Tăng số lượng
   const handleIncrease = () => {
     const current = Number.parseFloat(manualQuantity)
     const newQuantity = isNaN(current) ? 1 : Math.floor(current) + 1
     setManualQuantity(newQuantity.toString())
-    const itemId = getItemId()
-    onUpdateQuantity(itemId, newQuantity)
+    onUpdateQuantity(getItemId(), newQuantity)
   }
 
-  // Giảm số lượng
   const handleDecrease = () => {
     const current = Number.parseFloat(manualQuantity)
     const safeCurrent = isNaN(current) ? 1 : Math.ceil(current)
     const newQuantity = Math.max(1, safeCurrent - 1)
     setManualQuantity(newQuantity.toString())
-    const itemId = getItemId()
-    onUpdateQuantity(itemId, newQuantity)
+    onUpdateQuantity(getItemId(), newQuantity)
   }
 
   // Khi thay đổi thủ công
@@ -51,8 +47,7 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
 
     const num = Number.parseFloat(formattedValue)
     if (!isNaN(num) && num > 0) {
-      const itemId = getItemId()
-      onUpdateQuantity(itemId, num)
+      onUpdateQuantity(getItemId(), num)
     }
   }
 
@@ -61,8 +56,7 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
     const num = Number.parseFloat(manualQuantity)
     if (isNaN(num) || num <= 0) {
       setManualQuantity("1")
-      const itemId = getItemId()
-      onUpdateQuantity(itemId, 1)
+      onUpdateQuantity(getItemId(), 1)
     }
   }
 
@@ -71,22 +65,13 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
     handleQuantityBlur()
   }
 
-  // Xử lý toggle checkbox
   const handleToggleSelect = () => {
-    const itemId = getItemId()
-    if (typeof onToggleSelect === "function") {
-      onToggleSelect(itemId)
-    }
+    onToggleSelect(getItemId())
   }
 
-  // Xử lý remove item với validation
   const handleRemove = () => {
-    const itemId = getItemId()
-    if (typeof onRemove === "function") {
-      onRemove(itemId)
-    }
+    onRemove(getItemId())
   }
-
 
   return (
     <View style={styles.cardContainer}>
@@ -96,24 +81,24 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
             {item.selected && <Icon name="check" size={14} color={Color.white} />}
           </View>
         </TouchableOpacity>
-        <CachedImage image_uri={item.image} style={styles.image} />
+        <CachedImage image_uri={item.image_uri} style={styles.image} />
         <View style={styles.info}>
           <View style={styles.headerRow}>
             <Text style={styles.title}>
-              {item.name}
+              {item.prod_nm}
               {item.price_type && item.price_type !== "01" && (
                 <Text style={styles.priceType}> - Loại {item.price_type}</Text>
               )}
             </Text>
-            <TouchableOpacity onPress={handleRemove}>
-              <Icon name="delete-forever" size={24} color={Color.mainColor3} />
+            <TouchableOpacity style={styles.btnClose} onPress={handleRemove}>
+              <Icon name="close" size={16} color={Color.white} />
             </TouchableOpacity>
           </View>
           <Text style={styles.subText}>
-            đ{item.price.toLocaleString()}/{item.uom}
+            đ{item.price}/{item.uom}
           </Text>
           <View style={styles.bottomRow}>
-            <Text style={styles.total}>đ{(item.price * item.quantity).toLocaleString()}</Text>
+            <Text style={styles.total}>đ{(item.unit_price * item.quantity).toLocaleString()}</Text>
             <View style={styles.quantityControl}>
               <TouchableOpacity onPress={handleDecrease} style={styles.roundButton}>
                 <Icon name="minus" size={18} color="#555" />
@@ -141,11 +126,23 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
           <Text style={styles.txtNote}>{item.note}</Text>
         </View>
       )}
+
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  btnClose: {
+    width: 20,
+    height: 20,
+    borderRadius: 100,
+    backgroundColor: Color.btnRed2,
+    position: 'absolute',
+    right: -10,
+    bottom: 22,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   txtNote: {
     fontSize: 12,
     color: Color.textPrimary3,
@@ -162,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     borderRadius: 16,
     padding: 12,
-    marginBottom: 14,
+    marginBottom: 18,
     shadowColor: Color.gray,
     shadowOpacity: 0.06,
     shadowRadius: 4,
@@ -213,7 +210,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   priceType: {
-    fontWeight: "normal",
+    fontWeight: "Roboto-Medium",
     color: Color.mainColor3,
     fontSize: 13,
   },
