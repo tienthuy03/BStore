@@ -11,13 +11,14 @@ import {
 } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import Header from "../../../components/Bstore/Header/Header"
-import CartItem from "../../../components/Bstore/Categories_Card/CartItem"
+import CartItem from "../../../components/Bstore/CartItem"
 import { Color } from "../../../colors/colortv"
-import CartSummary from "../../../components/Bstore/CartSummary"
+
 import AsyncStorage from "@react-native-community/async-storage"
 import useAppConfig from "../../../utils/useAppConfig"
 import sysFetch from "../../../services/fetch_crypt"
 import CustomerInfo from "../../../components/Bstore/CustomerInfo"
+import CartSummary from "./components/CartSummary"
 
 const CartScreen = ({ navigation }) => {
   const [cartItems, setCartItems] = useState([])
@@ -188,8 +189,11 @@ const CartScreen = ({ navigation }) => {
     ])
   }
 
-  // Hàm tạo key cho item
-  const getItemId = (item) => `${item.tdp_production_PK}_${item.price_type || "01"}`
+  // Hàm tạo key cho item trong giỏ hàng
+  const getItemId = (item) => {
+    // Nếu có price_type thì dùng cả 2, nếu không chỉ dùng tdp_production_pk
+    return item.price_type ? `${item.tdp_production_pk}_${item.price_type}` : `${item.tdp_production_pk}`;
+  }
 
   // Check chọn sản phẩm trong giỏ hàng
   const handleToggleSelect = (itemId) => {

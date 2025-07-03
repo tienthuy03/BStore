@@ -3,12 +3,12 @@ import { useEffect, useState } from "react"
 import { FlatList, StyleSheet, ToastAndroid, View } from "react-native"
 import { useSelector } from "react-redux"
 import { Color } from "../../../colors/colortv"
-import Categories_Card from "../../../components/Bstore/Categories_Card"
 import Header from "../../../components/Bstore/Header/Header"
-import Products_Card from "../../../components/Bstore/Products_Card"
 import SearchBar from "../../../components/Bstore/SearchBar"
 import { APP_VERSION } from "../../../config/Pro"
 import sysFetch from "../../../services/fetch_crypt"
+import Categories_Card from "./components/Categories_Card"
+import Products_Card from "./components/Products_Card"
 
 // Sections cho FlatList chính
 const sections = [
@@ -20,19 +20,13 @@ const Menu_Production = ({ navigation }) => {
   const router = useRoute()
   const { tco_depot_pk } = router.params
 
-  const [selectedProduct, setSelectedProduct] = useState([])
   const [listCategories, setListCategories] = useState([])
   const [listProducts, setListProducts] = useState([])
-  const [listDetailProduct, setListDetailProduct] = useState([])
-  const [listPaymentMethod, setListPaymentMethod] = useState([])
-  const [listArea, setListArea] = useState([])
 
   const Api = useSelector((state) => state.SysConfigReducer.API_URL)
   const tokenLogin = useSelector((state) => state.loginReducers.data.data.tokenLogin)
   const userPk = useSelector((state) => state.loginReducers.data.data.tes_user_pk)
   const crt_by = useSelector((state) => state.loginReducers.data.data.crt_by)
-
-
 
   // Render function cho FlatList chính
   const renderSection = ({ item }) => {
@@ -68,8 +62,6 @@ const Menu_Production = ({ navigation }) => {
       p1_sys: "list_categories",
       p2_sys: "list_products",
     }
-    console.log("in_par: ", in_par);
-
     sysFetch(
       Api,
       {
@@ -80,19 +72,10 @@ const Menu_Production = ({ navigation }) => {
       tokenLogin,
     )
       .then((rs) => {
-        console.log("rs lisst prod: ", rs);
 
-        if (rs && rs.data.list_categories && rs.data.list_products
-          // && rs.data.list_payment_method && rs.data.list_area
-        ) {
-          console.log("Response data:", rs.data.list_categories)
+        if (rs && rs.data.list_categories && rs.data.list_products) {
           setListCategories(rs.data.list_categories)
           setListProducts(rs.data.list_products)
-          // setListPaymentMethod(rs.data.list_payment_method)
-          // setListArea(rs.data.list_area)
-          console.log("listPaymentMethod: ", rs.data.list_payment_method);
-          console.log("listArea: ", rs.data.list_area);
-
         } else {
           console.log("No data found")
         }
@@ -114,8 +97,6 @@ const Menu_Production = ({ navigation }) => {
     } else {
       navigation.navigate('DetailProduct', {
         item: product,
-        // item_Payment_Method: listPaymentMethod,
-        // item_Area: listArea,
       });
     }
   }

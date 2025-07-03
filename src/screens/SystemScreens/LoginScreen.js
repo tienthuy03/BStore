@@ -355,7 +355,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       if (fcmToken) {
         if (device_id !== fcmToken) {
           const action = "UPDATE";
-          const  in_par = {
+          const in_par = {
             p1_varchar2: action,
             p2_varchar2: p_thr_emp_pk,
             p3_varchar2: fcmToken,
@@ -365,7 +365,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
             API,
             {
               pro: "STV_HR_UPD_MBI_DEVICE_0_100",
-              in_par:  in_par,
+              in_par: in_par,
               out_par: {
                 p1_varchar2: "update_device",
               },
@@ -682,7 +682,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
                   left: 0,
                   top: 0,
                 }}
-                source={require("../../assets/images/screen_config.png")}
+              // source={require("../../assets/images/screen_config.png")}
               ></Image>
             </View>
           </View>
@@ -710,7 +710,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
                   left: 0,
                   top: 0,
                 }}
-                source={require("../../assets/images/screen_login.png")}
+              // source={require("../../assets/images/screen_login.png")}
               ></Image>
             </View>
           </View>

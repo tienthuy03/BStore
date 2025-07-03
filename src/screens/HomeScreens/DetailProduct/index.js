@@ -14,15 +14,13 @@ import {
   TouchableOpacity,
   View
 } from "react-native"
-import LinearGradient from "react-native-linear-gradient"
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+
 import { Color } from "../../../colors/colortv"
 import Header from "../../../components/Bstore/Header/Header"
-import ProductDetailModal from "../../../components/Bstore/ProductDetailModal"
 import CachedImage from "../../../components/CachedImage"
 import sysFetch from "../../../services/fetch_crypt"
 import useAppConfig from "../../../utils/useAppConfig"
-import ButtonGradient from '../../../components/Bstore/ButtonGradient'
+import ButtonGradient from "../../../components/Bstore/ButtonGradient"
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window")
 
@@ -31,11 +29,8 @@ const DetailProduct = ({ navigation }) => {
   const { item, item_Payment_Method, item_Area } = route.params
   const { Api, tokenLogin, userPk, crt_by, APP_VERSION } = useAppConfig()
 
-  console.log("item_Payment_Method: >>>>>>>>>>>>>>>>>>>>>>> ", item_Payment_Method);;
-  console.log("item_Area: >>>>>>>>>>>>>>>>>>>>>>> ", item_Area);;
 
   // States
-  const [modalVisible, setModalVisible] = useState(false)
   const [detailProduct, setDetailProduct] = useState([])
   const [detailCategory, setDetailCategory] = useState([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -46,8 +41,6 @@ const DetailProduct = ({ navigation }) => {
   const [note, setNote] = useState("")
   // Refs
   const scrollX = useRef(new Animated.Value(0)).current
-  console.log("detailCategory: >>>>>>>>>>>>>>>>>>>>>>> ", detailCategory);
-
 
   const handleCategorySelect = (category) => {
     setSelectedSize(category)
@@ -124,7 +117,7 @@ const DetailProduct = ({ navigation }) => {
     }
 
     const newItem = {
-      tdp_production_PK: item.tdp_production_pk,
+      tdp_production_pk: item.tdp_production_pk,
       tco_depot_pk: item.tco_depot_pk,
       image_uri: getCurrentProductImage(),
       prod_nm: item.prod_nm,
@@ -139,7 +132,7 @@ const DetailProduct = ({ navigation }) => {
 
     const newCartItems = [...cartItems];
     const existingItemIndex = newCartItems.findIndex(cartItem =>
-      cartItem.tdp_production_PK === newItem.tdp_production_PK &&
+      cartItem.tdp_production_pk === newItem.tdp_production_pk &&
       cartItem.price_type === newItem.price_type
     );
 
@@ -154,6 +147,7 @@ const DetailProduct = ({ navigation }) => {
     saveCartItems(newCartItems);
 
     ToastAndroid.show("Sản phẩm đã được thêm vào giỏ hàng", ToastAndroid.SHORT);
+    navigation.goBack();
   };
 
 

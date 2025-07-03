@@ -2,10 +2,10 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { AppState, StatusBar } from 'react-native';
+import { AppState, StatusBar, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Block from '../../components/Block';
-import Text from '../../components/Text';
+
 import {
   ntGetNotification,
   ntResetCountNotiTab,
