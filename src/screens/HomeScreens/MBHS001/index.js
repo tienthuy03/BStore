@@ -62,11 +62,6 @@ const Menu_Production = ({ navigation }) => {
       p1_sys: "list_categories",
       p2_sys: "list_products",
     }
-<<<<<<< HEAD
-    console.log("in_par STV_HR_SEL_MBI_HRDP00100_0: ", in_par);
-
-=======
->>>>>>> TienDev_v1
     sysFetch(
       Api,
       {
@@ -105,14 +100,6 @@ const Menu_Production = ({ navigation }) => {
       });
     }
   }
-<<<<<<< HEAD
-
-  useEffect(() => {
-    getListProduct()
-  }, [])
-
-=======
->>>>>>> TienDev_v1
   return (
     <View style={styles.container}>
       <Header goBack={navigation.goBack}>Danh mục sản phẩm</Header>
