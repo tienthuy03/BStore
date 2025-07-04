@@ -1,26 +1,26 @@
 import NetInfo from '@react-native-community/netinfo';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import md5 from 'md5';
-import React, {useState} from 'react';
-import {Alert, ScrollView} from 'react-native';
+import React, { useState } from 'react';
+import { Alert, ScrollView } from 'react-native';
 import RNRestart from 'react-native-restart';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Block from '../../components/Block';
 import Button from '../../components/Button';
 import Text from '../../components/Text';
 import TextInput from '../../components/TextInput';
-import TVSButton from '../../components/Tvs/Button';
-import TVSHeader from '../../components/Tvs/Header';
-import {deviceId, deviceName} from '../../constants/index';
+import { deviceId, deviceName } from '../../constants/index';
 import EyeClose from '../../icons/EyeClose';
 import EyeOpen from '../../icons/EyeOpen';
 import Icon_pass from '../../icons/Password';
 import ShowError from '../../services/errors';
 import axios from 'axios';
-import {updateUserAction} from '../../actions';
+import { updateUserAction } from '../../actions';
 import sysFetch from '../../services/fetch';
+import ButtonV2 from '../../components/ButtonV2';
+import Header from '../../components/Bstore/Header/Header';
 
-const UpdatePass = ({}) => {
+const UpdatePass = ({ }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   const state = useSelector(state => state.loginReducers);
   const API = useSelector(state => state.SysConfigReducer.API_URL);
@@ -40,7 +40,7 @@ const UpdatePass = ({}) => {
     tokenLogin = state.data.data.tokenLogin;
     userPk = state.data.data.tes_user_pk;
     refreshToken = state.data.data.refreshToken;
-  } catch (error) {}
+  } catch (error) { }
 
   const validate = () => {
     if (passwordNew === '') {
@@ -84,12 +84,12 @@ const UpdatePass = ({}) => {
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
   function dialogNoti(text) {
-    Alert.alert('Thông báo', text, [{text: 'Thoát'}], {
+    Alert.alert('Thông báo', text, [{ text: 'Thoát' }], {
       cancelable: false,
     });
   }
@@ -134,7 +134,7 @@ const UpdatePass = ({}) => {
                 },
               },
             ],
-            {cancelable: true},
+            { cancelable: true },
           );
         }
         console.log(error);
@@ -200,9 +200,9 @@ const UpdatePass = ({}) => {
 
   return (
     <Block flex backgroundColor={Color.backgroundColor}>
-      <TVSHeader goBack={() => RNRestart.Restart()}>
+      <Header goBack={() => RNRestart.Restart()}>
         Thay đổi mật khẩu
-      </TVSHeader>
+      </Header>
 
       <Block flex backgroundColor={Color.gray} paddingTop={5}>
         <ScrollView>
@@ -275,12 +275,12 @@ const UpdatePass = ({}) => {
           </Block>
 
           <Block flex justifyEnd alignCenter paddingBottom={8}>
-            <TVSButton
+            <ButtonV2
               paddingHorizontal={50}
               onPress={() => validate()}
               icon={'check'}>
               Xác nhận
-            </TVSButton>
+            </ButtonV2>
           </Block>
         </ScrollView>
         {/* <CustomProgressBar visible={load} /> */}

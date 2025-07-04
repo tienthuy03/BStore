@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Person from "../../../icons/Person";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import moment from "moment";
-import TVSControlPopup from "../../../components/Tvs/ControlPopup";
 import DeafaultPreference from "react-native-default-preference";
 import { ntProcessNotification } from "../../../services/redux/Notification/action";
 import { useNavigation } from "@react-navigation/native";
 import PopupPDF from "./Popup_PDF";
 import PopupIMG from "./Popup_IMG";
+import TVSControlPopup from "../../../components/Bstore/ControlPopup";
 
 const OneNotificationItem = ({ item, key }) => {
   const navigation = useNavigation();

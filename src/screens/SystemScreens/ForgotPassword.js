@@ -12,18 +12,17 @@ import messaging from "@react-native-firebase/messaging";
 import Block from "../../components/Block";
 import Text from "../../components/Text";
 import TextInput from "../../components/TextInput";
-import TVSButton from "../../components/Tvs/Button";
-import TVSHeader from "../../components/Tvs/Header";
 import * as action from "../../services/redux/ForgotPassword/action";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import TVSControlPopup2 from "../../components/Tvs/ControlPopup2";
-import TVSList from "../../components/Tvs/TVSList";
 import axios from "axios";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { APP_VERSION } from "../../config/Pro";
 import Load from "../../components/Loading";
 import sysFetch from "../../services/fetch_v2";
+import Button from "../../components/Button";
+import Header from "../../components/Bstore/Header/Header";
+import TVSList from "../../components/Bstore/TVSList";
 
 const ForgotPassword = ({ navigation: { goBack }, route }) => {
   const navigation = useNavigation();
@@ -344,7 +343,7 @@ const ForgotPassword = ({ navigation: { goBack }, route }) => {
                 [
                   {
                     text: "Thoát",
-                    onPress: () => {},
+                    onPress: () => { },
                   },
                 ],
                 {
@@ -539,7 +538,7 @@ const ForgotPassword = ({ navigation: { goBack }, route }) => {
       [
         {
           text: "Thoát",
-          onPress: () => {},
+          onPress: () => { },
         },
       ],
       {
@@ -709,19 +708,19 @@ const ForgotPassword = ({ navigation: { goBack }, route }) => {
   }
 
   const modalQuestion = (
-    <TVSControlPopup2
+    <ControlPop
       title={"Chọn câu hỏi bảo mật"}
       isShow={modalChooseQuestionVisible}
       onHide={() => setModalChooseQuestionVisible(false)}
       bottom={
-        <TVSButton
+        <Button
           type={"danger"}
           icon={"close"}
           buttonStyle={"3"}
           onPress={() => setModalChooseQuestionVisible(false)}
         >
           Đóng lại
-        </TVSButton>
+        </Button>
       }
     >
       <FlatList
@@ -748,13 +747,13 @@ const ForgotPassword = ({ navigation: { goBack }, route }) => {
           );
         }}
       />
-    </TVSControlPopup2>
+    </ControlPop>
   );
 
   //render view
   return (
     <Block flex backgroundColor={Color.backgroundColor}>
-      <TVSHeader goBack={goBack}>Lấy lại mật khẩu</TVSHeader>
+      <Header goBack={goBack}>Lấy lại mật khẩu</Header>
       <Block flex backgroundColor={Color.gray} paddingTop={5}>
         {/* START */}
         <Block backgroundColor={"#fff"} padding={20} flex={1}>
@@ -972,7 +971,7 @@ const ForgotPassword = ({ navigation: { goBack }, route }) => {
           ) : null}
 
           <Block marginTop={20} justifyCenter alignCenter>
-            <TVSButton
+            <Button
               paddingHorizontal={50}
               onPress={() => {
                 onChecking(schema);
@@ -980,7 +979,7 @@ const ForgotPassword = ({ navigation: { goBack }, route }) => {
               icon={"check"}
             >
               Xác nhận
-            </TVSButton>
+            </Button>
           </Block>
           <Load visible={load} />
         </Block>

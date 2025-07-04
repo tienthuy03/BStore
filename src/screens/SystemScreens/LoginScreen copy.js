@@ -15,7 +15,6 @@ import Block from "../../components/Block.js";
 import Button from "../../components/Button.js";
 import Text from "../../components/Text.js";
 import TextInput from "../../components/TextInput.js";
-import TVSButton from "../../components/Tvs/Button";
 import { APP_VERSION, buildFor } from "../../config/Pro";
 import { deviceId } from "../../constants/index";
 import EyeClose from "../../icons/EyeClose";
@@ -28,13 +27,13 @@ import LinearGradient from "react-native-linear-gradient";
 import axios from "axios";
 import { updateUserAction } from "../../actions";
 import sysFetch from "../../services/fetch";
-import TVSControlPopup from "../../components/Tvs/ControlPopup2";
 import Swiper from "react-native-swiper";
 import { Linking } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import NetInfo from "@react-native-community/netinfo";
 import ShowError from "../../services/errors";
 import AsyncStorage from "@react-native-community/async-storage";
+import TVSControlPopup from "../../components/Bstore/ControlPopup.js";
 
 
 const LoginScreen = ({ navigation, reloadConfig }) => {
@@ -626,14 +625,14 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       onHide={() => setModalVisibleCloudConnect(false)}
       // onAccept={() => onUpdateApprove()}
       bottom={
-        <TVSButton
+        <Button
           type={"danger"}
           icon={"close"}
           buttonStyle={"3"}
           onPress={() => setModalVisibleCloudConnect(false)}
         >
           Đóng lại
-        </TVSButton>
+        </Button>
       }
     >
       <View style={{ flex: 1 }}>
@@ -689,14 +688,14 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       onHide={() => setModalVisibleHelping(false)}
       // onAccept={() => onUpdateApprove()}
       bottom={
-        <TVSButton
+        <Button
           type={"danger"}
           icon={"close"}
           buttonStyle={"3"}
           onPress={() => setModalVisibleHelping(false)}
         >
           Đóng lại
-        </TVSButton>
+        </Button>
       }
     >
       <View style={{ flex: 1 }}>
@@ -1018,7 +1017,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
                   alignItems: "center",
                 }}
               >
-                <TVSButton
+                <Button
                   paddingHorizontal={80}
                   paddingVertical={20}
                   borderRadius={30}
@@ -1026,7 +1025,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
                   onPress={() => validateLogin(username, password)}
                 >
                   ĐĂNG NHẬP
-                </TVSButton>
+                </Button>
                 {setFingers(typeAuthen)}
               </View>
               <View

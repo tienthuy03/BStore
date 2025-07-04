@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUserAction } from "../../../actions";
 import Block from "../../../components/Block";
 import Button from "../../../components/Button.js";
-import TVSButton from "../../../components/Tvs/Button";
 import TVSHeader from "../../../components/Tvs/Header";
 import EyeClose from "../../../icons/EyeClose";
 import EyeOpen from "../../../icons/EyeOpen";
@@ -19,6 +18,7 @@ import {
     HideGlobalLoading,
     ShowGlobalLoading,
 } from "../../../services/redux/GlobalLoading/action";
+import ButtonV2 from "../../../components/ButtonV2.js";
 
 const UpdatePassword = ({ navigation: { goBack } }) => {
     const dispatch = useDispatch();
@@ -426,7 +426,7 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                             justifyContent: "center",
                             alignItems: "center",
                         }} >
-                            <TVSButton
+                            <ButtonV2
                                 paddingHorizontal={80}
                                 paddingVertical={15}
                                 borderRadius={30}
@@ -440,7 +440,7 @@ const UpdatePassword = ({ navigation: { goBack } }) => {
                                 }}>
                                     Cập nhật
                                 </Text>
-                            </TVSButton>
+                            </ButtonV2>
                         </View>
                     </View>
                 </ScrollView>
