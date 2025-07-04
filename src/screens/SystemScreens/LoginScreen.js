@@ -16,7 +16,6 @@ import Block from "../../components/Block.js";
 import Button from "../../components/Button.js";
 import Text from "../../components/Text.js";
 import TextInput from "../../components/TextInput.js";
-import TVSButton from "../../components/Tvs/Button";
 import { APP_VERSION, buildFor } from "../../config/Pro";
 import { deviceId } from "../../constants/index";
 import EyeClose from "../../icons/EyeClose";
@@ -29,7 +28,6 @@ import LinearGradient from "react-native-linear-gradient";
 import axios from "axios";
 import { updateUserAction } from "../../actions";
 import sysFetch from "../../services/fetch_crypt";
-import TVSControlPopup from "../../components/Tvs/ControlPopup2";
 import Swiper from "react-native-swiper";
 import { Linking } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -37,6 +35,7 @@ import NetInfo from "@react-native-community/netinfo";
 import ShowError from "../../services/errors";
 import AsyncStorage from "@react-native-community/async-storage";
 import ButtonV2 from "../../components/ButtonV2.js";
+import TVSControlPopup from "../../components/Bstore/ControlPopup.js";
 
 const LoginScreen = ({ navigation, reloadConfig }) => {
   //get infor ClientId from AsyncStorage
@@ -584,14 +583,14 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       minHeight={200}
       onHide={() => setModalVisibleCloudConnect(false)}
       bottom={
-        <TVSButton
+        <Button
           type={"danger"}
           icon={"close"}
           buttonStyle={"3"}
           onPress={() => setModalVisibleCloudConnect(false)}
         >
           Đóng lại
-        </TVSButton>
+        </Button>
       }
     >
       <View style={{ flex: 1 }}>
@@ -646,14 +645,14 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       minHeight={600}
       onHide={() => setModalVisibleHelping(false)}
       bottom={
-        <TVSButton
+        <Button
           type={"danger"}
           icon={"close"}
           buttonStyle={"3"}
           onPress={() => setModalVisibleHelping(false)}
         >
           Đóng lại
-        </TVSButton>
+        </Button>
       }
     >
       <View style={{ flex: 1 }}>

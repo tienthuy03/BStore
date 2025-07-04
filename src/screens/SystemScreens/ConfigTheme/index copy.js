@@ -17,7 +17,6 @@ import RNRestart from "react-native-restart";
 import { useDispatch } from "react-redux";
 import * as ColorHP from "../../../colors/colorhp";
 import * as ColorTV from "../../../colors/colortv";
-import TVSButton from "../../../components/Tvs/Button";
 import {
   configAPI,
   ServerIP
@@ -29,6 +28,7 @@ import ScanQR from "./ScanQR";
 // import CryptoJS from "crypto-js";
 import CryptoJS from "react-native-crypto-js";
 import Load from "../../../components/Loading";
+import Button from "../../../components/Button";
 
 const arr = [
   { id: "1", name: "Theme 01", color: ColorTV.Color },
@@ -363,7 +363,7 @@ const ConfigThemeScreen = ({ navigation }) => {
             }}
           >
             <View style={{ flex: 1 }}>
-              <TVSButton
+              <Button
                 buttonStyle={"3"}
                 type={"danger"}
                 icon={"close"}
@@ -374,12 +374,12 @@ const ConfigThemeScreen = ({ navigation }) => {
                 }}
               >
                 Hủy bỏ
-              </TVSButton>
+              </Button>
             </View>
             <View style={{ flex: 1 }}>
-              <TVSButton buttonStyle={"3"} onPress={onSave} icon={"check"}>
+              <Button buttonStyle={"3"} onPress={onSave} icon={"check"}>
                 Xác nhận
-              </TVSButton>
+              </Button>
             </View>
           </View>
 

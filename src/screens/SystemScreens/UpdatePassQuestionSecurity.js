@@ -8,8 +8,6 @@ import Block from "../../components/Block";
 import Button from "../../components/Button";
 import Text from "../../components/Text";
 import TextInput from "../../components/TextInput";
-import TVSButton from "../../components/Tvs/Button";
-import TVSHeader from "../../components/Tvs/Header";
 import EyeClose from "../../icons/EyeClose";
 import EyeOpen from "../../icons/EyeOpen";
 import Icon_pass from "../../icons/Password";
@@ -19,6 +17,8 @@ import { APP_VERSION } from "../../config/Pro";
 import Load from "../../components/Loading";
 import sysFetch from '../../services/fetch_v2';
 import md5 from "md5";
+import ButtonV2 from "../../components/ButtonV2";
+import Header from "../../components/Bstore/Header/Header";
 
 const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
@@ -119,7 +119,7 @@ const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
         console.log('res', res.data.data.length);
         if (res.data.data.length > 0 && res.data.results == "S") {
           const schema = res.data.data[0].schema;
-          if(schema) {
+          if (schema) {
             updatePass(schema);
           }
         } else {
@@ -164,16 +164,16 @@ const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
             console.log("errors getData HomeMain.js");
           } else {
             setLoad(false);
-            Alert.alert('Thông báo', 
-            'Cập nhật mật khẩu thành công!'
-            , [
-              {
-                text: 'Đóng',
-                onPress: () => {
-                  RNRestart.Restart();
+            Alert.alert('Thông báo',
+              'Cập nhật mật khẩu thành công!'
+              , [
+                {
+                  text: 'Đóng',
+                  onPress: () => {
+                    RNRestart.Restart();
+                  },
                 },
-              },
-            ]);
+              ]);
           }
         }
       })
@@ -217,7 +217,7 @@ const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
 
   return (
     <Block flex backgroundColor={Color.backgroundColor}>
-      <TVSHeader goBack={() => goBack()}>Thay đổi mật khẩu</TVSHeader>
+      <Header goBack={() => goBack()}>Thay đổi mật khẩu</Header>
 
       <Block flex backgroundColor={Color.gray} paddingTop={5}>
         <ScrollView>
@@ -295,13 +295,13 @@ const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
           </Block>
 
           <Block flex justifyEnd alignCenter paddingBottom={8}>
-            <TVSButton
+            <ButtonV2
               paddingHorizontal={50}
               onPress={() => validate()}
               icon={"check"}
             >
               Xác nhận
-            </TVSButton>
+            </ButtonV2>
           </Block>
         </ScrollView>
         <Load visible={load} />
