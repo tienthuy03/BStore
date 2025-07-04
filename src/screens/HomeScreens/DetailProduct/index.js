@@ -1,49 +1,54 @@
+import AsyncStorage from "@react-native-community/async-storage"
+import { useRoute } from "@react-navigation/native"
+import { useEffect, useRef, useState } from "react"
 import {
+  Animated,
+  Dimensions,
+  Image,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  Dimensions,
-  Animated,
-  Image,
+  TextInput,
+  ToastAndroid,
   TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
+  View
 } from "react-native"
-import { useEffect, useState, useRef } from "react"
-import { useRoute } from "@react-navigation/native"
-import LinearGradient from "react-native-linear-gradient"
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"
-import AsyncStorage from "@react-native-community/async-storage"
-import useAppConfig from "../../../utils/useAppConfig"
-import CachedImage from "../../../components/CachedImage"
-import ProductDetailModal from "../../../components/Bstore/ProductDetailModal"
+
 import { Color } from "../../../colors/colortv"
 import Header from "../../../components/Bstore/Header/Header"
+import CachedImage from "../../../components/CachedImage"
 import sysFetch from "../../../services/fetch_crypt"
+import useAppConfig from "../../../utils/useAppConfig"
+import ButtonGradient from "../../../components/Bstore/ButtonGradient"
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window")
 
 const DetailProduct = ({ navigation }) => {
   const route = useRoute()
-  const { tco_depot_pk, tdp_production_pk, prod_nm, prod_price, prod_desc, prod_uom, prod_unit_price } = route.params
+  const { item, item_Payment_Method, item_Area } = route.params
   const { Api, tokenLogin, userPk, crt_by, APP_VERSION } = useAppConfig()
 
+
   // States
-  const [modalVisible, setModalVisible] = useState(false)
   const [detailProduct, setDetailProduct] = useState([])
   const [detailCategory, setDetailCategory] = useState([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [cartCount, setCartCount] = useState(0)
-
+  const [selectedSize, setSelectedSize] = useState(null)
+  const [note, setNote] = useState("")
   // Refs
   const scrollX = useRef(new Animated.Value(0)).current
-  console.log("detailCategory: >>>>>>>>>>>>>>>>>>>>>>> ", detailCategory);
+
+  const handleCategorySelect = (category) => {
+    setSelectedSize(category)
+  }
 
   // API Functions
   const getDetailProduct = async () => {
-    if (!tdp_production_pk) {
+    if (!item.tdp_production_pk) {
       console.log("Product PK is missing")
       return
     }
@@ -51,7 +56,7 @@ const DetailProduct = ({ navigation }) => {
     setLoading(true)
     const in_par = {
       p1_varchar2: userPk,
-      p2_varchar2: tdp_production_pk,
+      p2_varchar2: item.tdp_production_pk,
       p3_varchar2: APP_VERSION,
       p4_varchar2: crt_by,
     }
@@ -105,32 +110,46 @@ const DetailProduct = ({ navigation }) => {
   };
 
   // Thêm sản phẩm vào giỏ hàng
-  const handleAddToCart = (item) => {
-    const newCartItems = [...cartItems];
+  const handleAddToCart = () => {
+    if (detailCategory.length > 0 && !selectedSize) {
+      alert("Vui lòng chọn loại sản phẩm trước khi thêm vào giỏ hàng");
+      return;
+    }
 
-    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-    // Phải kiểm tra cả tdp_production_PK và price_type để xác định đúng sản phẩm
+    const newItem = {
+      tdp_production_pk: item.tdp_production_pk,
+      tco_depot_pk: item.tco_depot_pk,
+      image_uri: getCurrentProductImage(),
+      prod_nm: item.prod_nm,
+      quantity: 1,
+      unit_price: selectedSize ? selectedSize?.unit_price : item.unit_price,
+      price: selectedSize ? selectedSize?.unit_price : item.unit_price,
+      price_type: selectedSize ? selectedSize?.price_type : (item.price_type || "01"),
+      uom: selectedSize ? selectedSize?.price_type_uom : item.uom,
+      note: note,
+      selected: false,
+    };
+
+    const newCartItems = [...cartItems];
     const existingItemIndex = newCartItems.findIndex(cartItem =>
-      cartItem.tdp_production_PK === item.tdp_production_PK &&
-      cartItem.price_type === item.price_type
+      cartItem.tdp_production_pk === newItem.tdp_production_pk &&
+      cartItem.price_type === newItem.price_type
     );
 
     if (existingItemIndex !== -1) {
-      // Nếu sản phẩm đã tồn tại (cùng ID và cùng loại), cập nhật số lượng
-      newCartItems[existingItemIndex].quantity += item.quantity;
+      newCartItems[existingItemIndex].quantity += newItem.quantity;
     } else {
-      // Nếu sản phẩm chưa tồn tại hoặc khác loại, thêm mới
-      newCartItems.push(item);
+      newCartItems.push(newItem);
     }
 
-    // Cập nhật state và lưu vào AsyncStorage
     setCartItems(newCartItems);
     setCartCount(newCartItems.length);
     saveCartItems(newCartItems);
 
-    // Đóng modal
-    setModalVisible(false);
+    ToastAndroid.show("Sản phẩm đã được thêm vào giỏ hàng", ToastAndroid.SHORT);
+    navigation.goBack();
   };
+
 
   // Event Handlers
   const handleScroll = (event) => {
@@ -138,15 +157,6 @@ const DetailProduct = ({ navigation }) => {
     const index = event.nativeEvent.contentOffset.x / slideSize
     const roundIndex = Math.round(index)
     setCurrentImageIndex(roundIndex)
-  }
-
-  const handleAddToCartButton = () => {
-    console.log("Thêm vào giỏ hàng")
-    setModalVisible(true)
-  }
-
-  const closeModal = () => {
-    setModalVisible(false)
   }
 
   // Chuyển đến màn hình giỏ hàng
@@ -161,20 +171,6 @@ const DetailProduct = ({ navigation }) => {
     }
     // Fallback image nếu không có ảnh từ API
     return "https://i.pinimg.com/736x/4f/7a/f1/4f7af1a4320430ed976593fd0fea02b4.jpg"
-  }
-
-  // Prepare product data for modal
-  const getProductDataForModal = () => {
-    return {
-      tdp_production_pk,
-      tco_depot_pk,
-      prod_nm,
-      prod_price,
-      prod_desc,
-      prod_uom,
-      prod_unit_price,
-      image_uri: getCurrentProductImage(),
-    }
   }
 
   // Component Functions
@@ -253,45 +249,85 @@ const DetailProduct = ({ navigation }) => {
 
   const renderProductInfo = () => (
     <View style={styles.productInfoContainer}>
-      <Text style={styles.productName}>{prod_nm}</Text>
-
       <View style={styles.priceQuantityRow}>
+        <Text style={styles.productName}>{item.prod_nm}</Text>
         <View style={styles.priceContainer}>
           <Text style={styles.currencySymbol}>đ</Text>
-          <Text style={styles.productPrice}>{prod_price}/</Text>
-          <Text style={styles.currencySymbol}>{prod_uom}</Text>
+          <Text style={styles.productPrice}>{item.price}/</Text>
+          <Text style={styles.currencySymbol}>{item.uom}</Text>
         </View>
-        <Text style={styles.quantityText}>Số lượng: 100</Text>
-      </View>
 
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.descriptionTitle}>Mô tả mặt hàng</Text>
-        <Text style={styles.descriptionText}>{prod_desc}</Text>
+      </View>
+      <Text style={styles.quantityText}>Số lượng: {item.qty}</Text>
+      {detailProduct.description && (
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.descriptionTitle}>Mô tả sản phẩm</Text>
+          <Text style={styles.descriptionText}>{item.description}</Text>
+        </View>
+      )}
+
+      {detailCategory.length > 0 && (
+        <View style={styles.sizeRow}>
+          <Text style={styles.sizeLabel}>
+            Loại sản phẩm {!selectedSize && <Text style={styles.requiredText}>*</Text>}
+          </Text>
+          <View style={styles.sizeOptions}>
+            {detailCategory.map((item) => (
+              <TouchableOpacity
+                key={item.pk}
+                onPress={() => handleCategorySelect(item)}
+                style={[styles.sizeButton, selectedSize?.pk === item.pk && styles.sizeButtonSelected]}
+              >
+                <Text
+                  style={{
+                    color: selectedSize?.pk === item.pk ? Color.white : Color.textPrimary2,
+                    fontFamily: "Roboto-Medium",
+                  }}
+                >
+                  {item.price_type_mn}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {!selectedSize && <Text style={styles.warningText}>Vui lòng chọn loại hàng</Text>}
+        </View>
+      )}
+
+      <View style={styles.noteContainer}>
+        <Text style={styles.noteLabel}>Ghi chú (tùy chọn)</Text>
+        <TextInput
+          style={styles.noteInput}
+          value={note}
+          onChangeText={setNote}
+          placeholder="Nhập ghi chú cho sản phẩm..."
+          placeholderTextColor="#999"
+          multiline={true}
+          numberOfLines={3}
+          maxLength={200}
+          textAlignVertical="top"
+        />
+        <Text style={styles.characterCount}>{note.length}/200</Text>
       </View>
     </View>
   )
 
   const renderFooter = () => (
     <View style={styles.footerContainer}>
-      <TouchableOpacity onPress={handleAddToCartButton} activeOpacity={0.8}>
-        <LinearGradient
-          colors={[Color.mainColor, Color.mainColor3]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={[styles.footerButton, styles.buyNowButton]}
-        >
-          <Icon name="cart-arrow-down" size={18} color="#fff" style={{ marginRight: 8 }} />
-          <Text style={styles.buyNowText}>Thêm vào giỏ hàng</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <ButtonGradient
+        onPress={handleAddToCart}
+        icon="cart-arrow-down"
+        style={[styles.footerButton, styles.buyNowButton]}
+        textStyle={styles.buyNowText}
+      >
+        Thêm vào giỏ hàng
+      </ButtonGradient>
     </View>
   )
-
   // Effects
   useEffect(() => {
     getDetailProduct();
     getCartItems();
-  }, [tdp_production_pk]);
+  }, [item.tdp_production_pk]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -313,16 +349,7 @@ const DetailProduct = ({ navigation }) => {
         {renderImageSlider()}
         {renderProductInfo()}
       </ScrollView>
-
       {renderFooter()}
-
-      <ProductDetailModal
-        visible={modalVisible}
-        product={getProductDataForModal()}
-        listCategory={detailCategory}
-        onClose={closeModal}
-        onAddToCart={handleAddToCart}
-      />
     </SafeAreaView>
   )
 }
@@ -330,6 +357,149 @@ const DetailProduct = ({ navigation }) => {
 export default DetailProduct
 
 const styles = StyleSheet.create({
+  modal: {
+    backgroundColor: Color.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    paddingTop: 40,
+    maxHeight: "90%",
+    position: "relative",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    zIndex: 10,
+  },
+  contentRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  productImage: {
+    width: 130,
+    height: 150,
+    borderRadius: 16,
+    backgroundColor: "#eee",
+  },
+  infoColumn: {
+    flex: 1,
+    gap: 8,
+  },
+  productName: {
+    fontFamily: "Roboto-Bold",
+    fontSize: 14,
+  },
+  productPrice: {
+    fontSize: 18,
+    color: Color.mainColor,
+    fontFamily: "Roboto-Bold",
+  },
+  productDescription: {
+    fontSize: 14,
+    color: "#666",
+  },
+  sizeRow: {
+    // marginTop: 8,
+  },
+  sizeLabel: {
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  requiredText: {
+    color: "red",
+    fontSize: 16,
+  },
+  warningText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+    fontStyle: "italic",
+  },
+  sizeOptions: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  sizeButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Color.mainColor,
+  },
+  sizeButtonSelected: {
+    backgroundColor: Color.mainColor2,
+    borderColor: Color.mainColor2,
+  },
+  bottomRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 14,
+    gap: 10,
+  },
+  counterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f1f1f1",
+    paddingHorizontal: 10,
+    borderRadius: 20,
+  },
+  counterButton: {
+    padding: 4,
+  },
+  counterText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  quantityInput: {
+    marginHorizontal: 8,
+    fontSize: 16,
+    textAlign: "center",
+    minWidth: 40,
+    padding: 0,
+  },
+  addButton: {
+    borderRadius: 20,
+    paddingVertical: 10,
+    alignItems: "center",
+  },
+  addButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  disabledButton: {
+    opacity: 0.6,
+  },
+  disabledButtonText: {
+    color: "#fff",
+  },
+  noteContainer: {
+    marginTop: 12,
+  },
+  noteLabel: {
+    fontSize: 14,
+    fontFamily: "Roboto-Medium",
+    color: Color.textPrimary2,
+    marginBottom: 8,
+  },
+  noteInput: {
+    borderWidth: 1,
+    borderColor: '#bdbdbd',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    fontFamily: "Roboto-Regular",
+    backgroundColor: Color.white,
+    minHeight: 80,
+  },
+  characterCount: {
+    fontSize: 12,
+    color: "#999",
+    textAlign: "right",
+    marginTop: 4,
+  },
+
+  ///
   container: {
     flex: 1,
     backgroundColor: Color.gray,
@@ -421,17 +591,17 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   productPrice: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "Roboto-Bold",
     color: Color.mainColor,
   },
   quantityText: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: "Roboto-Regular",
     color: Color.textPrimary3,
   },
   descriptionContainer: {
-    gap: 8,
+    // gap: 8,
   },
   descriptionTitle: {
     fontSize: 16,
@@ -442,7 +612,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Roboto-Regular",
     color: Color.textPrimary3,
-    lineHeight: 20,
+    lineHeight: 20
+
   },
 
   footerButton: {
@@ -462,9 +633,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   footerContainer: {
-    padding: 16,
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#eee",
+    width: '100%'
   },
 })

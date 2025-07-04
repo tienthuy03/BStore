@@ -1,11 +1,9 @@
 
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
-import { Color } from "../../../colors/colortv"
 import React from "react"
+import { Color } from "../../../../colors/colortv"
 
 const CartSummary = ({ total, quantityProd, handleOnCheckOut, cartItems }) => {
-
-
   return (
     <View style={styles.footerContainer}>
       <View style={styles.row}>

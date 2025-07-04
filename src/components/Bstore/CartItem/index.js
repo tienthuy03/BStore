@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react"
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Keyboard } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
-import CachedImage from "../../../CachedImage"
-import { Color } from "../../../../colors/colortv"
+import CachedImage from "../../CachedImage"
+import { Color } from "../../../colors/colortv"
 
 const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity }) => {
   const [manualQuantity, setManualQuantity] = useState(item.quantity.toString())
 
   const getItemId = () => {
-    return `${item.tdp_production_PK}_${item.price_type || "01"}`
+    return item.price_type ? `${item.tdp_production_pk}_${item.price_type}` : `${item.tdp_production_pk}`;
   }
 
   // Cập nhật manualQuantity khi item.quantity thay đổi từ bên ngoài

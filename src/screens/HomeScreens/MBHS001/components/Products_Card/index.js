@@ -8,9 +8,10 @@ import {
   FlatList,
   Dimensions
 } from 'react-native';
-import { Color } from '../../../colors/colortv';
-import CachedImage from '../../CachedImage';
+
 import LinearGradient from 'react-native-linear-gradient';
+import CachedImage from '../../../../../components/CachedImage';
+import { Color } from '../../../../../colors/colortv';
 
 const { width } = Dimensions.get('window');
 const ITEM_WIDTH = (width - 36) / 2;

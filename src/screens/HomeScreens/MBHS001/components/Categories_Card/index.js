@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import { Color } from '../../../colors/colorhp';
+import { Color } from '../../../../../colors/colortv';
 
 const Categories_Card = ({ categories, onPress }) => {
   const [activeCategory, setActiveCategory] = useState("");
@@ -54,14 +54,14 @@ Categories_Card.defaultProps = {
 
 const styles = StyleSheet.create({
   categoriesWrapper: {
-    backgroundColor: '#fff',
+    backgroundColor: Color.white,
     paddingVertical: 12,
     paddingHorizontal: 16,
     zIndex: 10,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontFamily: 'Roboto-Medium',
+    fontSize: 14,
+    fontFamily: 'Roboto-Regular',
     color: Color.textPrimary3,
     paddingBottom: 12,
   },
@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   categoryItemActive: {
-    backgroundColor: '#FF7E1B',
-    shadowColor: '#FF7E1B',
+    backgroundColor: Color.mainColor,
+    shadowColor: Color.mainColor,
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     // Text sẽ không bị cắt, item sẽ mở rộng theo độ dài text
   },
   categoryTextActive: {
-    color: '#fff',
+    color: Color.white,
     fontWeight: '600',
   },
 });

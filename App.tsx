@@ -127,6 +127,8 @@ import DetailProduct from "./src/screens/HomeScreens/DetailProduct";
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidColor, AndroidImportance, AuthorizationStatus, EventType } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckoutScreen from "./src/screens/HomeScreens/CheckoutScreen";
+import ShippingInfoScreen from "./src/screens/HomeScreens/ShippingInfoScreen";
 
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -271,6 +273,8 @@ const App = () => {
             <Stack.Screen name="Menu_Production" component={Menu_Production} options={{ gestureEnabled: false, }} />
             <Stack.Screen name="CartScreen" component={CartScreen} options={{ gestureEnabled: false, }} />
             <Stack.Screen name="DetailProduct" component={DetailProduct} />
+            <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
+            <Stack.Screen name="ShippingInfoScreen" component={ShippingInfoScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
