@@ -770,6 +770,7 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
                   )}
                 </View>
               )}
+
               <View style={styles.versionContainer}>
                 <Text>Phiên bản {APP_VERSION}</Text>
               </View>

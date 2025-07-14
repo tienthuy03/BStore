@@ -254,18 +254,13 @@ const App = () => {
         <Popup cusStyle={undefined} />
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="LoginScreen"
+            initialRouteName="ConfigThemeScreen"
             screenOptions={{
               headerShown: false,
             }}
           >
-            {/* <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} /> */}
-            <Stack.Screen
-              name="LoginScreen"
-              // If you need to pass reloadConfig, do it via initialParams or a wrapper
-              // component={LoginScreen}
-              children={(props) => <LoginScreen {...props} reloadConfig={undefined} />}
-            />
+            <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="ForgotPass" component={ForgotPass} />
             <Stack.Screen name="RegisterAccount" component={RegisterAccount} />
             <Stack.Screen name="CheckLogin" component={CheckLogin} />
