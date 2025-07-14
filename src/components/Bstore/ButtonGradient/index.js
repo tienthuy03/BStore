@@ -43,8 +43,9 @@ const ButtonGradient = ({
 
 const styles = StyleSheet.create({
   touchable: {
-    borderRadius: 24,
+    // borderRadius: 24,
     overflow: 'hidden',
+    width: '100%',
   },
   gradient: {
     flexDirection: 'row',
@@ -53,6 +54,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 24,
+    width: '100%',
   },
   text: {
     color: Color.white,

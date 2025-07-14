@@ -10,6 +10,7 @@ const useAppConfig = () => {
   const crt_by = useSelector((state) => state.loginReducers.data.data.crt_by)
   const full_Name = useSelector((state) => state.loginReducers.data.data.full_name)
   const thr_emp_pk = useSelector((state) => state.loginReducers.data.data.thr_emp_pk)
+  const refreshToken = useSelector((state) => state.loginReducers.data.data.refreshToken)
   return {
     Api,
     tokenLogin,

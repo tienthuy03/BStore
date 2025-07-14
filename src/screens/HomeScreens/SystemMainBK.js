@@ -29,14 +29,6 @@ import TextInput from "../../components/TextInput";
 import TVSControlPopup from "../../components/Tvs/ControlPopup";
 import TVSPopup from "../../components/Tvs/Popup2";
 import { APP_VERSION } from "../../config/Pro";
-import IconDown from "../../icons/Back";
-import Icon_email from "../../icons/Email";
-import EyeClose from "../../icons/EyeClose";
-import EyeOpen from "../../icons/EyeOpen";
-import Icon_infor from "../../icons/Infor";
-import Icon_next from "../../icons/Next";
-import Icon_face from "../../icons/Face";
-import Icon_finger from "../../icons/Finger";
 import ShowError from "../../services/errors";
 import {
   GetDataReceiceNotification,
@@ -44,6 +36,7 @@ import {
 } from "../../services/redux/System/action";
 import sysFetch from "../../services/fetch";
 import axios from "axios";
+import { Icon } from "react-native-elements";
 const { width, height } = Dimensions.get("screen");
 
 const PROP = [
@@ -202,9 +195,9 @@ const SystemMain = ({ navigation }) => {
         }}
       >
         {valueAuthen === "face_id" ? (
-          <Icon_face style={{ width: 50, height: 50, marginRight: 20 }} />
+          <Icon name="face-man" style={{ width: 50, height: 50, marginRight: 20 }} />
         ) : (
-          <Icon_finger style={{ width: 50, height: 50, marginRight: 20 }} />
+          <Icon name="fingerprint" style={{ width: 50, height: 50, marginRight: 20 }} />
         )}
       </View>
       <View>
@@ -524,7 +517,7 @@ const SystemMain = ({ navigation }) => {
           //   setAuthenLanguage(item[lowerLanguage]);
           // }
         });
-      } catch (error) {}
+      } catch (error) { }
     });
   }, [language, loadLanguage]);
   const CustomProgressBar = ({ visible }) => (
@@ -709,7 +702,7 @@ const SystemMain = ({ navigation }) => {
                   paddingBottom={30}
                   style={{ transform: [{ rotate: "-90deg" }] }}
                 >
-                  <IconDown color={Color.mainColor} />
+                  <Icon name='chevron-down' color={Color.mainColor} />
                 </Block>
               </Button>
               {modalPK1}
@@ -757,7 +750,7 @@ const SystemMain = ({ navigation }) => {
                   paddingBottom={30}
                   style={{ transform: [{ rotate: "-90deg" }] }}
                 >
-                  <IconDown color={Color.mainColor} />
+                  <Icon name="chevron-down" color={Color.mainColor} />
                 </Block>
               </Button>
               {modalPK2}
@@ -1358,7 +1351,7 @@ const SystemMain = ({ navigation }) => {
               backgroundColor={Color.gray}
               row
             >
-              <Icon_email />
+              <Icon name="email-outline" />
               <TextInput
                 flex
                 height={55}
@@ -1390,7 +1383,7 @@ const SystemMain = ({ navigation }) => {
               backgroundColor={Color.gray}
               row
             >
-              <Icon_infor />
+              <Icon name="card-account-details-outline" />
 
               <TextInput
                 flex
@@ -1424,7 +1417,7 @@ const SystemMain = ({ navigation }) => {
               backgroundColor={Color.gray}
               row
             >
-              <Icon_infor />
+              <Icon name="card-account-details-outline" />
 
               <TextInput
                 flex
@@ -1667,7 +1660,7 @@ const SystemMain = ({ navigation }) => {
           width={30}
           nextScreen={() => setEye1(!eye1)}
         >
-          {eye1 ? <EyeOpen /> : <EyeClose />}
+          {eye1 ? <Icon name="eye-outline" /> : <Icon name="eye-off-outline" />}
         </Button>
       </Block>
       <Text>Mật khẩu mới</Text>
@@ -1704,7 +1697,7 @@ const SystemMain = ({ navigation }) => {
           width={30}
           nextScreen={() => setEye2(!eye2)}
         >
-          {eye2 ? <EyeOpen /> : <EyeClose />}
+          {eye2 ? <Icon name="eye-outline" /> : <Icon name="eye-off-outline" />}
         </Button>
       </Block>
       <Text>Nhập lại mật khẩu mới</Text>
@@ -1739,7 +1732,7 @@ const SystemMain = ({ navigation }) => {
           width={30}
           nextScreen={() => setEye3(!eye3)}
         >
-          {eye3 ? <EyeOpen /> : <EyeClose />}
+          {eye3 ? <Icon name="eye-outline" /> : <Icon name="eye-off-outline" />}
         </Button>
       </Block>
     </TVSControlPopup>
@@ -1855,7 +1848,7 @@ const SystemMain = ({ navigation }) => {
         >
           {stateChange}
         </Text>
-        <Icon_next color={Color.mainColor} style={{ marginRight: 10 }} />
+        <Icon name="Icon_next" color={Color.mainColor} style={{ marginRight: 10 }} />
       </Button>
     );
   }
@@ -1921,7 +1914,7 @@ const SystemMain = ({ navigation }) => {
             >
               {securityMethod}
             </Text>
-            <Icon_next color={Color.mainColor} style={{ marginRight: 10 }} />
+            <Icon name="Icon_next" color={Color.mainColor} style={{ marginRight: 10 }} />
           </Button>
 
           {checkAuthens(valueAuthen)}

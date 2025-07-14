@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import Person from "../../../icons/Person";
+// import Person from "../../../icons/Person";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import moment from "moment";
 import DeafaultPreference from "react-native-default-preference";
@@ -237,7 +237,8 @@ const OneNotificationItem = ({ item, key }) => {
               }}
             />
           ) : (
-            <Person />
+            // <Person />
+            <Text>Name</Text>
           )}
         </View>
         <View style={{ flexDirection: "row", flex: 1 }}>
@@ -250,7 +251,7 @@ const OneNotificationItem = ({ item, key }) => {
             <Text
               style={{
                 fontSize: 16,
-                color: Color.mainColor,
+                // color: Color.mainColor,
                 marginBottom: 5,
                 fontFamily: "Roboto-Medium",
               }}

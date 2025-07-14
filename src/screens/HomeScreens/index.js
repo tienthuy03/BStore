@@ -24,6 +24,7 @@ import NotiScreen from "../HomeScreens/NotificationMain";
 import SystemScreen from "../HomeScreens/SystemMain";
 import QRCodeScreen from "./QRCodeScreen";
 import CustomTabBar from "../../components/Bstore/CustomTabar";
+import EnvoiceScreen from "./EnvoiceScreen";
 
 const Tab = createBottomTabNavigator();
 const Index = () => {
@@ -145,11 +146,11 @@ const Index = () => {
   }, []);
 
   return (
-    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
-      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    <Tab.Navigator initialRouteName="Home" tabBar={(props) => <CustomTabBar {...props} />}>
       <Tab.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }} />
-      <Tab.Screen name="QRCode" component={QRCodeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Noti" component={NotiScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Envoice" component={EnvoiceScreen} options={{ headerShown: false }} />
       <Tab.Screen name="System" component={SystemScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );

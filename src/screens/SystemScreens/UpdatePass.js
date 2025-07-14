@@ -10,16 +10,13 @@ import Button from '../../components/Button';
 import Text from '../../components/Text';
 import TextInput from '../../components/TextInput';
 import { deviceId, deviceName } from '../../constants/index';
-import EyeClose from '../../icons/EyeClose';
-import EyeOpen from '../../icons/EyeOpen';
-import Icon_pass from '../../icons/Password';
 import ShowError from '../../services/errors';
 import axios from 'axios';
 import { updateUserAction } from '../../actions';
 import sysFetch from '../../services/fetch';
 import ButtonV2 from '../../components/ButtonV2';
 import Header from '../../components/Bstore/Header/Header';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const UpdatePass = ({ }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   const state = useSelector(state => state.loginReducers);
@@ -222,7 +219,7 @@ const UpdatePass = ({ }) => {
               alignCenter
               row
               backgroundColor={Color.inputBackgroundColor}>
-              <Icon_pass />
+              <Icon name='key-outline' />
               <TextInput
                 flex
                 height={55}
@@ -240,7 +237,7 @@ const UpdatePass = ({ }) => {
                 height={30}
                 width={30}
                 nextScreen={() => setEye1(!eye1)}>
-                {eye1 ? <EyeOpen /> : <EyeClose />}
+                {eye1 ? <Icon name='eye-outline' /> : <Icon name='eye-off-outline' />}
               </Button>
             </Block>
             <Block
@@ -251,7 +248,7 @@ const UpdatePass = ({ }) => {
               alignCenter
               row
               backgroundColor={Color.inputBackgroundColor}>
-              <Icon_pass />
+              <Icon name='key-outline' />
               <TextInput
                 flex
                 height={55}
@@ -269,7 +266,7 @@ const UpdatePass = ({ }) => {
                 height={30}
                 width={30}
                 nextScreen={() => setEye2(!eye2)}>
-                {eye2 ? <EyeOpen /> : <EyeClose />}
+                {eye2 ? <Icon name='eye-outline' /> : <Icon name='eye-off-outline' />}
               </Button>
             </Block>
           </Block>

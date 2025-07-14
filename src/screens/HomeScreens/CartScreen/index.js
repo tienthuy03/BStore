@@ -1,61 +1,27 @@
-import { useState, useEffect, useCallback } from "react"
+import { useEffect, useState } from "react"
 import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  SafeAreaView,
   ActivityIndicator,
   Alert,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
-import Header from "../../../components/Bstore/Header/Header"
-import CartItem from "../../../components/Bstore/CartItem"
 import { Color } from "../../../colors/colortv"
+import Header from "../../../components/Bstore/Header/Header"
 
 import AsyncStorage from "@react-native-community/async-storage"
-import useAppConfig from "../../../utils/useAppConfig"
-import sysFetch from "../../../services/fetch_crypt"
-import CustomerInfo from "../../../components/Bstore/CustomerInfo"
+import LottieView from "lottie-react-native"
 import CartSummary from "./components/CartSummary"
-
+import CartItem from "./components/CartItem"
 const CartScreen = ({ navigation }) => {
   const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [totalPrice, setTotalPrice] = useState(0)
   const [selectedItemsCount, setSelectedItemsCount] = useState(0)
-  const { APP_VERSION, crt_by, tokenLogin, Api, thr_emp_pk } = useAppConfig()
-  const [shippingFree, setShippingFree] = useState(0)
-
-  // Customer data state
-  const [customerData, setCustomerData] = useState({
-    name: "Nguyễn Văn An",
-    phone: "0971761090",
-    address: "Đường C1, Tân bình",
-  })
-
-  // State để lưu checkout data từ CartSummary
-  const [checkoutData, setCheckoutData] = useState({
-    paymentMethod: "Cod",
-    deliveryDate: "",
-    deliveryTime: "",
-    customerNote: "",
-    total: 0,
-    quantityProd: 0,
-  })
-
-  // Callback để nhận data từ CartSummary - QUAN TRỌNG: Cập nhật state
-  const handleCartSummaryDataChange = useCallback((data) => {
-    console.log("Checkout Data Updated:", data)
-    setCheckoutData(data) // Lưu data vào state
-  }, [])
-
-  console.log("checkoutData: ", checkoutData)
-
-  const handleEditCustomerInfo = () => {
-    Alert.alert("Thông báo", "Chức năng chỉnh sửa thông tin khách hàng")
-  }
 
   // Lấy giỏ hàng từ AsyncStorage
   const getCartItems = async () => {
@@ -92,82 +58,6 @@ const CartScreen = ({ navigation }) => {
 
     setTotalPrice(total)
     setSelectedItemsCount(selectedCount)
-  }
-
-  // Xử lý thanh toán - SỬ DỤNG checkoutData từ state
-  const handleCheckout = async (checkoutDataFromSummary) => {
-    console.log("Đã gọi handleCheckout")
-    console.log("Checkout data từ CartSummary:", checkoutDataFromSummary)
-    console.log("Checkout data từ state:", checkoutData)
-
-    const selectedItems = cartItems.filter((item) => item.selected)
-    if (selectedItems.length === 0) {
-      Alert.alert("Thông báo", "Vui lòng chọn ít nhất một sản phẩm để thanh toán")
-      return
-    }
-
-    // Sử dụng data từ parameter hoặc từ state
-    const finalCheckoutData = checkoutDataFromSummary || checkoutData
-    console.log(finalCheckoutData);
-
-    const totalAmount = typeof finalCheckoutData.total === 'string'
-      ? parseFloat(finalCheckoutData.total.replace(/,/g, ''))
-      : finalCheckoutData.total
-    const in_par = {
-
-      p1_varchar2: "INSERT", // action
-      p2_varchar2: cartItems[0].tco_depot_pk, // tco_depot_pk - pk của vựa
-      p3_varchar2: JSON.stringify(selectedItems), // ds sản phẩm được chọn
-      p4_varchar2: totalAmount, // tổng tiền
-      p5_varchar2: shippingFree.toString(), // phí ship
-      p6_varchar2: finalCheckoutData.paymentMethod, // pp thanh toán
-      p7_varchar2: thr_emp_pk, // mã khách hàng
-      p8_varchar2: customerData.name, // Tên khách hàng
-      p9_varchar2: customerData.phone, // sđt khách hàng
-      p10_varchar2: customerData.address, // địa chỉ khách hàng
-      p11_varchar2: finalCheckoutData.customerNote, // ghi chú của khách hàng
-      p12_varchar2: "20250629", // ngày vận chuyển
-      p13_varchar2: "", // thời gian vận chuyển
-      p14_varchar2: APP_VERSION, // app_v
-      p15_varchar2: crt_by,
-    }
-
-    console.log("Final in_par: ", in_par)
-
-    try {
-      const response = await sysFetch(
-        Api,
-        {
-          pro: "STV_HR_UPD_MBI_HRDP00100_0",
-          in_par: in_par,
-          out_par: {
-            p1_varchar2: "result",
-          },
-        },
-        tokenLogin,
-      )
-      console.log("Payment response: ", response)
-
-      if (response && response.success) {
-        // Xóa giỏ hàng sau khi thanh toán thành công
-        setCartItems([])
-        saveCartItems([])
-        setTotalPrice(0)
-        setSelectedItemsCount(0)
-
-        Alert.alert("Thành công", "Đơn hàng đã được tạo thành công!", [
-          {
-            text: "OK",
-            onPress: () => navigation.navigate("HomeScreen"),
-          },
-        ])
-      } else {
-        Alert.alert("Lỗi", "Không thể tạo đơn hàng. Vui lòng thử lại.")
-      }
-    } catch (error) {
-      console.log("Error:", error)
-      Alert.alert("Lỗi", "Có lỗi xảy ra khi tạo đơn hàng.")
-    }
   }
 
   // Xóa tất cả sản phẩm trong giỏ hàng
@@ -260,16 +150,29 @@ const CartScreen = ({ navigation }) => {
     }
   }
 
+  // Cập nhật ghi chú cho sản phẩm
+  const handleUpdateNote = (itemId, newNote) => {
+    const newCartItems = cartItems.map((item) => {
+      const currentItemId = getItemId(item)
+      if (currentItemId === itemId) {
+        return { ...item, note: newNote }
+      }
+      return item
+    })
+    setCartItems(newCartItems)
+    saveCartItems(newCartItems)
+  }
+
   // Render item cho FlatList
   const renderItem = ({ item }) => {
     const key = getItemId(item)
-    console.log('Render item key:', key, 'item:', item)
     return (
       <CartItem
         item={item}
         onRemove={handleRemoveItem}
         onToggleSelect={handleToggleSelect}
         onUpdateQuantity={handleUpdateQuantity}
+        onUpdateNote={handleUpdateNote}
       />
     )
   }
@@ -277,11 +180,13 @@ const CartScreen = ({ navigation }) => {
   // Render khi giỏ hàng trống
   const renderEmptyCart = () => (
     <View style={styles.emptyContainer}>
-      <Icon name="cart-outline" size={80} color={Color.gray} />
-      <Text style={styles.emptyText}>Giỏ hàng của bạn đang trống</Text>
-      <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate("HomeScreen")}>
-        <Text style={styles.continueButtonText}>Tiếp tục mua sắm</Text>
-      </TouchableOpacity>
+      <LottieView
+        source={require("../../../assets/animations/shopping_cart.json")}
+        style={{ width: 200, height: 200 }}
+        autoPlay
+        loop
+      />
+      <Text style={styles.emptyText}>Giỏ hàng chưa có sản phẩm</Text>
     </View>
   )
 
@@ -356,9 +261,7 @@ const CartScreen = ({ navigation }) => {
               <CartSummary
                 total={totalPrice.toLocaleString()}
                 quantityProd={selectedItemsCount}
-                handleCheckout={handleCheckout}
                 handleOnCheckOut={handleCheckoutPress}
-              // onDataChange={handleCartSummaryDataChange}
               />
             </View>
           )}
@@ -410,11 +313,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 50,
   },
-  emptyText: {
+  txtGoShop: {
     fontSize: 16,
+    color: Color.mainColor,
+    fontFamily: 'Roboto-Medium',
+    textDecorationLine: "underline"
+  },
+  emptyText: {
+    fontSize: 14,
     color: Color.textPrimary3,
     marginTop: 16,
-    marginBottom: 24,
+    marginBottom: 8,
   },
   continueButton: {
     paddingVertical: 12,

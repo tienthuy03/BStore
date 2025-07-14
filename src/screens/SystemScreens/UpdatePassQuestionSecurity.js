@@ -8,9 +8,6 @@ import Block from "../../components/Block";
 import Button from "../../components/Button";
 import Text from "../../components/Text";
 import TextInput from "../../components/TextInput";
-import EyeClose from "../../icons/EyeClose";
-import EyeOpen from "../../icons/EyeOpen";
-import Icon_pass from "../../icons/Password";
 import ShowError from "../../services/errors";
 import axios from "axios";
 import { APP_VERSION } from "../../config/Pro";
@@ -19,6 +16,7 @@ import sysFetch from '../../services/fetch_v2';
 import md5 from "md5";
 import ButtonV2 from "../../components/ButtonV2";
 import Header from "../../components/Bstore/Header/Header";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
 const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
   const Color = useSelector((s) => s.SystemReducer.theme);
@@ -239,7 +237,7 @@ const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
               row
               backgroundColor={Color.inputBackgroundColor}
             >
-              <Icon_pass />
+              <Icon name="key-outline" />
               <TextInput
                 flex
                 height={55}
@@ -258,7 +256,7 @@ const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
                 width={30}
                 nextScreen={() => setEye1(!eye1)}
               >
-                {eye1 ? <EyeOpen /> : <EyeClose />}
+                {eye1 ? <Icon name="eye-outline" /> : <EyeClose />}
               </Button>
             </Block>
             <Block
@@ -289,7 +287,7 @@ const UpdatePassQuestionSecurity = ({ navigation: { goBack }, route }) => {
                 width={30}
                 nextScreen={() => setEye2(!eye2)}
               >
-                {eye2 ? <EyeOpen /> : <EyeClose />}
+                {eye2 ? <Icon name="eye-outline" /> : <EyeClose />}
               </Button>
             </Block>
           </Block>

@@ -13,7 +13,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
 // import Clipboard from "@react-native-community/clipboard";
 const QRCode = ({ navigation }) => {
-  const Color = useSelector((s) => s.SystemReducer.theme);
   const cameraRef = useRef(null);
   const tooltipRef = useRef(null);
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, FlatList, TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, FlatList, TextInput, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Header from '../../../components/Bstore/Header/Header'
@@ -10,25 +10,33 @@ import ButtonGradient from '../../../components/Bstore/ButtonGradient'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useSelector } from 'react-redux'
 
+// Import các component tái sử dụng
+import SectionHeader from './components/SectionHeader'
+import InfoRow from './components/InfoRow'
+import PaymentBox from './components/PaymentBox'
+import SelectModal from './components/SelectModal'
 
 const CheckoutScreen = ({ route, navigation }) => {
   const { thr_emp_pk, Api, tokenLogin, crt_by, APP_VERSION, full_Name } = useAppConfig()
   // Nhận params từ CartScreen
   const { total, cartItems, shippingInfo, voucher, shippingFee, tco_depot_pk } = route.params || {}
-
   const [listArea, setListArea] = useState([])
   const [list_payment_method, setList_payment_method] = useState([])
-
 
   // State cho phương thức thanh toán
   const [selectedPayment, setSelectedPayment] = useState();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-
   // State cho khu vực giao hàng
   const [selectedArea, setSelectedArea] = useState();
   const [showAreaModal, setShowAreaModal] = useState(false);
 
+  const [deliveryDate, setDeliveryDate] = useState(""); // Dùng cho hiển thị (dd-MM-yyyy)
+  const [deliveryDateApi, setDeliveryDateApi] = useState(""); // Dùng để gửi API (yyyyMMdd)
+  const [deliveryTime, setDeliveryTime] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [note, setNote] = useState("");
 
   // Chuẩn hóa JSON sản phẩm gửi lên API
   const productsToSend = (cartItems || []).map(item => ({
@@ -48,8 +56,7 @@ const CheckoutScreen = ({ route, navigation }) => {
   const finalTotal = itemTotal + shipping + voucherValue
 
   const data = useSelector((state) => state.loginReducers.data.data)
-  console.log("data: ", data);
-
+  // console.log("data: ", data);
 
   //handle get payment method and delivery area
   const handleGetPaymentMethodAndDeliveryArea = async () => {
@@ -60,7 +67,7 @@ const CheckoutScreen = ({ route, navigation }) => {
       p4_varchar2: crt_by,
     }
 
-    console.log("Final in_par: ", in_par)
+    // console.log("Final in_par: ", in_par)
 
     try {
       const rs = await sysFetch(
@@ -79,13 +86,12 @@ const CheckoutScreen = ({ route, navigation }) => {
         setListArea(rs.data.list_area);
         setList_payment_method(rs.data.list_payment_method)
       } else {
-        console.log("No data found")
+        // console.log("No data found")
       }
     } catch (error) {
-      console.log("Error:", error)
+      // console.log("Error:", error)
     }
   }
-
 
   useEffect(() => {
     handleGetPaymentMethodAndDeliveryArea()
@@ -104,11 +110,18 @@ const CheckoutScreen = ({ route, navigation }) => {
     }
   }, [listArea]);
 
-
   // Xử lý thanh toán - SỬ DỤNG checkoutData từ state
   const handleCheckout = async () => {
-    console.log("handle checkout");
-
+    // Kiểm tra ngày và giờ giao hàng
+    if (!deliveryDate) {
+      Alert.alert('Lỗi', 'Vui lòng chọn ngày giao hàng!');
+      return;
+    }
+    if (!deliveryTime) {
+      Alert.alert('Lỗi', 'Vui lòng chọn giờ giao hàng!');
+      return;
+    }
+    // console.log("handle checkout");
     const in_par = {
       p1_varchar2: "INSERT",
       p2_varchar2: cartItems[0]?.tco_depot_pk,
@@ -126,7 +139,7 @@ const CheckoutScreen = ({ route, navigation }) => {
       p14_varchar2: APP_VERSION,
       p15_varchar2: crt_by,
     };
-    console.log("in_par: ", in_par);
+    // console.log("in_par: ", in_par);
 
     try {
       const response = await sysFetch(
@@ -138,20 +151,15 @@ const CheckoutScreen = ({ route, navigation }) => {
         },
         tokenLogin
       );
+      if (response.results === 'S') {
+        navigation.navigate("OrderSuccess")
+        // Alert.alert("Thông báo", "Đơn hàng của bạn đã thành công. Vui lòng chờ phản hồi từ chủ cửa hàng.");
+      }
       console.log("response: ", response);
-
-
     } catch (error) {
       Alert.alert("Lỗi", "Có lỗi xảy ra khi tạo đơn hàng.");
     }
   };
-
-  const [deliveryDate, setDeliveryDate] = useState(""); // Dùng cho hiển thị (dd-MM-yyyy)
-  const [deliveryDateApi, setDeliveryDateApi] = useState(""); // Dùng để gửi API (yyyyMMdd)
-  const [deliveryTime, setDeliveryTime] = useState("");
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [note, setNote] = useState("");
 
   return (
     <View style={styles.container}>
@@ -159,64 +167,52 @@ const CheckoutScreen = ({ route, navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Shipping Information */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Icon name="map-marker" size={20} color={Color.mainColor} />
-            <Text style={styles.sectionTitle}>Thông tin khách hàng</Text>
-            <TouchableOpacity style={styles.editBtn} onPress={() => navigation.navigate("ShippingInfoScreen")}><Text style={styles.editText}>Chỉnh sửa</Text></TouchableOpacity>
-          </View>
-          <View style={styles.infoRow}><Icon name="account" size={16} color="#888" /><Text style={styles.infoText}>{shippingInfo?.name || 'Thuỷ tiên'}</Text></View>
-          <View style={styles.infoRow}><Icon name="phone" size={16} color="#888" /><Text style={styles.infoText}>{shippingInfo?.phone || '0971761090'}</Text></View>
-          <View style={styles.infoRow}><Icon name="map" size={16} color="#888" /><Text style={styles.infoText}>{shippingInfo?.address || '132 Đường C1, Tân bình, Hồ Chí Minh'}</Text></View>
+          <SectionHeader
+            icon="map-marker"
+            title="Thông tin khách hàng"
+            onEdit={() => navigation.navigate("ShippingInfoScreen")}
+          />
+          <InfoRow icon="account" text={shippingInfo?.name || 'Thuỷ tiên'} />
+          <InfoRow icon="phone" text={shippingInfo?.phone || '0971761090'} />
+          <InfoRow icon="map" text={shippingInfo?.address || '132 Đường C1, Tân bình, Hồ Chí Minh'} />
         </View>
         {/* Delivery Area */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Icon name="map-search" size={20} color={Color.mainColor} />
-            <Text style={styles.sectionTitle}>Khu vực giao hàng</Text>
-            <TouchableOpacity style={styles.editBtn} onPress={() => setShowAreaModal(true)}>
-              <Text style={styles.editText}>Chỉnh sửa</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.paymentBox}>
-            <Icon name={"map"} size={18} color={Color.mainColor} style={{ marginRight: 8 }} />
-            <Text style={styles.paymentText}>{selectedArea ? selectedArea.code_nm : ""}</Text>
-          </View>
+          <SectionHeader
+            icon="map-search"
+            title="Khu vực giao hàng"
+            onEdit={() => setShowAreaModal(true)}
+          />
+          <PaymentBox icon="map" text={selectedArea ? selectedArea.code_nm : ""} />
         </View>
         {/* Payment Method */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Icon name="credit-card" size={20} color={Color.mainColor} />
-            <Text style={styles.sectionTitle}>Phương thức thanh toán</Text>
-            <TouchableOpacity style={styles.editBtn} onPress={() => setShowPaymentModal(true)}>
-              <Text style={styles.editText}>Chỉnh sửa</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.paymentBox}>
-            <Icon name={"cash"} size={18} color={Color.mainColor} style={{ marginRight: 8 }} />
-            <Text style={styles.paymentText}>{selectedPayment ? selectedPayment.code_nm : ""}</Text>
-          </View>
+          <SectionHeader
+            icon="credit-card"
+            title="Phương thức thanh toán"
+            onEdit={() => setShowPaymentModal(true)}
+          />
+          <PaymentBox icon="cash" text={selectedPayment ? selectedPayment.code_nm : ""} />
         </View>
         {/* Delivery Date & Time */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Icon name="calendar" size={20} color={Color.mainColor} />
-            <Text style={styles.sectionTitle}>Ngày & giờ giao hàng</Text>
-          </View>
+          <SectionHeader
+            icon="calendar"
+            title="Ngày & giờ giao hàng"
+          />
           <View style={{ flexDirection: 'row', gap: 10 }}>
-            <TouchableOpacity
-              style={styles.paymentBox}
+            <PaymentBox
+              icon="calendar"
+              text={deliveryDate || "Chọn ngày"}
               onPress={() => setShowDatePicker(true)}
-            >
-              <Icon name="calendar" size={18} color={Color.mainColor} style={{ marginRight: 8 }} />
-              <Text style={styles.paymentText}>{deliveryDate || "Chọn ngày"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.paymentBox}
+              style={{ flex: 1, marginRight: 5 }}
+            />
+            <PaymentBox
+              icon="clock-outline"
+              text={deliveryTime || "Chọn giờ"}
               onPress={() => setShowTimePicker(true)}
-            >
-              <Icon name="clock-outline" size={18} color={Color.mainColor} style={{ marginRight: 8 }} />
-              <Text style={styles.paymentText}>{deliveryTime || "Chọn giờ"}</Text>
-            </TouchableOpacity>
+              style={{ flex: 1, marginLeft: 5 }}
+            />
           </View>
         </View>
         {/* Note input */}
@@ -248,72 +244,27 @@ const CheckoutScreen = ({ route, navigation }) => {
             <Text style={[styles.totalValue, { color: Color.mainColor, fontWeight: 'bold', fontSize: 18 }]}>đ{(finalTotal).toLocaleString()}</Text>
           </View>
         </View>
-
       </ScrollView >
 
       {/* Modal chọn khu vực giao hàng */}
-      < Modal
+      <SelectModal
         visible={showAreaModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowAreaModal(false)}
-      >
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowAreaModal(false)}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Chọn khu vực giao hàng</Text>
-            <FlatList
-              data={listArea}
-              keyExtractor={item => item.code_id}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.paymentItem}
-                  onPress={() => {
-                    setSelectedArea(item);
-                    setShowAreaModal(false);
-                  }}
-                >
-                  <Text style={{ flex: 1, fontSize: 16 }}>{item.code_nm}</Text>
-                  {/* {selectedArea && selectedArea.code_id === item.code_id && (
-                    <Icon name="check-circle" size={20} color={Color.mainColor} />
-                  )} */}
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal >
+        title="Chọn khu vực giao hàng"
+        data={listArea}
+        selected={selectedArea}
+        onSelect={setSelectedArea}
+        onClose={() => setShowAreaModal(false)}
+      />
 
       {/* Modal chọn phương thức thanh toán */}
-      < Modal
+      <SelectModal
         visible={showPaymentModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowPaymentModal(false)}
-      >
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowPaymentModal(false)}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Chọn phương thức thanh toán</Text>
-            <FlatList
-              data={list_payment_method}
-              keyExtractor={item => item.code_id}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.paymentItem}
-                  onPress={() => {
-                    setSelectedPayment(item);
-                    setShowPaymentModal(false);
-                  }}
-                >
-                  <Text style={{ flex: 1, fontSize: 16 }}>{item.code_nm}</Text>
-                  {/* {selectedPayment && selectedPayment.code_id === item.code_id && (
-                    <Icon name="check-circle" size={20} color={Color.mainColor} />
-                  )} */}
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal >
+        title="Chọn phương thức thanh toán"
+        data={list_payment_method}
+        selected={selectedPayment}
+        onSelect={setSelectedPayment}
+        onClose={() => setShowPaymentModal(false)}
+      />
 
       {/* Modal chọn ngày giao hàng - ĐÃ THAY BẰNG DATETIMEPICKER */}
       {
@@ -395,7 +346,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     borderRadius: 14,
     padding: 16,
-    marginBottom: 18,
+    marginBottom: 12,
     shadowColor: Color.black,
     shadowOpacity: 0.04,
     shadowRadius: 4,
@@ -498,22 +449,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   placeOrderBtn: {
-    backgroundColor: Color.white,
-    // borderRadius: 100,
-    // margin: 20,
-    paddingVertical: 12,
+    padding: 12,
     alignItems: 'center',
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   placeOrderText: {
     color: Color.white,
     fontFamily: 'Roboto-Bold',
     fontSize: 16,
-
   },
   modalOverlay: {
     flex: 1,

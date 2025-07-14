@@ -11,10 +11,10 @@ import {
   ntResetCountNotiTab,
 } from '../../services/redux/Notification/action';
 import SystemNoti from '../HomeScreens/Tab_Notification/SystemNoti';
+import { Color } from '../../colors/colortv';
 const Tab = createMaterialTopTabNavigator();
 
 const NotificationMain = () => {
-  const Color = useSelector(s => s.SystemReducer.theme);
   const dispatch = useDispatch();
   const state = useSelector(state => state);
   const isFocused = useIsFocused();

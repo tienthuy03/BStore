@@ -129,6 +129,8 @@ import notifee, { AndroidColor, AndroidImportance, AuthorizationStatus, EventTyp
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CheckoutScreen from "./src/screens/HomeScreens/CheckoutScreen";
 import ShippingInfoScreen from "./src/screens/HomeScreens/ShippingInfoScreen";
+import OrderSuccess from "./src/screens/HomeScreens/OrderSuccess";
+import QRCodeScreen from "./src/screens/HomeScreens/QRCodeScreen";
 
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -252,12 +254,12 @@ const App = () => {
         <Popup cusStyle={undefined} />
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="ConfigThemeScreen"
+            initialRouteName="LoginScreen"
             screenOptions={{
               headerShown: false,
             }}
           >
-            <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} />
+            {/* <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} /> */}
             <Stack.Screen
               name="LoginScreen"
               // If you need to pass reloadConfig, do it via initialParams or a wrapper
@@ -275,6 +277,8 @@ const App = () => {
             <Stack.Screen name="DetailProduct" component={DetailProduct} />
             <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
             <Stack.Screen name="ShippingInfoScreen" component={ShippingInfoScreen} />
+            <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
+            <Stack.Screen name="QRCodeScreen" component={QRCodeScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

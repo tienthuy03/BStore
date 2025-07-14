@@ -125,7 +125,7 @@ const DetailProduct = ({ navigation }) => {
       unit_price: selectedSize ? selectedSize?.unit_price : item.unit_price,
       price: selectedSize ? selectedSize?.unit_price : item.unit_price,
       price_type: selectedSize ? selectedSize?.price_type : (item.price_type || "01"),
-      uom: selectedSize ? selectedSize?.price_type_uom : item.uom,
+      uom: selectedSize ? (selectedSize.uom || selectedSize.price_type_uom || item.uom) : item.uom,
       note: note,
       selected: false,
     };

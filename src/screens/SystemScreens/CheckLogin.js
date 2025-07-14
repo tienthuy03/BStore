@@ -6,14 +6,12 @@ import Button from "../../components/Button";
 import Load from "../../components/Loading";
 import Text from "../../components/Text";
 import TextInput from "../../components/TextInput";
-import Icon_back from "../../icons/Back";
-import Icon_email from "../../icons/Email";
 import axios from "axios";
 import { updateUserAction } from "../../actions";
 import RNRestart from "react-native-restart";
 import { useDispatch, useSelector } from "react-redux";
 import sysFetch from "../../services/fetch";
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const CheckLogin = ({ navigation: { goBack } }) => {
   const dispatch = useDispatch();
   const API = useSelector((state) => state.SysConfigReducer.API_URL);
@@ -34,7 +32,7 @@ const CheckLogin = ({ navigation: { goBack } }) => {
     tokenLogin = state.data.data.tokenLogin;
     userPk = state.data.data.tes_user_pk;
     refreshToken = state.data.data.refreshToken;
-  } catch (error) {}
+  } catch (error) { }
 
   useEffect(() => {
     getData();
@@ -277,7 +275,7 @@ const CheckLogin = ({ navigation: { goBack } }) => {
           flex={0}
           nextScreen={() => goBack()}
         >
-          <Icon_back color={Color.white} />
+          <Icon name="left" color={Color.white} />
         </Button>
         <Block flex={1} justifyCenter alignCenter marginRight={60}>
           <Text
@@ -316,7 +314,7 @@ const CheckLogin = ({ navigation: { goBack } }) => {
               row
               backgroundColor={Color.inputBackgroundColor}
             >
-              <Icon_email />
+              <Icon name="email" />
               <TextInput
                 flex
                 height={55}
