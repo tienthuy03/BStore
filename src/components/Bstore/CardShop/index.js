@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 160,
     resizeMode: 'cover',
-    backgroundColor: 'green'
   },
   infoContainer: {
     padding: 12,

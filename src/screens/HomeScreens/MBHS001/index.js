@@ -102,7 +102,11 @@ const Menu_Production = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
-      <Header goBack={navigation.goBack}>Danh mục sản phẩm</Header>
+      <Header goBack={navigation.goBack}
+        onRightPress={() => navigation.navigate("CartScreen")}
+        rightIconName="cart-outline"
+        rightIconVisible={true}
+      >Danh mục sản phẩm</Header>
       <View style={{ paddingTop: 8 }}>
         <SearchBar />
       </View>

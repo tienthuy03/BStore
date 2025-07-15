@@ -6,12 +6,10 @@ import {
     TouchableOpacity,
     Platform,
 } from 'react-native';
-import { useSelector } from 'react-redux';
 import { default as Icon } from "react-native-vector-icons/MaterialCommunityIcons";
 import { Color } from '../../../colors/colortv';
 
 const SearchBar = ({ value, onChange }) => {
-    const Color = useSelector((s) => s.SystemReducer.theme);
     return (
         <View style={[styles.container,]}>
 

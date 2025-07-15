@@ -1,13 +1,14 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Keyboard } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { Color } from "../../../../colors/colortv"
+import CachedImage from "../../../../components/CachedImage"
 
 
-const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity }) => {
+const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity, onUpdateNote }) => {
   const [manualQuantity, setManualQuantity] = useState(item.quantity.toString())
+  const [editingNote, setEditingNote] = useState(false)
+  const [noteValue, setNoteValue] = useState(item.note || "")
 
   const getItemId = () => {
     return item.price_type ? `${item.tdp_production_pk}_${item.price_type}` : `${item.tdp_production_pk}`;
@@ -19,6 +20,10 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
       setManualQuantity(item.quantity.toString())
     }
   }, [item.quantity])
+
+  useEffect(() => {
+    setNoteValue(item.note || "")
+  }, [item.note])
 
   const handleIncrease = () => {
     const current = Number.parseFloat(manualQuantity)
@@ -120,18 +125,43 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
           </View>
         </View>
       </View>
-      {item.note && item.note.trim() !== "" && (
-        <View style={styles.note}>
-          <Icon name="file-document-edit-outline" size={16} color={Color.mainColor3} />
-          <Text style={styles.txtNote}>{item.note}</Text>
-        </View>
-      )}
-
+      {/* Note section */}
+      <View style={styles.note}>
+        <Text style={styles.txtNoteLabel}>Ghi chú</Text>
+        <TextInput
+          style={[
+            styles.txtNote,
+            {
+              // borderBottomWidth: 1,
+              // borderColor: Color.mainColor3,
+              backgroundColor: Color.gray,
+              borderRadius: 8,
+            },
+          ]}
+          value={noteValue}
+          onChangeText={setNoteValue}
+          onBlur={() => {
+            if (onUpdateNote) onUpdateNote(getItemId(), noteValue);
+          }}
+          multiline
+          returnKeyType="done"
+          onSubmitEditing={() => {
+            if (onUpdateNote) onUpdateNote(getItemId(), noteValue);
+          }}
+          placeholder="Không có ghi chú cho sản phẩm"
+        />
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  txtNoteLabel: {
+    fontFamily: 'Roboto-Medium',
+    fontSize: 12,
+    color: Color.textPrimary2,
+    paddingTop: 8
+  },
   btnClose: {
     width: 20,
     height: 20,
@@ -144,16 +174,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   txtNote: {
+    width: '100%',
     fontSize: 12,
     color: Color.textPrimary3,
     flex: 1,
-    marginLeft: 4,
+    // marginLeft: 4,
   },
   note: {
     marginTop: 8,
-    flexDirection: "row",
+    // flexDirection: "row",
     alignItems: "flex-start",
     paddingHorizontal: 4,
+    flex: 1
   },
   cardContainer: {
     backgroundColor: Color.white,

@@ -1,74 +1,43 @@
 import React from 'react';
 import {
-  View,
-  TouchableOpacity,
   Dimensions,
   StyleSheet,
-  Platform,
   Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
-import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width } = Dimensions.get('window');
 const height = 62;
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
-  const middleIndex = Math.floor(state.routes.length / 2);
-
   return (
-    <View style={styles.container}>
-      {/* SVG với lõm giữa */}
-      <Svg width={width} height={height} style={styles.svg}>
-        <Defs>
-          <SvgGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0%" stopColor="#FA812F" />
-            <Stop offset="100%" stopColor="#FF5E62" />
-          </SvgGradient>
-        </Defs>
-        <Path
-          fill="url(#grad)"
-          d={`
-            M0 0 
-            H${width / 2 - 45} 
-            C${width / 2 - 30} 0, ${width / 2 - 30} 30, ${width / 2} 30 
-            C${width / 2 + 30} 30, ${width / 2 + 30} 0, ${width / 2 + 45} 0 
-            H${width} V${height} H0 Z
-          `}
-        />
-      </Svg>
-
-      {/* Nút giữa */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate(state.routes[middleIndex].name)}
-        style={styles.middleButton}
-        activeOpacity={0.9}
-      >
-        <LinearGradient colors={['#FA812F', '#FF5E62']} style={styles.middleInner}>
-          <Icon name="magnify" size={28} color="#fff" />
-        </LinearGradient>
-      </TouchableOpacity>
-
-      {/* Các tab */}
+    <LinearGradient
+      colors={['#FA812F', '#FF5E62']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
       <View style={styles.tabWrapper}>
         {state.routes.map((route, index) => {
-          if (index === middleIndex) return <View key={route.key} style={{ width: 70 }} />;
-
           const { options } = descriptors[route.key];
           const isFocused = state.index === index;
           const iconName = {
-            Home: 'home-outline',
-            Dashboard: 'calendar-month-outline',
+            Dashboard: 'view-grid-outline',
             Noti: 'bell',
-            System: 'cog-outline',
+            Home: 'store',
+            System: 'account',
+            Envoice: 'receipt',
           }[route.name];
 
           const label = {
-            Home: 'Trang chủ',
-            Dashboard: 'Thống kê',
+            Dashboard: 'Tổng hợp',
             Noti: 'Thông báo',
-            System: 'Hệ thống',
+            Home: 'Cửa hàng',
+            System: 'Tài khoản',
+            Envoice: 'Hoá đơn',
           }[route.name] || route.name;
 
           const color = isFocused ? '#fff' : 'rgba(255,255,255,0.6)';
@@ -78,16 +47,15 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
               key={route.key}
               onPress={() => navigation.navigate(route.name)}
               style={styles.tabButton}
+              activeOpacity={0.7}
             >
               <Icon name={iconName} size={24} color={color} />
-              <Text style={[styles.tabLabel, { color }]}>
-                {label}
-              </Text>
+              <Text style={[styles.tabLabel, { color }]}>{label}</Text>
             </TouchableOpacity>
           );
         })}
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -95,51 +63,32 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontFamily: 'Roboto-Medium',
     fontSize: 12,
+    marginTop: 2,
   },
   container: {
     position: 'absolute',
     bottom: 0,
     width,
     height,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: 'hidden',
+    elevation: 10,
     alignItems: 'center',
-  },
-  svg: {
-    position: 'absolute',
-    bottom: 0,
+    justifyContent: 'center',
   },
   tabWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width,
-    paddingHorizontal: 8,
+    justifyContent: 'space-around',
     alignItems: 'center',
-    height: 70,
+    width: '100%',
+    height: '100%',
+    paddingHorizontal: 8,
   },
   tabButton: {
     flex: 1,
     alignItems: 'center',
-  },
-  middleButton: {
-    position: 'absolute',
-    bottom: 55,
-    width: 20,
-    height: 20,
-    borderRadius: 30,
-    backgroundColor: '#fff',
     justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 10,
-    shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-  },
-  middleInner: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

@@ -3,8 +3,8 @@ import React from 'react'
 
 const DashBoard = () => {
   return (
-    <View>
-      <Text>DashBoard</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Đang phát triển tính năng tổng hợp</Text>
     </View>
   )
 }

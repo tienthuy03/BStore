@@ -1,0 +1,878 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
+import messaging from "@react-native-firebase/messaging";
+import axios from "axios";
+import md5 from "md5";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Linking,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View
+} from "react-native";
+import DefaultPreference from "react-native-default-preference";
+import RNRestart from "react-native-restart";
+import Swiper from "react-native-swiper";
+import TouchID from "react-native-touch-id";
+import { default as Icon, default as MaterialCommunityIcons } from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLoginAction, updateUserAction } from "../../../actions";
+import { CLEAR_USER } from "../../../actions/actionType";
+import { Color } from "../../../colors/colortv.js";
+import Block from "../../../components/Block.js";
+import TVSControlPopup from "../../../components/Bstore/ControlPopup.js";
+import Button from "../../../components/Button.js";
+import ButtonV2 from "../../../components/ButtonV2.js";
+import Text from "../../../components/Text.js";
+import TextInput from "../../../components/TextInput.js";
+import { APP_VERSION, buildFor } from "../../../config/Pro";
+import { deviceId } from "../../../constants/index";
+import ShowError from "../../../services/errors";
+import sysFetch from "../../../services/fetch_crypt";
+
+// Label component
+const Label = ({ children }) => (
+  <View style={styles.labelContainer}>
+    <Text color={styles.labelText.color} fontFamily={"Roboto-Medium"}>{children}</Text>
+  </View>
+);
+
+// InputBlock component
+const InputBlock = ({ icon, children }) => (
+  <Block
+    marginHorizontal={16}
+    paddingLeft={20}
+    paddingRight={10}
+    alignCenter
+    row
+    style={styles.inputContainer}
+  >
+    {icon}
+    {children}
+  </Block>
+);
+
+// BiometricButton component
+const BiometricButton = ({ type, onPress }) => {
+  if (type === "face_id") {
+    return (
+      <Button center radius={6} nextScreen={onPress} style={styles.biometricButton}>
+        <Icon size={20} color={Color.grayPlahoder} name="face-man" style={{ marginRight: 20 }} />
+      </Button>
+    );
+  } else if (type === "touch_id" || type === "finger_print") {
+    return (
+      <Button
+        center
+        radius={6}
+        height={48}
+        nextScreen={onPress}
+        style={styles.biometricButton}
+      >
+        <Icon size={20} color={Color.grayPlahoder} name="fingerprint" style={type === "touch_id" ? { width: 50, height: 50, marginRight: 20 } : { padding: 15 }} />
+      </Button>
+    );
+  }
+  return null;
+};
+
+// ConfigButton component
+const ConfigButton = ({ onPress, color, mainColor }) => (
+  <Button onPress={onPress} style={styles.configButton}>
+    <Text
+      borderRadius={5}
+      borderColor={color}
+      color={styles.configButtonText.color}
+      padding={8}
+      fontFamily={"Roboto-Medium"}
+    >
+      Chưa có tài khoản?
+    </Text>
+    <Text
+      borderRadius={5}
+      borderColor={color}
+      color={mainColor}
+      fontFamily={"Roboto-Bold"}
+    >
+      Đăng ký
+    </Text>
+  </Button>
+);
+
+const LoginScreen = ({ navigation, reloadConfig }) => {
+  //get infor ClientId from AsyncStorage
+  const [clientId, setClientId] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const savedClientId = await AsyncStorage.getItem('CLIENT_ID');
+      setClientId(savedClientId);
+    };
+    fetchData();
+  }, []);
+
+  const [banner, setBanner] = useState(10);
+  const [checkUpdateVersion, setCheckUpdateVersion] = useState("N");
+  const state = useSelector((s) => s.loginReducers);
+  const API = useSelector((state) => state.SysConfigReducer.API_URL);
+
+  const dispatch = useDispatch();
+  let thr_emp_pk;
+  let tokenLogin;
+  let device_id;
+  let results;
+  let errorData;
+  let loadings;
+  let login_status;
+  let fullnames;
+  let userPk;
+  let refreshToken;
+  let crt_by;
+  try {
+    loadings = state.isLoading;
+    results = state.data.results;
+    errorData = state.data.errorData;
+    tokenLogin = state.data.data.tokenLogin;
+    thr_emp_pk = state.data.data.thr_emp_pk;
+    fullnames = state.data.data.full_name;
+    device_id = state.data.data.device_id;
+    login_status = state.data.data.login_status;
+    userPk = state.data.data.tes_user_pk;
+    refreshToken = state.data.data.refreshToken;
+    crt_by = state.data.data.crt_by;
+  } catch (error) {
+    console.log(error);
+  }
+
+  //create state
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullname, setfullName] = useState("");
+  const [valueAuthen, setValueAuthen] = useState("");
+  const [modalPass, setModalPass] = useState(false);
+  const [passwords, setPasswords] = useState("");
+
+  //Khởi tạo biến để lưu yêu cầu đăng nhập nhanh
+  const [temp, setTemp] = useState("");
+  const [finger, setFinger] = useState("");
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const [typeAuthen, setTypeAuthen] = useState("");
+  const [eye, setEye] = useState(true);
+  //REF
+  const passwordRef = useRef(null);
+  const [status, setStatus] = useState(false);
+
+  const checkVersionUpdate = () => {
+    if (Platform.OS === "android") {
+      Linking.openURL(
+        "https://play.google.com/store/apps/details?id=com.tinvietsoft.tvs"
+      );
+    } else {
+      Linking.openURL(
+        "https://apps.apple.com/vn/app/time365/id1585777072?l=vi"
+      );
+    }
+  };
+
+  useEffect(() => {
+    //random number
+    DefaultPreference.getAll().then(function (valueAll) {
+      //Khởi tạo biến để lưu yêu cầu đăng nhập nhanh
+      setTemp(valueAll.temp);
+      setFinger(valueAll.status);
+      setUsername(valueAll.username);
+      setPass(valueAll.password);
+      setUser(valueAll.username);
+      setfullName(valueAll.fullname);
+      setTypeAuthen(valueAll.nameAuthen);
+      setBanner(Math.floor(Math.random() * 9));
+
+      if (valueAll.logout == "false") {
+        checkValidToken(valueAll.API, valueAll.username, valueAll.tokenLogin);
+      }
+    });
+  }, []);
+
+  const checkValidToken = (api, username, token) => {
+    sysFetch(
+      api,
+      {
+        pro: "STV_HR_SEL_MBI_CHKTOKEN_1_100",
+        in_par: {
+          p1_varchar2: username,
+          p2_varchar2: APP_VERSION,
+        },
+        out_par: {
+          p1_sys: "pwd",
+          p2_sys: "flag",
+        },
+      },
+      token
+    )
+      .then((res) => {
+        console.log("Check valid token", res);
+        if (res == "Token Expired") {
+          console.log("Expired token");
+        }
+        if (res != "Token Expired") {
+          setCheckUpdateVersion(res.data.flag[0].flag_upd);
+          if (res.data.flag[0].flag_upd == "Y") {
+            Alert.alert("Thông báo", "Cập nhật phiên bản mới?", [
+              { text: "Xác nhận", onPress: () => checkVersionUpdate() },
+            ]);
+          } else {
+            dispatch(
+              fetchLoginAction({
+                username: username,
+                password: res.data.pwd[0].user_pw,
+                machine_id: deviceId,
+              })
+            );
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const optionalConfigObject = {
+    title: "Quét vân tay",
+    imageColor: Color.red,
+    imageErrorColor: Color.red,
+    sensorDescription: "Fingerprint",
+    sensorErrorDescription: "Failed",
+    cancelText: "Cancel",
+    fallbackLabel: "Show Passcode",
+    unifiedErrors: false,
+    passcodeFallback: false,
+  };
+
+  const dialogError = (text) => {
+    Alert.alert(
+      "Thông báo",
+      text,
+      [
+        {
+          text: "Đóng",
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  useEffect(() => {
+    if (loadings === false && results === "S") {
+      if (login_status === "0") {
+        navigation.navigate("UpdatePass", { password });
+      } else if (login_status !== 0) {
+        getTokens(thr_emp_pk, device_id, crt_by);
+        TouchID.isSupported(optionalConfigObject)
+          .then((biometryType) => {
+            if (biometryType === "FaceID") {
+              DefaultPreference.set("nameAuthen", "face_id");
+            } else if (biometryType === "TouchID") {
+              DefaultPreference.set("nameAuthen", "touch_id");
+            } else if (biometryType == true) {
+              DefaultPreference.set("nameAuthen", "finger_print");
+            } else {
+              DefaultPreference.set("nameAuthen", "0");
+            }
+          })
+          .catch(() => {
+          });
+        navigation.replace("Index");
+      }
+    } else if (loadings === false && results === "F") {
+      dispatch({ type: CLEAR_USER });
+      if (
+        errorData ==
+        "Tài khoản hoặc mật khẩu không đúng. Có thể bạn chưa cấu hình đúng máy chủ của ứng dụng. Vui lòng liên hệ bộ phận quản trị nhân sự của bạn để được cung cấp thông tin."
+      ) {
+        Alert.alert("Thông báo", errorData, [
+          {
+            text: "Đóng",
+            style: "cancel",
+          },
+          {
+            text: "Cấu hình",
+            onPress: async () => {
+              const rs = await AsyncStorage.getItem("themeName");
+              if (rs) {
+                await AsyncStorage.setItem("oldTheme", rs.toString());
+                await AsyncStorage.removeItem("themeName");
+                await RNRestart.Restart();
+              }
+            },
+          },
+        ]);
+      } else {
+        dialogError(errorData);
+      }
+    }
+  }, [results]);
+
+  const refreshNewToken = (obj, p1, p2, p3, p_crt_by) => {
+    axios
+      .post(API + "User/RefreshToken/", {
+        token: tokenLogin,
+        userPk: userPk,
+        refreshToken: refreshToken,
+      })
+      .then((response) => {
+        dispatch(
+          updateUserAction({
+            index: 0,
+            value: response.data.token,
+            key: "tokenLogin",
+          })
+        );
+        dispatch(
+          updateUserAction({
+            index: 0,
+            value: response.data.refreshToken,
+            key: "refreshToken",
+          })
+        );
+        tokenLogin = response.data.token;
+        refreshToken = response.data.refreshToken;
+        if (obj == "getTokens") {
+          getTokens(p1, p2, p_crt_by);
+        }
+        if (obj == "checkValidToken") {
+          checkValidToken(p1, p2, p3);
+        }
+      })
+      .catch((error) => {
+        if (error == "AxiosError: Request failed with status code 400") {
+          Alert.alert(
+            "Thông báo",
+            "Phiên bản làm việc đã hết hạn. Vui lòng đăng nhập lại hệ thống",
+            [
+              {
+                text: "Đóng",
+                onPress: () => {
+                  RNRestart.Restart();
+                },
+              },
+            ],
+            { cancelable: true }
+          );
+        }
+        console.log(error);
+      });
+  };
+
+  function _pressHandler() {
+    TouchID.authenticate("", optionalConfigObject)
+      .then(() => {
+        setPassword(pass);
+        validateLogin(user, pass);
+      })
+      .catch(() => {
+        Alert.alert("Xác nhận vân tay không thành công");
+      });
+  }
+
+  async function getTokens(p_thr_emp_pk, device_id, p_crt_by) {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      console.log('Notification permission granted.');
+      await messaging().deleteToken();
+      const fcmToken = await messaging().getToken();
+      console.log("FCM Token (new): ", fcmToken);
+      if (fcmToken) {
+        if (device_id !== fcmToken) {
+          const action = "UPDATE";
+          const in_par = {
+            p1_varchar2: action,
+            p2_varchar2: p_thr_emp_pk,
+            p3_varchar2: fcmToken,
+            p4_varchar2: p_crt_by
+          };
+          sysFetch(
+            API,
+            {
+              pro: "STV_HR_UPD_MBI_DEVICE_0_100",
+              in_par: in_par,
+              out_par: {
+                p1_varchar2: "update_device",
+              },
+            },
+            tokenLogin
+          )
+            .then((rs) => {
+              if (rs == "Token Expired") {
+                refreshNewToken("getTokens", p_thr_emp_pk, device_id, p_crt_by);
+              } else {
+                console.log("Token res", rs);
+              }
+            })
+            .catch((error) => {
+              console.log("Token error", error);
+            });
+        }
+      } else {
+        console.log('Không thể lấy FCM Token.');
+      }
+    } else {
+      console.log('Người dùng chưa cho phép thông báo.');
+    }
+  }
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      getTokens();
+    }
+  }, []);
+
+  function setViewss() {
+    if (finger === "1" || finger === "11") {
+      return (
+        <TextInput
+          size={14}
+          flex
+          height={42}
+          paddingLeft={12}
+          editable={false}
+          value={user}
+          placeholder={"Tài khoản"}
+          color={Color.textPrimary2}
+          placeholderTextColor={Color.grayPlahoder}
+          onChangeText={(username) => setUsername(username)}
+          returnKeyType="done"
+          blurOnSubmit={false}
+          style={styles.input}
+        />
+      );
+    } else {
+      return (
+        <TextInput
+          flex
+          size={14}
+          height={42}
+          paddingLeft={12}
+          value={username}
+          placeholder={"Tài khoản"}
+          color={Color.textPrimary2}
+          placeholderTextColor={Color.grayPlahoder}
+          onChangeText={(username) => setUsername(username)}
+          returnKeyType="done"
+          blurOnSubmit={false}
+          style={styles.input}
+        />
+      );
+    }
+  }
+
+  function deleteDataUser() {
+    DefaultPreference.clearAll();
+    setTimeout(() => {
+      navigation.push("LoginScreen");
+    }, 1000);
+  }
+
+  function logoutAppss() {
+    Alert.alert(
+      "Thông báo",
+      "Bạn có muốn thoát tài khoản?",
+      [
+        { text: "Có", onPress: () => deleteDataUser() },
+        {
+          text: "Không",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  }
+
+  const validateLogin = async (usernames, passwords) => {
+    if (checkUpdateVersion == "Y") {
+      Alert.alert("Thông báo", "Cập nhật phiên bản mới?", [
+        { text: "Xác nhận", onPress: () => checkVersionUpdate() },
+      ]);
+    } else {
+      if (usernames === undefined) {
+        dialogError("Vui lòng nhập tên đăng nhập!");
+        return;
+      }
+      if (passwords === "") {
+        dialogError("Vui lòng nhập mật khẩu!");
+        return;
+      }
+      NetInfo.fetch().then((state) => {
+        if (state.isConnected) {
+          if (statusAPI) {
+            let pass_md5 = md5(passwords);
+            DefaultPreference.set("passwords", passwords);
+            DefaultPreference.set("pass_md5", pass_md5);
+            setTimeout(async () => {
+              await dispatch(
+                fetchLoginAction({
+                  username: username,
+                  password: pass_md5,
+                  machine_id: deviceId,
+                })
+              );
+            }, 200);
+          } else {
+            Alert.alert(
+              "Thông báo",
+              "Thiết bị của bạn không kết nối được với máy chủ. Vui lòng kiểm tra lại kết nối mạng hoặc liên hệ với quản trị.",
+              [{ text: "Xác nhận", onPress: () => { } }]
+            );
+          }
+        } else {
+          ShowError("No internet");
+        }
+      });
+    }
+  };
+
+  const [urlAPIPing, setUrlAPIPing] = useState("");
+  const [statusAPI, setStatusAPI] = useState("");
+  useEffect(() => {
+    console.log(API);
+    setUrlAPIPing(API.split("/")[0] + "//" + API.split("/")[2]);
+    const fetchData = async () => {
+      try {
+        console.log(API.split("/")[0] + "//" + API.split("/")[2]);
+        const rs = await fetch(API.split("/")[0] + "//" + API.split("/")[2])
+          .then((response) => {
+            if (response.status === 200) {
+              setStatusAPI(true);
+            } else {
+              setStatusAPI(false);
+            }
+          })
+          .catch((error) => {
+            console.error("network error: 00000 " + error);
+            setStatusAPI(false);
+          });
+      } catch (error) {
+        console.error("network error: 1111 " + error);
+        setStatusAPI(false);
+      }
+    };
+
+    fetchData();
+    const intervalId = setInterval(fetchData, 2000);
+    return () => clearInterval(intervalId);
+  }, [API]);
+
+  const modalPasss = (
+    <TVSControlPopup
+      title={
+        valueAuthen === "face_id"
+          ? "Đăng nhập bằng khuôn mặt"
+          : "Đăng nhập bằng vân tay"
+      }
+      isShow={modalPass}
+      onHide={() => {
+        setModalPass(false);
+        setPassword("");
+      }}
+      onAccept={save}
+    >
+      <View>
+        <Text
+          style={{
+            marginBottom: 5,
+          }}
+        >
+          Xác nhận mật khẩu
+        </Text>
+      </View>
+      <Block
+        paddingLeft={20}
+        radius={8}
+        margin={5}
+        alignCenter
+        backgroundColor={Color.gray}
+        row
+        style={styles.inputContainer}
+      >
+        <MaterialCommunityIcons
+          name="account-lock-outline"
+          size={20}
+          style={{ marginLeft: 5, color: Color.mainColor }}
+        />
+        <TextInput
+          flex
+          height={55}
+          paddingLeft={15}
+          placeholder={"Mật khẩu"}
+          autoCompleteType={"password"}
+          placeholderTextColor={Color.grayPlahoder}
+          secureTextEntry={true}
+          value={passwords}
+          onChangeText={(password) => setPassword(password)}
+          style={styles.input}
+        />
+      </Block>
+    </TVSControlPopup>
+  );
+
+  function save() {
+    const pass_md5 = md5(passwords);
+    if (status === false) {
+      if (pass_md5 === pass) {
+        DefaultPreference.set("password", passwords);
+        DefaultPreference.set("status", "1");
+        DefaultPreference.set("nameAuthen", valueAuthen);
+        setStatus(true);
+        setPassword("");
+        setModalPass(false);
+      } else if (pass !== pass_md5) {
+        Alert.alert("Mật khẩu không trùng khớp!");
+      }
+    } else if (status === true) {
+      if (pass_md5 === pass) {
+        DefaultPreference.set("status", "11");
+        DefaultPreference.set("nameAuthen", valueAuthen);
+        setStatus(false);
+        setModalPass(false);
+        setPassword("");
+      } else if (pass !== pass_md5) {
+        Alert.alert("Mật khẩu không trùng khớp!");
+      }
+    }
+  }
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
+        <Block flex backgroundColor={"#F4F6FF"}>
+          <StatusBar
+            translucent={true}
+            backgroundColor={"transparent"}
+            barStyle="light-content"
+          />
+          <View style={styles.inner}>
+            {/* Logo at the top */}
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../../../assets/images/logo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+
+            <View style={styles.headerContainer}>
+              <Text
+                color={Color.textPrimary2}
+                size={16}
+                fontFamily={"Roboto-Bold"}
+              >
+                Đăng nhập với tài khoản của bạn
+              </Text>
+            </View>
+
+            <Label>Tài khoản</Label>
+            <InputBlock icon={<Icon size={20} color={Color.grayPlahoder} name="account" />}>
+              {setViewss()}
+            </InputBlock>
+
+            <Label>Mật khẩu</Label>
+            <InputBlock icon={<Icon size={20} color={Color.grayPlahoder} name="key-outline" />}>
+              <TextInput
+                size={14}
+                flex
+                height={42}
+                paddingLeft={12}
+                placeholder={"Mật khẩu"}
+                autoCompleteType={"password"}
+                color={Color.textPrimary2}
+                placeholderTextColor={Color.grayPlahoder}
+                secureTextEntry={eye}
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                onSubmitEditing={() => validateLogin(username, password)}
+                ref={passwordRef}
+                style={styles.input}
+              />
+              <Button
+                justifyCenter
+                height={30}
+                width={30}
+                nextScreen={() => setEye(!eye)}
+              >
+                {eye ? <Icon size={20} color={Color.grayPlahoder} name="eye-outline" /> : <Icon size={20} color={Color.grayPlahoder} name="eye-off-outline" />}
+              </Button>
+            </InputBlock>
+
+            <Block
+              row
+              justifyContent={"flex-end"}
+              marginTop={8}
+              marginHorizontal={20}
+            >
+
+              <Button
+                nextScreen={() =>
+                  navigation.navigate("ForgotPass", { users: username })
+                }
+              >
+                <Text fontFamily={"Roboto-Medium"} color={Color.mainColor}>Quên mật khẩu?</Text>
+              </Button>
+            </Block>
+
+            <View style={styles.loginButtonContainer}>
+              <ButtonV2
+                title="Đăng nhập"
+                backgroundColor={Color.mainColor}
+                borderRadius={8}
+                textColor={Color.white}
+                fontFamily="Roboto-Medium"
+                fontWeight="500"
+                padding={10}
+                onPress={() => validateLogin(username, password)}
+              />
+              <BiometricButton type={typeAuthen} onPress={_pressHandler} />
+            </View>
+
+            <View style={styles.footerContainer}>
+              {buildFor === "tvs" && (
+                <View style={styles.configButtonContainer}>
+                  {finger !== "1" && finger !== "11" ? (
+                    <ConfigButton
+                      onPress={async () => {
+                        const rs = await AsyncStorage.getItem("themeName");
+                        if (rs) {
+                          await AsyncStorage.setItem("oldTheme", rs.toString());
+                          await AsyncStorage.removeItem("themeName");
+                          await RNRestart.Restart();
+                        }
+                      }}
+                      color={Color.secondaryColor}
+                      mainColor={Color.mainColor}
+                    />
+                  ) : (
+                    <View></View>
+                  )}
+                </View>
+              )}
+              <View style={styles.versionContainer}>
+                <Text>Phiên bản {APP_VERSION}</Text>
+              </View>
+            </View>
+          </View>
+
+          {modalPasss}
+        </Block>
+      </KeyboardAvoidingView>
+
+    </TouchableWithoutFeedback>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  inner: {
+    flex: 1,
+    gap: 1,
+    backgroundColor: "#F4F6FF",
+    paddingTop: 20,
+    gap: 8
+  },
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  logo: {
+    marginTop: 32,
+    width: 300,
+    height: 160,
+  },
+  headerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  labelContainer: {
+    marginLeft: 20,
+  },
+  labelText: {
+    color: '#333',
+  },
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    backgroundColor: '#FAFAFA',
+  },
+  input: {
+    borderRadius: 8,
+  },
+  loginButtonContainer: {
+    paddingHorizontal: 16,
+    marginVertical: 8,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loginButton: {
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  biometricButton: {
+    marginLeft: 10,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 10,
+  },
+  footerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 200,
+  },
+  configButtonContainer: {
+    flexDirection: "row",
+    marginRight: 10,
+    marginLeft: 10,
+  },
+  configButton: {
+    flexDirection: 'row',
+  },
+  configButtonText: {
+    color: '#888',
+  },
+  versionContainer: {
+    flex: 1,
+    marginVertical: 10,
+  },
+  connectionIcon: {
+    justifyContent: "center",
+    alignItems: "flex-end",
+    position: "absolute",
+    right: 20,
+    paddingTop: 10,
+    zIndex: 100,
+  },
+});
+
+export default LoginScreen; 

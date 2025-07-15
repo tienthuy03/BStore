@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Color } from '../../../colors/colortv';
 
 const Header = ({
   children,
@@ -9,9 +9,7 @@ const Header = ({
   rightIconVisible = false,
   onRightPress = () => { },
   rightIconName = 'dots-vertical',
-  color
 }) => {
-  const Color = useSelector(s => s.SystemReducer.theme);
 
   return (
     <View
