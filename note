@@ -1,0 +1,8 @@
+//khi đẩy file apk lên 
+git filter - branch--force--index - filter "git rm --cached --ignore-unmatch app-release.apk" --prune - empty--tag - name - filter cat-- --all
+Sau đó chạy tiếp các lệnh dọn dẹp:
+Remove - Item - Recurse - Force.git\refs\original
+git reflog expire--expire = now--all
+git gc--prune = now--aggressive
+//
+git push origin--force--all
