@@ -35,6 +35,7 @@ import { APP_VERSION, buildFor } from "../../../config/Pro";
 import { deviceId } from "../../../constants/index";
 import ShowError from "../../../services/errors";
 import sysFetch from "../../../services/fetch_crypt";
+import LottieView from "lottie-react-native";
 
 // Label component
 const Label = ({ children }) => (
@@ -83,7 +84,7 @@ const BiometricButton = ({ type, onPress }) => {
 };
 
 // ConfigButton component
-const ConfigButton = ({ onPress, color, mainColor }) => (
+const ConfigButton = ({ onPress, color, mainColor, navigation }) => (
   <Button onPress={onPress} style={styles.configButton}>
     <Text
       borderRadius={5}
@@ -667,12 +668,13 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
             barStyle="light-content"
           />
           <View style={styles.inner}>
-            {/* Logo at the top */}
-            <View style={styles.logoContainer}>
-              <Image
-                source={require('../../../assets/images/logo.png')}
-                style={styles.logo}
-                resizeMode="contain"
+
+            <View style={{ alignItems: 'center', paddingTop: '10%' }}>
+              <LottieView
+                source={require("../../../assets/animations/login.json")}
+                style={{ width: 230, height: 230, justifyContent: 'center' }}
+                autoPlay
+                loop
               />
             </View>
 
@@ -754,16 +756,18 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
                 <View style={styles.configButtonContainer}>
                   {finger !== "1" && finger !== "11" ? (
                     <ConfigButton
-                      onPress={async () => {
-                        const rs = await AsyncStorage.getItem("themeName");
-                        if (rs) {
-                          await AsyncStorage.setItem("oldTheme", rs.toString());
-                          await AsyncStorage.removeItem("themeName");
-                          await RNRestart.Restart();
+                      onPress={() => {
+                        console.log("Navigating to ConfigThemeScreen...");
+                        try {
+                          navigation.push("ConfigThemeScreen");
+                          console.log("Navigation successful");
+                        } catch (error) {
+                          console.log("Navigation error:", error);
                         }
                       }}
                       color={Color.secondaryColor}
                       mainColor={Color.mainColor}
+                      navigation={navigation}
                     />
                   ) : (
                     <View></View>

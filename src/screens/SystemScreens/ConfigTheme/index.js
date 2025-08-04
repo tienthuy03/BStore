@@ -32,13 +32,15 @@ import CryptoJS from "crypto-js";
 import Load from "../../../components/Loading"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import ButtonV2 from "../../../components/ButtonV2"
+import LottieView from "lottie-react-native"
 
 const arr = [
   { id: "1", name: "Theme 01", color: ColorTV.Color },
   { id: "2", name: "Theme 02", color: ColorHP.Color },
 ]
 
-const RegistrationScreen = ({ navigation }) => {
+const ConfigThemeScreen = ({ navigation }) => {
+  console.log("ConfigThemeScreen component rendered");
   const [load, setLoad] = useState(false)
   const [ClientId, setClientId] = useState("")
   const [ClientKey, setClientKey] = useState("")
@@ -126,13 +128,18 @@ const RegistrationScreen = ({ navigation }) => {
     await AsyncStorage.setItem("API_URL", originalText)
     await AsyncStorage.setItem("themeName", "1")
     await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase())
+    await AsyncStorage.setItem("firstLoadApp", "yes")
     dispatch(SetApiURL(originalText))
+    console.log("QR Configuration saved:", {
+      API_URL: originalText,
+      CLIENT_ID: clientId.toUpperCase(),
+      firstLoadApp: "yes"
+    })
     Alert.alert("Thông báo", "Cấu hình thành công.", [
       {
         text: "Đóng",
         onPress: () => {
-          setIsShow(false)
-          RNRestart.Restart()
+          navigation.replace("LoginScreen")
         },
       },
     ])
@@ -144,8 +151,7 @@ const RegistrationScreen = ({ navigation }) => {
         {
           text: "Đóng",
           onPress: () => {
-            setIsShow(false)
-            RNRestart.Restart()
+            navigation.replace("LoginScreen")
           },
         },
       ])
@@ -159,9 +165,7 @@ const RegistrationScreen = ({ navigation }) => {
           {
             text: "Đóng",
             onPress: () => {
-              setIsShow(false)
-              RNRestart.Restart()
-              // navigation.replace("Index");
+              navigation.replace("LoginScreen")
             },
           },
         ])
@@ -187,7 +191,13 @@ const RegistrationScreen = ({ navigation }) => {
           await AsyncStorage.setItem("themeName", "1")
           await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase())
           await AsyncStorage.setItem("CLIENT_NM", item.CLIENT_NM)
+          await AsyncStorage.setItem("firstLoadApp", "yes")
           dispatch(SetApiURL(item.API_NAME))
+          console.log("Offline Configuration saved:", {
+            API_URL: item.API_NAME,
+            CLIENT_ID: clientId.toUpperCase(),
+            firstLoadApp: "yes"
+          })
           resolve(true)
         }
       })
@@ -214,7 +224,13 @@ const RegistrationScreen = ({ navigation }) => {
             await AsyncStorage.setItem("themeName", response.data.data[0].theme_type)
             await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase())
             await AsyncStorage.setItem("CLIENT_NM", response.data.data[0].client_nm)
+            await AsyncStorage.setItem("firstLoadApp", "yes")
             dispatch(SetApiURL(response.data.data[0].api_name))
+            console.log("API Configuration saved:", {
+              API_URL: response.data.data[0].api_name,
+              CLIENT_ID: clientId.toUpperCase(),
+              firstLoadApp: "yes"
+            })
 
             resolve(true)
           } else {
@@ -257,31 +273,21 @@ const RegistrationScreen = ({ navigation }) => {
       }
     }
 
+    // Always show the configuration screen when navigated to
+    setIsShow(true)
+
+    // Check if this is the first load
     AsyncStorage.getItem("firstLoadApp").then(async (rs) => {
-      if (rs) {
-        getTheme()
-      } else {
+      if (!rs) {
+        // First time loading the app
         AsyncStorage.setItem("themeName", "1")
         AsyncStorage.setItem("API_URL", ServerIP.tvs)
         dispatch(SetApiURL(ServerIP.tvs))
         dispatch(sysLoadTheme(arr[0].color))
         AsyncStorage.setItem("firstLoadApp", "yes")
-        setIsShow(true)
       }
     })
-    const getTheme = async () => {
-      try {
-        const themeName = await AsyncStorage.getItem("themeName")
-        if (!themeName) {
-          setIsShow(true)
-        } else {
-          const tempTheme = arr.filter((i) => i.id === themeName)[0].color
-          dispatch(sysLoadTheme(tempTheme))
-          navigation.replace("LoginScreen")
-          // navigation.replace("Index");
-        }
-      } catch (error) { }
-    }
+
     return () => { }
   }, [])
 
@@ -318,86 +324,20 @@ const RegistrationScreen = ({ navigation }) => {
     }
   }, [])
 
-  return isShow ? (
+  return (
     <SafeAreaView style={styles.container}>
       <Load visible={load} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.logoContainer}>
-          <Image source={require("../../../assets/images/logo.png")} style={styles.logo} resizeMode="contain" />
+        <View style={{ alignItems: 'center', paddingTop: '20%' }}>
+          <LottieView
+            source={require("../../../assets/animations/register.json")}
+            style={{ width: 200, height: 200, justifyContent: 'center' }}
+            autoPlay
+            loop
+          />
         </View>
-
-        <Text style={styles.title}>Đăng Ký Tài Khoản</Text>
-
+        <Text style={styles.title}>Cấu hình tài khoản</Text>
         <View style={styles.formContainer}>
-          {/* Username field */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Tên đăng nhập</Text>
-            <View style={styles.inputContainer}>
-              <Icon name="account" size={20} color={ColorTV.Color.textPrimary3} style={styles.inputIcon} />
-              <TextInput
-                value={username}
-                onChangeText={setUsername}
-                style={styles.input}
-                placeholder="Nhập tên đăng nhập"
-                placeholderTextColor="#999"
-              />
-            </View>
-          </View>
-
-          {/* Phone number field */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Số điện thoại</Text>
-            <View style={styles.inputContainer}>
-              <Icon name="phone" size={20} color={ColorTV.Color.textPrimary3} style={styles.inputIcon} />
-              <TextInput
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                style={styles.input}
-                placeholder="Nhập số điện thoại"
-                placeholderTextColor="#999"
-                keyboardType="phone-pad"
-              />
-            </View>
-          </View>
-
-          {/* Password field */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Mật khẩu</Text>
-            <View style={styles.inputContainer}>
-              <Icon name="lock" size={20} color={ColorTV.Color.textPrimary3} style={styles.inputIcon} />
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                style={styles.input}
-                placeholder="Nhập mật khẩu"
-                placeholderTextColor="#999"
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <Icon name={showPassword ? "eye-off" : "eye"} size={20} color="#777" />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Confirm Password field */}
-          {/* <View style={styles.inputGroup}>
-            <Text style={styles.label}>Xác nhận mật khẩu</Text>
-            <View style={styles.inputContainer}>
-              <Icon name="lock-check" size={20} color={ColorTV.Color.textPrimary3} style={styles.inputIcon} />
-              <TextInput
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                style={styles.input}
-                placeholder="Nhập lại mật khẩu"
-                placeholderTextColor="#999"
-                secureTextEntry={!showConfirmPassword}
-              />
-              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
-                <Icon name={showConfirmPassword ? "eye-off" : "eye"} size={20} color="#777" />
-              </TouchableOpacity>
-            </View>
-          </View> */}
-
           {/* Client ID field (existing) */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Mã khách hàng</Text>
@@ -412,7 +352,6 @@ const RegistrationScreen = ({ navigation }) => {
               />
             </View>
           </View>
-
           {/* Captcha field (existing) */}
           <View>
             <Text style={styles.label}>Mã xác nhận</Text>
@@ -443,13 +382,12 @@ const RegistrationScreen = ({ navigation }) => {
               fontWeight="500"
               padding={10}
               onPress={() => {
-                AsyncStorage.setItem("themeName", "1")
-                RNRestart.Restart()
+                navigation.goBack()
               }}
             />
             <ButtonV2
               icon={"check"}
-              title="Đăng nhập"
+              title="Đăng ký"
               backgroundColor={ColorTV.Color.mainColor}
               borderRadius={8}
               textColor="#ffffff"
@@ -464,11 +402,11 @@ const RegistrationScreen = ({ navigation }) => {
           <View style={styles.qrContainer}>
             <ScanQR checkApi={checkQR} />
           </View>
+
+
         </View>
       </ScrollView>
     </SafeAreaView>
-  ) : (
-    <View style={{ backgroundColor: "#01acec" }} />
   )
 }
 
@@ -480,7 +418,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    paddingBottom: 30,
+    // paddingBottom: 30,
   },
   logoContainer: {
     alignItems: "center",
@@ -586,4 +524,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RegistrationScreen
+export default ConfigThemeScreen

@@ -74,7 +74,9 @@ import QLDL from './src/screens/HomeScreens/FQLDL_MBHRMN/index';
 import CheckLogin from './src/screens/SystemScreens/CheckLogin';
 import UpdatePass from './src/screens/SystemScreens/UpdatePass';
 
-import ConfigThemeScreen from './src/screens/SystemScreens/ConfigTheme';
+import ConfigThemeScreen from './src/screens/SystemScreens/ConfigTheme/index';
+import InitialScreen from './src/screens/SystemScreens/InitialScreen';
+import Detail_His_Order from './src/screens/HomeScreens/EnvoiceScreen/Components/Detail_His_Order';
 
 import createSagaMiddleware from 'redux-saga';
 import { createStore, applyMiddleware } from 'redux';
@@ -144,10 +146,14 @@ const App = () => {
         <Popup />
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="ConfigThemeScreen"
+            initialRouteName="InitialScreen"
             screenOptions={{
               headerShown: false,
             }}>
+            <Stack.Screen
+              name="InitialScreen"
+              component={InitialScreen}
+            />
             <Stack.Screen
               name="ConfigThemeScreen"
               component={ConfigThemeScreen}
@@ -216,6 +222,7 @@ const App = () => {
             <Stack.Screen name="MBHRMN005" component={MBHRMN006} />
 
             <Stack.Screen name="SecurityMethod" component={SecurityMethod} />
+            <Stack.Screen name="Detail_His_Order" component={Detail_His_Order} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
