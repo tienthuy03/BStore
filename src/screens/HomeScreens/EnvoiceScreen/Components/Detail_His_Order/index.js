@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F6FF',
   },
   emptyText: {
+    fontFamily: 'Roboto-Regular',
     fontSize: 16,
     color: '#666',
   },

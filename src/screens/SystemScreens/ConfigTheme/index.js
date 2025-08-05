@@ -246,51 +246,109 @@ const ConfigThemeScreen = ({ navigation }) => {
   const dispatch = useDispatch()
   const [isShow, setIsShow] = useState(false)
 
+  // useEffect(() => {
+  //   let CLIENT_ID = ""
+  //   let API_URL = ""
+  //   fetchData()
+  //   async function fetchData() {
+  //     CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID")
+  //     API_URL = await AsyncStorage.getItem("API_URL")
+  //   }
+  //   if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+  //     setClientId("")
+  //   } else if (API_URL == null && CLIENT_ID == null) {
+  //     setClientId("")
+  //   } else {
+  //     setClientId(CLIENT_ID)
+  //   }
+
+  //   if (API_URL != "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+  //     if (configAPI != null && configAPI != []) {
+  //       configAPI.forEach(async (item) => {
+  //         if (item.API_NAME.toLowerCase() == API_URL.toLowerCase()) {
+  //           console.log("item ", item)
+  //           setClientId(item.CLIENT_ID.toUpperCase())
+  //         }
+  //       })
+  //     }
+  //   }
+
+  //   // Always show the configuration screen when navigated to
+  //   setIsShow(true)
+
+  //   // Check if this is the first load
+  //   AsyncStorage.getItem("firstLoadApp").then(async (rs) => {
+  //     if (!rs) {
+  //       // First time loading the app
+  //       AsyncStorage.setItem("themeName", "1")
+  //       AsyncStorage.setItem("API_URL", ServerIP.tvs)
+  //       dispatch(SetApiURL(ServerIP.tvs))
+  //       dispatch(sysLoadTheme(arr[0].color))
+  //       AsyncStorage.setItem("firstLoadApp", "yes")
+  //     }
+  //   })
+
+  //   return () => { }
+  // }, [])
   useEffect(() => {
     let CLIENT_ID = ""
     let API_URL = ""
-    fetchData()
-    async function fetchData() {
-      CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID")
-      API_URL = await AsyncStorage.getItem("API_URL")
-    }
-    if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
-      setClientId("")
-    } else if (API_URL == null && CLIENT_ID == null) {
-      setClientId("")
-    } else {
-      setClientId(CLIENT_ID)
-    }
 
-    if (API_URL != "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
-      if (configAPI != null && configAPI != []) {
-        configAPI.forEach(async (item) => {
-          if (item.API_NAME.toLowerCase() == API_URL.toLowerCase()) {
-            console.log("item ", item)
-            setClientId(item.CLIENT_ID.toUpperCase())
+    const initializeApp = async () => {
+      try {
+        CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID")
+        API_URL = await AsyncStorage.getItem("API_URL")
+        const firstLoadApp = await AsyncStorage.getItem("firstLoadApp")
+
+        console.log("Stored values:", { CLIENT_ID, API_URL, firstLoadApp })
+
+        // Kiểm tra nếu đã cấu hình rồi thì chuyển thẳng đến login
+        if (firstLoadApp === "yes" && CLIENT_ID && API_URL) {
+          console.log("App already configured, navigating to login")
+          navigation.replace("LoginScreen")
+          return
+        }
+
+        // Nếu chưa cấu hình thì hiển thị màn hình config
+        setIsShow(true)
+
+        // Logic cũ để set ClientId
+        if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+          setClientId("")
+        } else if (API_URL == null && CLIENT_ID == null) {
+          setClientId("")
+        } else {
+          setClientId(CLIENT_ID || "")
+        }
+
+        if (API_URL != "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+          if (configAPI != null && configAPI != []) {
+            configAPI.forEach(async (item) => {
+              if (item.API_NAME.toLowerCase() == API_URL.toLowerCase()) {
+                console.log("item ", item)
+                setClientId(item.CLIENT_ID.toUpperCase())
+              }
+            })
           }
-        })
+        }
+
+        // Chỉ set default values nếu là lần đầu tiên
+        if (!firstLoadApp) {
+          await AsyncStorage.setItem("themeName", "1")
+          await AsyncStorage.setItem("API_URL", ServerIP.tvs)
+          dispatch(SetApiURL(ServerIP.tvs))
+          dispatch(sysLoadTheme(arr[0].color))
+          // Không set firstLoadApp ở đây, chỉ set khi cấu hình thành công
+        }
+
+      } catch (error) {
+        console.log("Error initializing app:", error)
+        setIsShow(true)
       }
     }
 
-    // Always show the configuration screen when navigated to
-    setIsShow(true)
-
-    // Check if this is the first load
-    AsyncStorage.getItem("firstLoadApp").then(async (rs) => {
-      if (!rs) {
-        // First time loading the app
-        AsyncStorage.setItem("themeName", "1")
-        AsyncStorage.setItem("API_URL", ServerIP.tvs)
-        dispatch(SetApiURL(ServerIP.tvs))
-        dispatch(sysLoadTheme(arr[0].color))
-        AsyncStorage.setItem("firstLoadApp", "yes")
-      }
-    })
-
-    return () => { }
+    initializeApp()
   }, [])
-
   const [currentCaptcha, setCurrentCaptcha] = useState("")
 
   const handleCaptchaChange = (newCaptchaText) => {

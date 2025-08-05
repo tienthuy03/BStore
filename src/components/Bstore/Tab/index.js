@@ -12,7 +12,7 @@ import { Color } from "../../../colors/colortv";
 
 const BSTab = ({
   scrollEnabled = true,
-  fullTab = true,
+  fullTab = false,
   onChangeTab = null,
   tab = 0,
   ...props
@@ -39,7 +39,7 @@ const BSTab = ({
         style={{
           flex: 0,
           flexDirection: "row",
-          marginHorizontal: 10,
+          // marginHorizontal: 10,
           borderRadius: 10,
           backgroundColor: "white",
           elevation: 2,
@@ -66,10 +66,12 @@ const BSTab = ({
               style={{
                 width: tabWidth,
                 flex: fullTab ? 1 : 0,
-                padding: 10,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
                 justifyContent: "center",
                 alignItems: "center",
                 flexDirection: "row",
+                minWidth: 120,
                 borderBottomColor:
                   item.id === currentTab
                     ? item.bottomColor != null
