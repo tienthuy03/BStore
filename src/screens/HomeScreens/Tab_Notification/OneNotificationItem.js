@@ -21,7 +21,7 @@ const OneNotificationItem = ({ item, key }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalPDFVisible, setModalPDFVisible] = useState(false);
   const displayTime = (time) => {
-    if (!item) {
+    if (!item || !time) {
       return "";
     }
 
@@ -48,7 +48,10 @@ const OneNotificationItem = ({ item, key }) => {
     }
   };
   const Color = useSelector((s) => s.SystemReducer.theme);
-  const arrContent = item.content.split("*");
+  const arrContent = item?.content?.split("*") || [];
+
+  console.log("53: ", arrContent);
+
   const [modalIMGVisible, setModalIMGVisible] = useState(false);
   const [IMGContent, setIMGContent] = useState("");
   const modalIMG = (
@@ -101,27 +104,33 @@ const OneNotificationItem = ({ item, key }) => {
       title={"Nội dung thông báo"}
     >
       <View style={{ paddingBottom: 30 }}>
-        {arrContent.map((x) => (
+        {arrContent.map((x, index) => (
           <Text
+            key={index}  // ✅ Thêm key
             style={{
               marginBottom: 5,
-              fontFamily: "Roboto-Egular",
+              fontFamily: "Roboto-Regular",
               fontSize: 16
             }}
           >
-            {x.toString().trim()}
+            {x?.toString().trim() || ''}  // ✅ Thêm optional chaining và fallback
+
           </Text>
         ))}
-        <Text
-          style={{
-            paddingTop: 10,
-            color: "#808080",
-            fontFamily: "Roboto-Regular",
-            fontSize: 14
-          }}
-        >
-          <Icon name={"calendar"} /> {displayTime(item.post_dt)}
-        </Text>
+        <View>
+          <Icon name={"calendar"} />
+          <Text
+            style={{
+              paddingTop: 10,
+              color: "#808080",
+              fontFamily: "Roboto-Regular",
+              fontSize: 14
+            }}
+          >
+            {displayTime(item.post_dt)}
+          </Text>
+        </View>
+
         {item.file_yn == "Y" ? (
           item.image_yn == "Y" ? (
             <TouchableOpacity
@@ -237,8 +246,8 @@ const OneNotificationItem = ({ item, key }) => {
               }}
             />
           ) : (
-            // <Person />
-            <Text>Name</Text>
+
+            <Icon name="account" />
           )}
         </View>
         <View style={{ flexDirection: "row", flex: 1 }}>

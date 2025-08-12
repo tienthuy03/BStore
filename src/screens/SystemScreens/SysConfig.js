@@ -1,19 +1,19 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-import React, {useState} from 'react';
-import {Alert, Platform, StatusBar} from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Platform, StatusBar } from 'react-native';
 import RNRestart from 'react-native-restart';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Block from '../../components/Block';
 import Button from '../../components/Button';
 import Text from '../../components/Text';
 import TextInput from '../../components/TextInput.js';
-import {ServerIP} from '../../config/Pro';
+import { ServerIP } from '../../config/Pro';
 import Icon_back from '../../icons/Back';
-import {SetApiURL} from '../../services/redux/SysConfig/action';
+import { SetApiURL } from '../../services/redux/SysConfig/action';
 
-const SysConfig = ({navigation: {goBack}}) => {
+const SysConfig = ({ navigation: { goBack } }) => {
   const Color = useSelector(s => s.SystemReducer.theme);
   const dispatch = useDispatch();
   const [ClientId, setClientId] = useState('');
@@ -24,12 +24,12 @@ const SysConfig = ({navigation: {goBack}}) => {
   };
   const onSave = () => {
     if (ClientId.length === 0) {
-      Alert.alert('Thông báo', 'Bạn chưa nhập Client Id.', [{text: 'Đóng'}]);
+      Alert.alert('Thông báo', 'Bạn chưa nhập Client Id.', [{ text: 'Đóng' }]);
       return;
     }
 
     if (ClientKey.length === 0) {
-      Alert.alert('Thông báo', 'Bạn chưa nhập Client Key.', [{text: 'Đóng'}]);
+      Alert.alert('Thông báo', 'Bạn chưa nhập Client Key.', [{ text: 'Đóng' }]);
       return;
     }
 
@@ -104,7 +104,7 @@ const SysConfig = ({navigation: {goBack}}) => {
       </Block>
       <Block backgroundColor={Color.white} flex padding={10}>
         <Block marginBottom={10}>
-          <Text style={{color: Color.mainColor}}>Mã khách hàng</Text>
+          <Text style={{ color: Color.mainColor }}>Mã cửa hàng</Text>
           <TextInput
             size={15}
             padding={15}
@@ -117,7 +117,7 @@ const SysConfig = ({navigation: {goBack}}) => {
           />
         </Block>
         <Block>
-          <Text style={{color: Color.mainColor}}>Mã xác nhận</Text>
+          <Text style={{ color: Color.mainColor }}>Mã xác nhận</Text>
           <TextInput
             size={15}
             padding={15}
@@ -130,7 +130,7 @@ const SysConfig = ({navigation: {goBack}}) => {
         </Block>
         <Block marginTop={10} justifyCenter alignCenter>
           <Button
-            style={{borderRadius: 5}}
+            style={{ borderRadius: 5 }}
             backgroundColor={Color.mainColor}
             nextScreen={onSave}>
             <Text padding={15} color={Color.white}>

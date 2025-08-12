@@ -30,9 +30,9 @@ const SelectModal = ({ visible, title, data, selected, onSelect, onClose }) => (
               }}
             >
               <Text style={{ flex: 1, fontSize: 16 }}>{item.code_nm}</Text>
-              {selected && selected.code_id === item.code_id && (
+              {/* {selected && selected.code_id === item.code_id && (
                 <Icon name="check-circle" size={20} color={Color.mainColor} />
-              )}
+              )} */}
             </TouchableOpacity>
           )}
         />

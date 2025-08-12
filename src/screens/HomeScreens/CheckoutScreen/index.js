@@ -86,10 +86,10 @@ const CheckoutScreen = ({ route, navigation }) => {
         setListArea(rs.data.list_area);
         setList_payment_method(rs.data.list_payment_method)
       } else {
-        // console.log("No data found")
+        console.log("No data found")
       }
     } catch (error) {
-      // console.log("Error:", error)
+      console.log("Error:", error)
     }
   }
 
