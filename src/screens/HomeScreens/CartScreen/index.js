@@ -8,6 +8,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { Color } from "../../../colors/colortv"
@@ -204,7 +208,13 @@ const CartScreen = ({ navigation }) => {
   }, [navigation])
 
   return (
-    <SafeAreaView style={styles.container}>
+
+    // <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+    >
       <Header
         goBack={navigation.goBack}
         rightIconVisible={cartItems.length > 0}
@@ -213,61 +223,64 @@ const CartScreen = ({ navigation }) => {
       >
         Giỏ hàng
       </Header>
-
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Color.mainColor} />
         </View>
       ) : (
-        <View style={styles.contentWrapper}>
-          {/* Danh sách giỏ hàng */}
-          <View style={styles.listSection}>
-            <FlatList
-              data={cartItems}
-              renderItem={renderItem}
-              keyExtractor={(item) => getItemId(item)}
-              contentContainerStyle={styles.listContainer}
-              ListHeaderComponent={() => (
-                <View>
-                  {cartItems.length > 0 && (
-                    <View style={styles.selectAllContainer}>
-                      <TouchableOpacity style={styles.selectAllButton} onPress={handleSelectAll}>
-                        <Icon
-                          name={
-                            cartItems.every((item) => item.selected)
-                              ? "checkbox-marked"
-                              : "checkbox-blank-outline"
-                          }
-                          size={20}
-                          color={Color.mainColor3}
-                        />
-                        <Text style={styles.selectAllText}>
-                          {cartItems.every((item) => item.selected)
-                            ? "Bỏ chọn tất cả"
-                            : "Chọn tất cả"}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </View>
-              )}
-              ListEmptyComponent={renderEmptyCart}
-            />
-          </View>
-
-          {/* Tổng tiền cố định phía dưới */}
-          {cartItems.length > 0 && (
-            <View style={styles.footerSection}>
-              <CartSummary
-                total={totalPrice.toLocaleString()}
-                quantityProd={selectedItemsCount}
-                handleOnCheckOut={handleCheckoutPress}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.contentWrapper}>
+            {/* Danh sách giỏ hàng */}
+            <View style={styles.listSection}>
+              <FlatList
+                data={cartItems}
+                renderItem={renderItem}
+                keyExtractor={(item) => getItemId(item)}
+                contentContainerStyle={[styles.listContainer, { flexGrow: 1 }]}
+                keyboardShouldPersistTaps="always"
+                removeClippedSubviews={false}
+                ListHeaderComponent={() => (
+                  <View>
+                    {cartItems.length > 0 && (
+                      <View style={styles.selectAllContainer}>
+                        <TouchableOpacity style={styles.selectAllButton} onPress={handleSelectAll}>
+                          <Icon
+                            name={
+                              cartItems.every((item) => item.selected)
+                                ? "checkbox-marked"
+                                : "checkbox-blank-outline"
+                            }
+                            size={20}
+                            color={Color.mainColor3}
+                          />
+                          <Text style={styles.selectAllText}>
+                            {cartItems.every((item) => item.selected)
+                              ? "Bỏ chọn tất cả"
+                              : "Chọn tất cả"}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
+                )}
+                ListEmptyComponent={renderEmptyCart}
               />
             </View>
-          )}
-        </View>
+            {/* Tổng tiền cố định phía dưới */}
+            {cartItems.length > 0 && (
+              <View style={styles.footerSection}>
+                <CartSummary
+                  total={totalPrice.toLocaleString()}
+                  quantityProd={selectedItemsCount}
+                  handleOnCheckOut={handleCheckoutPress}
+                />
+              </View>
+            )}
+          </View>
+        </TouchableWithoutFeedback>
       )}
-    </SafeAreaView>
+    </KeyboardAvoidingView>
+    // </SafeAreaView>
   );
 }
 
@@ -335,6 +348,9 @@ const styles = StyleSheet.create({
     color: Color.white,
     fontWeight: "bold",
   },
+  footerSection: {
+
+  }
 })
 
 export default CartScreen

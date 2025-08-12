@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react"
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Keyboard } from "react-native"
+import React, { useState, useEffect } from "react"
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Keyboard, KeyboardAvoidingView, Platform } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { Color } from "../../../../colors/colortv"
 import CachedImage from "../../../../components/CachedImage"
 
 
-const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity, onUpdateNote }) => {
+const CartItem = React.memo(({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity, onUpdateNote }) => {
   const [manualQuantity, setManualQuantity] = useState(item.quantity.toString())
   const [editingNote, setEditingNote] = useState(false)
   const [noteValue, setNoteValue] = useState(item.note || "")
@@ -79,6 +79,7 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
   }
 
   return (
+
     <View style={styles.cardContainer}>
       <View style={styles.card}>
         <TouchableOpacity style={styles.checkboxContainer} onPress={handleToggleSelect}>
@@ -153,7 +154,7 @@ const CartItem = ({ item, onRemove, onToggleSelect = () => { }, onUpdateQuantity
       </View>
     </View>
   )
-}
+})
 
 const styles = StyleSheet.create({
   txtNoteLabel: {
@@ -185,13 +186,12 @@ const styles = StyleSheet.create({
     // flexDirection: "row",
     alignItems: "flex-start",
     paddingHorizontal: 4,
-    flex: 1
   },
   cardContainer: {
     backgroundColor: Color.white,
     borderRadius: 16,
     padding: 12,
-    marginBottom: 18,
+    marginBottom: 12,
     shadowColor: Color.gray,
     shadowOpacity: 0.06,
     shadowRadius: 4,

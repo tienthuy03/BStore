@@ -131,6 +131,7 @@ import CheckoutScreen from "./src/screens/HomeScreens/CheckoutScreen";
 import ShippingInfoScreen from "./src/screens/HomeScreens/ShippingInfoScreen";
 import OrderSuccess from "./src/screens/HomeScreens/OrderSuccess";
 import QRCodeScreen from "./src/screens/HomeScreens/QRCodeScreen";
+import Detail_His_Order from "./src/screens/HomeScreens/EnvoiceScreen/Components/Detail_His_Order";
 
 LogBox.ignoreLogs(["Warning: ", "EventEmitter.removeListener"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -254,18 +255,13 @@ const App = () => {
         <Popup cusStyle={undefined} />
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="LoginScreen"
+            initialRouteName="ConfigThemeScreen"
             screenOptions={{
               headerShown: false,
             }}
           >
-            {/* <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} /> */}
-            <Stack.Screen
-              name="LoginScreen"
-              // If you need to pass reloadConfig, do it via initialParams or a wrapper
-              // component={LoginScreen}
-              children={(props) => <LoginScreen {...props} reloadConfig={undefined} />}
-            />
+            <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="ForgotPass" component={ForgotPass} />
             <Stack.Screen name="RegisterAccount" component={RegisterAccount} />
             <Stack.Screen name="CheckLogin" component={CheckLogin} />
@@ -279,6 +275,7 @@ const App = () => {
             <Stack.Screen name="ShippingInfoScreen" component={ShippingInfoScreen} />
             <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
             <Stack.Screen name="QRCodeScreen" component={QRCodeScreen} />
+            <Stack.Screen name="Detail_His_Order" component={Detail_His_Order} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
