@@ -315,7 +315,7 @@ const ConfigThemeScreen = ({ navigation }) => {
         <Text style={styles.title}>Cấu hình ứng dụng</Text>
         <View style={styles.render}>
           <View>
-            <Text>Mã khách hàng</Text>
+            <Text>Mã cửa hàng</Text>
             <TextInput
               editable={true}
               value={ClientId}

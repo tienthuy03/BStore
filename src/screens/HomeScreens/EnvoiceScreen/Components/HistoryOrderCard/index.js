@@ -14,9 +14,6 @@ const HistoryOrderCard = ({ item, onPress }) => {
       <View style={styles.content}>
         <View style={{ width: '100%', gap: 8, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={styles.title}>🕓 {item.cus_dt}</Text>
-          <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
-            <Text style={styles.statusText}>{statusText}</Text>
-          </View>
         </View>
         <View style={styles.dateTimeContainer}>
           <Text style={[styles.dateTime, { color: statusColor }]}>💵Tổng đơn hàng: {(item.cus_total_price).toLocaleString()} VNĐ</Text>
@@ -24,13 +21,16 @@ const HistoryOrderCard = ({ item, onPress }) => {
         <View style={styles.dateTimeContainer}>
           <Text style={styles.dateTime}>💳 Thanh toán: {item.cus_pay_method_type}</Text>
         </View>
+        {/* <View style={styles.dateTimeContainer}>
+          <Text style={styles.dateTime}>💳Phí vận chuyển: {item.cus_shipping_fee}</Text>
+        </View> */}
 
         <View style={styles.dateTimeContainer}>
-          <Text style={[styles.dateTime]}>🏠 Địa chỉ: 123 Đường ABC, Quận XYZ, TP. HCM</Text>
+          <Text style={[styles.dateTime]}>🏠 Địa chỉ giao hàng: {item.customer_address}</Text>
         </View>
-        <View style={styles.dateTimeContainer}>
+        {/* <View style={styles.dateTimeContainer}>
           <Text style={[styles.dateTime]}>📦 Tổng sản phẩm: {item.cus_qty}</Text>
-        </View>
+        </View> */}
 
       </View>
 
@@ -109,22 +109,10 @@ const styles = StyleSheet.create({
   },
   dateTime: {
     fontFamily: 'Roboto-Regular',
-    fontSize: 13,
+    fontSize: 14,
     marginLeft: 6,
   },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 20,
-    // minWidth: 80,
-    alignItems: 'center',
-  },
-  statusText: {
-    fontSize: 12,
-    fontFamily: 'Roboto-Medium',
-    color: 'white',
-    textTransform: 'uppercase',
-  },
+
 });
 
 export default HistoryOrderCard; 

@@ -115,6 +115,7 @@ import Index from "./src/screens/HomeScreens/index";
 import CheckLogin from "./src/screens/SystemScreens/CheckLogin";
 import ConfigThemeScreen from "./src/screens/SystemScreens/ConfigTheme/index";
 import ForgotPass from "./src/screens/SystemScreens/ForgotPassword";
+import InitialScreen from "./src/screens/SystemScreens/InitialScreen";
 import LoginScreen from "./src/screens/SystemScreens/LoginScreen";
 import RegisterAccount from "./src/screens/SystemScreens/RegisterAccount";
 import UpdatePass from "./src/screens/SystemScreens/UpdatePass";
@@ -255,11 +256,12 @@ const App = () => {
         <Popup cusStyle={undefined} />
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="ConfigThemeScreen"
+            initialRouteName="InitialScreen"
             screenOptions={{
               headerShown: false,
             }}
           >
+            <Stack.Screen name="InitialScreen" component={InitialScreen} />
             <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="ForgotPass" component={ForgotPass} />

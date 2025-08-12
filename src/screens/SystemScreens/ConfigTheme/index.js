@@ -298,21 +298,13 @@ const ConfigThemeScreen = ({ navigation }) => {
       try {
         CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID")
         API_URL = await AsyncStorage.getItem("API_URL")
-        const firstLoadApp = await AsyncStorage.getItem("firstLoadApp")
 
-        console.log("Stored values:", { CLIENT_ID, API_URL, firstLoadApp })
+        console.log("ConfigThemeScreen - Stored values:", { CLIENT_ID, API_URL })
 
-        // Kiểm tra nếu đã cấu hình rồi thì chuyển thẳng đến login
-        if (firstLoadApp === "yes" && CLIENT_ID && API_URL) {
-          console.log("App already configured, navigating to login")
-          navigation.replace("LoginScreen")
-          return
-        }
-
-        // Nếu chưa cấu hình thì hiển thị màn hình config
+        // Hiển thị màn hình config
         setIsShow(true)
 
-        // Logic cũ để set ClientId
+        // Logic để set ClientId từ dữ liệu đã lưu
         if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
           setClientId("")
         } else if (API_URL == null && CLIENT_ID == null) {
@@ -332,17 +324,17 @@ const ConfigThemeScreen = ({ navigation }) => {
           }
         }
 
-        // Chỉ set default values nếu là lần đầu tiên
+        // Set default values nếu chưa có
+        const firstLoadApp = await AsyncStorage.getItem("firstLoadApp")
         if (!firstLoadApp) {
           await AsyncStorage.setItem("themeName", "1")
           await AsyncStorage.setItem("API_URL", ServerIP.tvs)
           dispatch(SetApiURL(ServerIP.tvs))
           dispatch(sysLoadTheme(arr[0].color))
-          // Không set firstLoadApp ở đây, chỉ set khi cấu hình thành công
         }
 
       } catch (error) {
-        console.log("Error initializing app:", error)
+        console.log("Error initializing ConfigThemeScreen:", error)
         setIsShow(true)
       }
     }
@@ -398,14 +390,14 @@ const ConfigThemeScreen = ({ navigation }) => {
         <View style={styles.formContainer}>
           {/* Client ID field (existing) */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Mã khách hàng</Text>
+            <Text style={styles.label}>Mã cửa hàng</Text>
             <View style={styles.inputContainer}>
               <Icon name="card-account-details" size={20} color={ColorTV.Color.textPrimary3} style={styles.inputIcon} />
               <TextInput
                 value={ClientId}
                 onChangeText={setClientId}
                 style={styles.input}
-                placeholder="Nhập mã khách hàng"
+                placeholder="Nhập mã cửa hàng"
                 placeholderTextColor="#999"
               />
             </View>

@@ -1,17 +1,16 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { AppState, StatusBar, Text } from 'react-native';
+import { AppState, StatusBar, Text, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Block from '../../components/Block';
-
 import {
   ntGetNotification,
   ntResetCountNotiTab,
 } from '../../services/redux/Notification/action';
 import SystemNoti from '../HomeScreens/Tab_Notification/SystemNoti';
 import { Color } from '../../colors/colortv';
+
 const Tab = createMaterialTopTabNavigator();
 
 const NotificationMain = () => {
@@ -20,6 +19,7 @@ const NotificationMain = () => {
   const isFocused = useIsFocused();
   const [valueNoti, setValueNoti] = useState('Thông báo');
   let language = '';
+
   const { notification, notificationGen, notificationSys } = useSelector(
     state => state.NotificationReducer,
   );
@@ -32,7 +32,7 @@ const NotificationMain = () => {
         ? 'VIE'
         : state.loginReducers.data.data.user_language;
   } catch (error) {
-    //
+    // Handle error
   }
 
   useEffect(() => {
@@ -47,19 +47,27 @@ const NotificationMain = () => {
   }, [dataLanguage, language]);
 
   useEffect(() => {
-    AppState.addEventListener('change', currentAppState => {
+    const handleAppStateChange = (currentAppState) => {
       if (currentAppState === 'active') {
         console.log('currentAppState ', currentAppState);
         dispatch(ntGetNotification());
       }
-    });
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
     dispatch(ntGetNotification());
+
+    return () => {
+      subscription?.remove();
+    };
   }, []);
+
   useEffect(() => {
     if (isFocused) {
       dispatch(ntResetCountNotiTab());
     }
   }, [isFocused]);
+
   return (
     <Block flex backgroundColor={Color.gray}>
       <StatusBar
@@ -69,40 +77,25 @@ const NotificationMain = () => {
       />
       <Block row marginTop={55} alignCenter>
         <Block backgroundColor={Color.mainColor} width={7} height={29} />
-        <Text
-          size={26}
-          color={Color.mainColor}
-          fontFamily={'Roboto-Bold'}
-          paddingLeft={20}
-          textAlign={'center'}>
+        <Text style={styles.titleText}>
           {valueNoti}
         </Text>
       </Block>
       <Block flex backgroundColor={Color.gray} paddingTop={10}>
         <SystemNoti />
-        {/* <Tab.Navigator tabBar={props => <TabBar {...props} />}>
-          <Tab.Screen
-            name="Thông báo chung"
-            // options={{
-            //   tabBarLabel: notificationGen
-            //     .filter(x => x.read_yn === 'N')
-            //     .length.toString(),
-            // }}
-            component={UserNoti}
-          />
-          <Tab.Screen
-            name="Hệ thống"
-            // options={{
-            //   tabBarLabel: notificationSys
-            //     .filter(x => x.read_yn === 'N')
-            //     .length.toString(),
-            // }}
-            component={SystemNoti}
-          />
-        </Tab.Navigator> */}
       </Block>
     </Block>
   );
 };
+
+const styles = StyleSheet.create({
+  titleText: {
+    fontSize: 26,
+    color: Color.mainColor,
+    fontFamily: 'Roboto-Bold',
+    paddingLeft: 20,
+    textAlign: 'center',
+  },
+});
 
 export default NotificationMain;

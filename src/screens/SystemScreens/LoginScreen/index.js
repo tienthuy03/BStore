@@ -275,6 +275,18 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
       if (login_status === "0") {
         navigation.navigate("UpdatePass", { password });
       } else if (login_status !== 0) {
+        // Lưu thông tin đăng nhập thành công
+        const saveLoginInfo = async () => {
+          try {
+            await AsyncStorage.setItem("tokenLogin", tokenLogin);
+            await AsyncStorage.setItem("username", username);
+            console.log("Login info saved:", { tokenLogin, username });
+          } catch (error) {
+            console.log("Error saving login info:", error);
+          }
+        };
+        saveLoginInfo();
+
         getTokens(thr_emp_pk, device_id, crt_by);
         TouchID.isSupported(optionalConfigObject)
           .then((biometryType) => {
@@ -478,6 +490,18 @@ const LoginScreen = ({ navigation, reloadConfig }) => {
   }
 
   function deleteDataUser() {
+    const clearUserData = async () => {
+      try {
+        // Xóa thông tin đăng nhập
+        await AsyncStorage.removeItem("tokenLogin");
+        await AsyncStorage.removeItem("username");
+        console.log("User login data cleared");
+      } catch (error) {
+        console.log("Error clearing user data:", error);
+      }
+    };
+
+    clearUserData();
     DefaultPreference.clearAll();
     setTimeout(() => {
       navigation.push("LoginScreen");
