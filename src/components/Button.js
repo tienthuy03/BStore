@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   TouchableHighlight,
+  Text
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 const handlePadding = (number) => {
@@ -147,14 +148,18 @@ const Button = ({
     );
   }
   return (
-    <TouchableOpacity
-      activeOpacity={activeOpacity}
-      style={buttonStyles}
-      {...props}
-      onPress={nextScreen}
-      onLongPress={onLongPress}>
-      {children}
-    </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={activeOpacity}
+    style={buttonStyles}
+    {...props}
+    onPress={props.onPress || nextScreen}   // 👈 Ưu tiên props.onPress
+    onLongPress={onLongPress}>
+    {typeof children === "string" ? (
+      <Text style={{ color: "#000", fontSize: 16 }}>{children}</Text>
+    ) : (
+      children
+    )}
+  </TouchableOpacity>
   );
 };
 
