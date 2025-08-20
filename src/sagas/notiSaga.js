@@ -3,11 +3,11 @@ import {
   FETCH_NOTI_SUCCESS,
   FETCH_NOTI,
 } from '../actions/actionType';
-import {put, takeLatest} from 'redux-saga/effects';
-import {Api} from './Api';
+import { put, takeLatest } from 'redux-saga/effects';
+import { Api } from './Api';
 
 //Get Movie
-function* fetchNoti({payload: {token, deviceId, thr_emp_pk, full_name}}) {
+function* fetchNoti({ payload: { token, deviceId, thr_emp_pk, full_name } }) {
   try {
     const dataNoti = yield Api.fetchNotiFromApi(
       token,

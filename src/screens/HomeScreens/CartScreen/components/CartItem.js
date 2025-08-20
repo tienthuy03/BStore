@@ -101,7 +101,7 @@ const CartItem = React.memo(({ item, onRemove, onToggleSelect = () => { }, onUpd
             </TouchableOpacity>
           </View>
           <Text style={styles.subText}>
-            đ{item.price}/{item.uom}
+            đ{(item.price).toLocaleString()}/{item.uom}
           </Text>
           <View style={styles.bottomRow}>
             <Text style={styles.total}>đ{(item.unit_price * item.quantity).toLocaleString()}</Text>

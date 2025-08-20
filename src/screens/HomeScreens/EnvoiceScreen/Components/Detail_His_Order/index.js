@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Color } from '../../../../../colors/colortv';
 import Header from '../../../../../components/Bstore/Header/Header';
+import DataTable from '../../../../../components/Base/DataTable';
 import useAppConfig from '../../../../../utils/useAppConfig';
 import sysFetch from '../../../../../services/fetch_crypt';
 
@@ -18,8 +19,7 @@ const Detail_His_Order = ({ route, navigation }) => {
       </View>
     );
   }
-  console.log(tdp_product_order_pk);
-
+  console.log("22: ", tdp_product_order_pk);
 
   const { userPk, APP_VERSION, Api, crt_by, tokenLogin } = useAppConfig();
   const [dataDetailHistory, setDataDetailHistory] = useState([]);
@@ -58,8 +58,7 @@ const Detail_His_Order = ({ route, navigation }) => {
     handleGetDetailHistory();
   }, []);
 
-  console.log("60: ", dataDetailHistory);
-  console.log("61: ", order);
+  console.log("60: ", order);
 
 
   return (
@@ -82,7 +81,7 @@ const Detail_His_Order = ({ route, navigation }) => {
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Trạng thái:</Text>
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(order.status) }]}>
-              <Text style={styles.statusText}>{order.status}</Text>
+              <Text style={styles.statusText}>{getStatusName(order.status)}</Text>
             </View>
           </View>
           <View style={styles.infoRow}>
@@ -105,23 +104,22 @@ const Detail_His_Order = ({ route, navigation }) => {
             <Text style={styles.detailValue}>{(order.cus_total_price).toLocaleString()} VNĐ</Text>
           </View>
           <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Ngày giao hàng:</Text>
+            <Text style={styles.detailValue}>{order.cus_delivery}</Text>
+          </View>
+          <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Phương thức thanh toán:</Text>
             <Text style={styles.detailValue}>{order.cus_pay_method_type}</Text>
           </View>
-          <View style={styles.detailRow}>
+          <View style={styles.detailRow2}>
             <Text style={styles.detailLabel}>Địa chỉ giao hàng:</Text>
             <Text style={styles.detailValue}>{order.customer_address}</Text>
           </View>
-          {/* <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Số lượng sản phẩm:</Text>
-            <Text style={styles.detailValue}>10 sản phẩm</Text>
-          </View> */}
         </View>
 
         {/* Product List */}
         <View style={styles.itemsSection}>
           <Text style={styles.sectionTitle}>Danh sách sản phẩm</Text>
-
           {dataDetailHistory && dataDetailHistory.length > 0 ? (
             (() => {
               // Hàm parse style từ string
@@ -180,6 +178,14 @@ const Detail_His_Order = ({ route, navigation }) => {
               };
 
               const products = groupProducts(dataDetailHistory);
+              // console.log("178: ", products);
+              // console.log("179: Raw dataDetailHistory: ", dataDetailHistory);
+
+              // // Debug: Kiểm tra keys có sẵn trong products
+              // if (products.length > 0) {
+              //   console.log("180: Available keys in first product: ", Object.keys(products[0]));
+              //   console.log("181: First product data: ", products[0]);
+              // }
 
               // Hàm format tiền tệ
               const formatCurrency = (value) => {
@@ -187,73 +193,72 @@ const Detail_His_Order = ({ route, navigation }) => {
                 return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
               };
 
-              return products.map((product, index) => (
-                <View key={product.id || index} style={styles.productItem}>
-                  {/* Thông tin khách hàng */}
-                  {product.customer && (
-                    <Text style={styles.customerInfo}>
-                      Khách hàng: {product.customer}
-                    </Text>
-                  )}
+              // Sử dụng dữ liệu gốc từ API, không tính toán thêm
+              const productsWithUnitPrice = products;
 
-                  {/* Tên sản phẩm */}
-                  {product['Sản phẩm'] && (
-                    <View style={styles.productHeader}>
-                      <Text style={[styles.productName, product['Sản phẩm_style']]}>
-                        {product['Sản phẩm']}
-                      </Text>
-                      {product['Đơn giá'] && product['Số lượng'] && (
-                        <Text style={styles.productPrice}>
-                          {formatCurrency(product['Đơn giá'])} x {product['Số lượng']}
-                        </Text>
-                      )}
-                    </View>
-                  )}
+              // Định nghĩa cấu hình cột cho table
+              const columns = [
+                {
+                  key: 'customer',
+                  title: 'Người dùng',
+                  width: 100,
+                  cellStyle: { textAlign: 'center', fontWeight: '500' }
+                },
+                {
+                  key: 'Sản phẩm: ',
+                  title: 'Tên sản phẩm',
+                  width: 120,
+                  cellStyle: { textAlign: 'center', fontWeight: '500' }
+                },
+                {
+                  key: 'Loại',
+                  title: 'Loại',
+                  width: 80
+                },
+                {
+                  key: 'Đơn giá',
+                  title: 'Đơn giá',
+                  width: 120,
+                  type: 'currency',
+                  cellStyle: { color: Color.mainColor, fontWeight: 'bold' }
+                },
+                {
+                  key: 'Số lượng',
+                  title: 'Số lượng',
+                  width: 80
+                },
+                {
+                  key: 'Thành tiền',
+                  title: 'Thành tiền',
+                  width: 150,
+                  type: 'currency',
+                  cellStyle: { color: Color.mainColor, fontWeight: 'bold' }
+                },
+              ];
 
-                  {/* Thông tin chi tiết */}
-                  <View style={styles.productDetails}>
-                    {product['Số lượng'] && (
-                      <Text style={[styles.productType, product['Số lượng_style']]}>
-                        Số lượng: {product['Số lượng']} {product['Đơn vị tính'] || ''}
-                      </Text>
-                    )}
-
-                    {product['Thành tiền'] && (
-                      <Text style={[styles.productPrice, product['Thành tiền_style']]}>
-                        Thành tiền: {formatCurrency(product['Thành tiền'])} VNĐ
-                      </Text>
-                    )}
-
-                    {product['Loại'] && (
-                      <Text style={[styles.productType, product['Loại_style']]}>
-                        Loại: {product['Loại']}
-                      </Text>
-                    )}
-
-                    {product['Ghi chú'] && (
-                      <Text style={[styles.productType, product['Ghi chú_style']]}>
-                        Ghi chú: {product['Ghi chú']}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-              ));
+              return (
+                <DataTable
+                  data={productsWithUnitPrice}
+                  columns={columns}
+                  emptyMessage="Không có dữ liệu sản phẩm"
+                  formatCurrency={formatCurrency}
+                  showHorizontalScroll={true}
+                // minTableWidth={730} // 120+150+120+120+100+120 = 730
+                // cellWidth={120}
+                />
+              );
             })()
-          ) : (
-            <View style={styles.productItem}>
-              <Text style={styles.productName}>Không có dữ liệu sản phẩm</Text>
-            </View>
-          )}
+          ) : null}
         </View>
 
         {/* Total Amount */}
-        <View style={styles.totalSection}>
+        {/* <View style={styles.totalSection}>
           <Text style={styles.totalLabel}>Tổng tiền</Text>
           <Text style={styles.totalAmount}>230,000 VNĐ</Text>
-        </View>
+        </View> */}
 
         {/* Delivery Info */}
-        <View style={styles.deliverySection}>
+        {/* <View style={styles.deliverySection}>
           <Text style={styles.sectionTitle}>Thông tin giao hàng</Text>
           <View style={styles.deliveryRow}>
             <Text style={styles.deliveryLabel}>Phí giao hàng:</Text>
@@ -263,7 +268,7 @@ const Detail_His_Order = ({ route, navigation }) => {
             <Text style={styles.deliveryLabel}>Tổng cộng:</Text>
             <Text style={styles.deliveryValue}>240,000 VNĐ</Text>
           </View>
-        </View>
+        </View> */}
 
         {/* Notes Section */}
         <View style={styles.notesSection}>
@@ -291,15 +296,34 @@ const Detail_His_Order = ({ route, navigation }) => {
 const getStatusColor = (status) => {
   switch (status?.toLowerCase()) {
     case 'inprogress':
+    case '1':
       return Color.mainColor;
     case 'completed':
+    case '2':
       return '#4CAF50';
     case 'pending':
+    case '0':
       return '#FF9800';
     case 'cancelled':
+    case '3':
       return '#F44336';
     default:
       return Color.mainColor;
+  }
+};
+
+const getStatusName = (status) => {
+  switch (status?.toString()) {
+    case '1':
+      return 'Chờ xác nhận';
+    case '2':
+      return 'Đang xác nhận';
+    case '3':
+      return 'Đang vận chuyển';
+    case '4':
+      return 'Đã giao hàng';
+    case '5':
+      return 'Đã hủy';
   }
 };
 
@@ -398,8 +422,14 @@ const styles = StyleSheet.create({
     color: 'white',
     textTransform: 'uppercase',
   },
+  detailRow2: {
+    marginBottom: 8,
+  },
   detailRow: {
     marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   detailLabel: {
     fontSize: 14,
@@ -423,47 +453,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
-  productItem: {
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  productHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
-    flex: 1,
-  },
-  productPrice: {
-    fontSize: 13,
-    color: Color.mainColor,
-    fontWeight: 'bold',
-  },
-  productType: {
-    fontSize: 13,
-    color: '#666',
-    marginBottom: 2,
-  },
-  productUnit: {
-    fontSize: 13,
-    color: '#666',
-  },
-  productDetails: {
-    marginTop: 8,
-  },
-  customerInfo: {
-    fontSize: 12,
-    color: Color.textPrimary3,
-    fontFamily: 'Roboto-Regular',
-    marginBottom: 4,
-  },
+
   totalSection: {
     backgroundColor: 'white',
     padding: 20,

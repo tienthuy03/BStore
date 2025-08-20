@@ -113,7 +113,7 @@ const OneNotificationItem = ({ item, key }) => {
               fontSize: 16
             }}
           >
-            {x?.toString().trim() || ''}  // ✅ Thêm optional chaining và fallback
+            {x?.toString().trim() || ''}
 
           </Text>
         ))}
