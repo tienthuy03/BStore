@@ -109,7 +109,12 @@ const OneNotificationItem = ({ item, key }) => {
               fontSize: 16
             }}
           >
+<<<<<<< HEAD
             {x.toString().trim()}
+=======
+            {x?.toString().trim() || ''}
+
+>>>>>>> 7af062571bc1b30de2a6909fe83eb16080c950bf
           </Text>
         ))}
         <Text

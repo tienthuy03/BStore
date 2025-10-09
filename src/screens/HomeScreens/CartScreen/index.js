@@ -143,12 +143,20 @@ const CartScreen = ({ navigation }) => {
 
   // Sửa lại hàm chuyển sang CheckoutScreen để truyền thêm tco_depot_pk
   const handleCheckoutPress = () => {
-    const depotPk = cartItems && cartItems.length > 0 ? cartItems[0].tco_depot_pk : '';
+    // Chỉ lấy những sản phẩm đã được chọn
+    const selectedCartItems = cartItems.filter(item => item.selected);
+
+    if (selectedCartItems.length === 0) {
+      Alert.alert('Thông báo', 'Vui lòng chọn ít nhất một sản phẩm để thanh toán!');
+      return;
+    }
+
+    const depotPk = selectedCartItems && selectedCartItems.length > 0 ? selectedCartItems[0].tco_depot_pk : '';
     if (navigation) {
       navigation.navigate("CheckoutScreen", {
         total: totalPrice,
         quantityProd: selectedItemsCount,
-        cartItems,
+        cartItems: selectedCartItems, // Chỉ truyền sản phẩm đã chọn
         tco_depot_pk: depotPk,
       })
     }
@@ -207,8 +215,8 @@ const CartScreen = ({ navigation }) => {
     return unsubscribe
   }, [navigation])
 
+  console.log("210 cartItems: ", cartItems);
   return (
-
     // <SafeAreaView style={styles.container}>
     <KeyboardAvoidingView
       style={styles.container}
@@ -318,7 +326,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     padding: 8,
-    paddingBottom: 20,
+    paddingBottom: '10%',
   },
   emptyContainer: {
     flex: 1,
@@ -349,7 +357,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   footerSection: {
-
   }
 })
 

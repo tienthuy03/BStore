@@ -256,12 +256,12 @@ const App = () => {
         <Popup cusStyle={undefined} />
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="InitialScreen"
+            initialRouteName="ConfigThemeScreen"
             screenOptions={{
               headerShown: false,
             }}
           >
-            <Stack.Screen name="InitialScreen" component={InitialScreen} />
+            {/* <Stack.Screen name="InitialScreen" component={InitialScreen} /> */}
             <Stack.Screen name="ConfigThemeScreen" component={ConfigThemeScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="ForgotPass" component={ForgotPass} />

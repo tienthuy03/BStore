@@ -15,6 +15,8 @@ import SectionHeader from './components/SectionHeader'
 import InfoRow from './components/InfoRow'
 import PaymentBox from './components/PaymentBox'
 import SelectModal from './components/SelectModal'
+import AddressSelector from './components/AddressSelector'
+import AddressBox from './components/AddressBox'
 
 const CheckoutScreen = ({ route, navigation }) => {
   const { thr_emp_pk, Api, tokenLogin, crt_by, APP_VERSION, full_Name } = useAppConfig()
@@ -31,6 +33,10 @@ const CheckoutScreen = ({ route, navigation }) => {
   const [selectedArea, setSelectedArea] = useState();
   const [showAreaModal, setShowAreaModal] = useState(false);
 
+  // State cho địa chỉ giao hàng
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [showAddressSelector, setShowAddressSelector] = useState(false);
+
   const [deliveryDate, setDeliveryDate] = useState(""); // Dùng cho hiển thị (dd-MM-yyyy)
   const [deliveryDateApi, setDeliveryDateApi] = useState(""); // Dùng để gửi API (yyyyMMdd)
   const [deliveryTime, setDeliveryTime] = useState("");
@@ -38,15 +44,16 @@ const CheckoutScreen = ({ route, navigation }) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [note, setNote] = useState("");
 
-  // Chuẩn hóa JSON sản phẩm gửi lên API
-  const productsToSend = (cartItems || []).map(item => ({
+  // Chuẩn hóa JSON sản phẩm gửi lên API - chỉ lấy sản phẩm đã được chọn
+  const productsToSend = (cartItems || []).filter(item => item.selected).map(item => ({
     tdp_production_pk: item.tdp_production_pk,
     name: item.prod_nm, // map prod_nm sang name
-    quantity: item.quantity,
-    price: item.price,
-    price_type: item.price_type,
-    uom: item.uom,
-    note: item.note
+    quantity: parseInt(item.quantity) || 1,
+    price: parseFloat(item.price) || 0,
+    price_type: item.price_type || "VND",
+    uom: item.uom || "Cái",
+    note: item.note || "",
+    total_price: (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1)
   }));
 
   // Tính toán tổng tiền
@@ -93,6 +100,9 @@ const CheckoutScreen = ({ route, navigation }) => {
     }
   }
 
+  console.log("96 area: ", listArea);
+  console.log("97 payment: ", list_payment_method);
+
   useEffect(() => {
     handleGetPaymentMethodAndDeliveryArea()
   }, [])
@@ -112,13 +122,26 @@ const CheckoutScreen = ({ route, navigation }) => {
 
   // Xử lý thanh toán - SỬ DỤNG checkoutData từ state
   const handleCheckout = async () => {
+    // Kiểm tra sản phẩm đã chọn
+    const selectedProducts = (cartItems || []).filter(item => item.selected);
+    if (selectedProducts.length === 0) {
+      Alert.alert('Thông báo', 'Vui lòng chọn ít nhất một sản phẩm để thanh toán!');
+      return;
+    }
+
+    // Kiểm tra địa chỉ giao hàng
+    if (!selectedAddress) {
+      Alert.alert('Thông báo', 'Vui lòng chọn địa chỉ giao hàng!');
+      return;
+    }
+
     // Kiểm tra ngày và giờ giao hàng
     if (!deliveryDate) {
-      Alert.alert('Lỗi', 'Vui lòng chọn ngày giao hàng!');
+      Alert.alert('Thông báo', 'Vui lòng chọn ngày giao hàng!');
       return;
     }
     if (!deliveryTime) {
-      Alert.alert('Lỗi', 'Vui lòng chọn giờ giao hàng!');
+      Alert.alert('Thông báo', 'Vui lòng chọn giờ giao hàng!');
       return;
     }
     // console.log("handle checkout");
@@ -132,7 +155,7 @@ const CheckoutScreen = ({ route, navigation }) => {
       p7_varchar2: thr_emp_pk,
       p8_varchar2: shippingInfo?.name || full_Name,
       p9_varchar2: shippingInfo?.phone || "0971761090",
-      p10_varchar2: shippingInfo?.address || "Ho chi minh",
+      p10_varchar2: selectedAddress?.fullAddress || shippingInfo?.address || "Ho chi minh",
       p11_varchar2: note,
       p12_varchar2: deliveryDateApi,
       p13_varchar2: deliveryTime,
@@ -170,21 +193,34 @@ const CheckoutScreen = ({ route, navigation }) => {
           <SectionHeader
             icon="map-marker"
             title="Thông tin khách hàng"
-            onEdit={() => navigation.navigate("ShippingInfoScreen")}
+            onEdit={false}
           />
-          <InfoRow icon="account" text={shippingInfo?.name || 'Thuỷ tiên'} />
+          <InfoRow icon="account" text={full_Name || 'Thuỷ tiên'} />
           <InfoRow icon="phone" text={shippingInfo?.phone || '0971761090'} />
-          <InfoRow icon="map" text={shippingInfo?.address || '132 Đường C1, Tân bình, Hồ Chí Minh'} />
         </View>
-        {/* Delivery Area */}
+
+        {/* Address Selection */}
         <View style={styles.section}>
+          <SectionHeader
+            icon="map-marker-plus"
+            title="Địa chỉ giao hàng"
+            onEdit={() => setShowAddressSelector(true)}
+          />
+          <AddressBox
+            address={selectedAddress}
+            onPress={() => setShowAddressSelector(true)}
+          />
+        </View>
+
+        {/* Delivery Area */}
+        {/* <View style={styles.section}>
           <SectionHeader
             icon="map-search"
             title="Khu vực giao hàng"
             onEdit={() => setShowAreaModal(true)}
           />
           <PaymentBox icon="map" text={selectedArea ? selectedArea.code_nm : ""} />
-        </View>
+        </View> */}
         {/* Payment Method */}
         <View style={styles.section}>
           <SectionHeader
@@ -247,14 +283,14 @@ const CheckoutScreen = ({ route, navigation }) => {
       </ScrollView >
 
       {/* Modal chọn khu vực giao hàng */}
-      <SelectModal
+      {/* <SelectModal
         visible={showAreaModal}
         title="Chọn khu vực giao hàng"
         data={listArea}
         selected={selectedArea}
         onSelect={setSelectedArea}
         onClose={() => setShowAreaModal(false)}
-      />
+      /> */}
 
       {/* Modal chọn phương thức thanh toán */}
       <SelectModal
@@ -264,6 +300,17 @@ const CheckoutScreen = ({ route, navigation }) => {
         selected={selectedPayment}
         onSelect={setSelectedPayment}
         onClose={() => setShowPaymentModal(false)}
+      />
+
+      {/* Address Selector Modal */}
+      <AddressSelector
+        visible={showAddressSelector}
+        onClose={() => setShowAddressSelector(false)}
+        onConfirm={(address) => {
+          setSelectedAddress(address);
+          setShowAddressSelector(false);
+        }}
+        initialAddress={selectedAddress}
       />
 
       {/* Modal chọn ngày giao hàng - ĐÃ THAY BẰNG DATETIMEPICKER */}
@@ -483,5 +530,43 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+  },
+  productItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  productInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 4,
+  },
+  productName: {
+    fontSize: 14,
+    fontFamily: 'Roboto-Medium',
+    color: Color.textPrimary2,
+    flex: 1,
+    marginRight: 8,
+  },
+  productPrice: {
+    fontSize: 14,
+    fontFamily: 'Roboto-Bold',
+    color: Color.mainColor,
+  },
+  productDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  productQuantity: {
+    fontSize: 12,
+    fontFamily: 'Roboto-Regular',
+    color: Color.textPrimary3,
+  },
+  productUnitPrice: {
+    fontSize: 12,
+    fontFamily: 'Roboto-Regular',
+    color: Color.textPrimary3,
   },
 })

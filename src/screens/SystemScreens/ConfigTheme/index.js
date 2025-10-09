@@ -25,7 +25,7 @@ import * as ColorTV from "../../../colors/colortv"
 import { configAPI, ServerIP } from "../../../config/Pro"
 import { SetApiURL } from "../../../services/redux/SysConfig/action"
 import { sysLoadTheme } from "../../../services/redux/System/action"
-import CaptchaComponent from "./CaptchaComponent"
+import RandomNumberComponent from "./RandomNumberComponent"
 import ScanQR from "./ScanQR"
 import CryptoJS from "crypto-js";
 // import CryptoJS from "react-native-crypto-js"
@@ -40,339 +40,255 @@ const arr = [
 ]
 
 const ConfigThemeScreen = ({ navigation }) => {
-  console.log("ConfigThemeScreen component rendered");
-  const [load, setLoad] = useState(false)
-  const [ClientId, setClientId] = useState("")
-  const [ClientKey, setClientKey] = useState("")
-  const [captchaText, setCaptchaText] = useState("")
 
-  // New fields for registration
-  const [username, setUsername] = useState("")
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
+  const [load, setLoad] = useState(false);
+  const [ClientId, setClientId] = useState("");
+  const [captchaText, setCaptchaText] = useState("");
   const onSave = () => {
-    // Validate username
-    // if (username.length === 0) {
-    //   Alert.alert("Thông báo", "Bạn chưa nhập tên đăng nhập.", [{ text: "Đóng" }])
-    //   return
-    // }
-
-    // // Validate phone number
-    // if (phoneNumber.length === 0) {
-    //   Alert.alert("Thông báo", "Bạn chưa nhập số điện thoại.", [{ text: "Đóng" }])
-    //   return
-    // }
-
-    // // Validate password
-    // if (password.length === 0) {
-    //   Alert.alert("Thông báo", "Bạn chưa nhập mật khẩu.", [{ text: "Đóng" }])
-    //   return
-    // }
-
-    // // Validate confirm password
-    // if (confirmPassword.length === 0) {
-    //   Alert.alert("Thông báo", "Bạn chưa nhập xác nhận mật khẩu.", [{ text: "Đóng" }])
-    //   return
-    // }
-
-    // // Check if passwords match
-    // if (password !== confirmPassword) {
-    //   Alert.alert("Thông báo", "Mật khẩu và xác nhận mật khẩu không khớp.", [{ text: "Đóng" }])
-    //   return
-    // }
-
-    // Original validation
     if (ClientId.length === 0) {
-      Alert.alert("Thông báo", "Bạn chưa nhập Client Id.", [{ text: "Đóng" }])
-      return
+      Alert.alert("Thông báo", "Bạn chưa nhập Client Id.", [{ text: "Đóng" }]);
+      return;
     }
     if (captchaText.length === 0) {
-      Alert.alert("Thông báo", "Vui lòng nhập các ký tự bên trên.", [{ text: "Đóng" }])
-      return
+      Alert.alert("Thông báo", "Vui lòng nhập số xác nhận bên trên.", [
+        { text: "Đóng" },
+      ]);
+      return;
     }
-    const originCaptcha = currentCaptcha
-    const inputCaptcha = captchaText
-    console.log(captchaText)
-    console.log(currentCaptcha)
-    if (originCaptcha.toLowerCase() == inputCaptcha.toLowerCase()) {
-      console.log("check")
-      setLoad(true)
-      checkAPI(ClientId)
+    let originNumber = currentNumber;
+    let inputNumber = captchaText;
+    console.log(captchaText);
+    console.log(currentNumber);
+    if (originNumber === inputNumber) {
+      console.log("check");
+      setLoad(true);
+      checkAPI(ClientId);
     } else {
-      Alert.alert("Thông báo", "Các ký tự không trùng khớp vui lòng kiểm tra lại", [
-        {
-          text: "Đóng",
-          onPress: () => {
-            // setIsShow(false);
-            // RNRestart.Restart();
+      Alert.alert(
+        "Thông báo",
+        "Số xác nhận không trùng khớp vui lòng kiểm tra lại",
+        [
+          {
+            text: "Đóng",
+            onPress: () => {
+              // setIsShow(false);
+              // RNRestart.Restart();
+            },
           },
-        },
-      ])
+        ]
+      );
     }
-  }
+  };
   const checkQR = async (qrdata) => {
-    console.log("qrdata ", qrdata)
-    const clientId = qrdata.split("+|+")[0]
-    const cryptoString = qrdata.split("+|+")[1]
-    const secretKey = "tinvietsoft@1911"
-    console.log("decode ", cryptoString)
-    const bytes = CryptoJS.AES.decrypt(cryptoString, secretKey)
-    const originalText = bytes.toString(CryptoJS.enc.Utf8)
+    console.log("qrdata ", qrdata);
+    let clientId = qrdata.split("+|+")[0];
+    let cryptoString = qrdata.split("+|+")[1];
+    let secretKey = "tinvietsoft@1911";
+    console.log("decode ", cryptoString);
+    let bytes = CryptoJS.AES.decrypt(cryptoString, secretKey);
+    let originalText = bytes.toString(CryptoJS.enc.Utf8);
 
-    console.log("originalText ", originalText)
-
-    await AsyncStorage.setItem("API_URL", originalText)
-    await AsyncStorage.setItem("themeName", "1")
-    await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase())
-    await AsyncStorage.setItem("firstLoadApp", "yes")
-    dispatch(SetApiURL(originalText))
-    console.log("QR Configuration saved:", {
-      API_URL: originalText,
-      CLIENT_ID: clientId.toUpperCase(),
-      firstLoadApp: "yes"
-    })
+    await AsyncStorage.setItem("API_URL", originalText);
+    await AsyncStorage.setItem("themeName", "1");
+    await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase());
+    dispatch(SetApiURL(originalText));
     Alert.alert("Thông báo", "Cấu hình thành công.", [
       {
         text: "Đóng",
         onPress: () => {
-          navigation.replace("LoginScreen")
+          setIsShow(false);
+          RNRestart.Restart();
         },
       },
-    ])
-  }
+    ]);
+  };
   const checkAPI = async (clientId) => {
-    const rsCheck = await checkConfigAPI(clientId)
+    let rsCheck = await checkConfigAPI(clientId);
     if (rsCheck) {
-      Alert.alert("Thông báo", "Đăng ký thành công.", [
+      Alert.alert("Thông báo", "Cấu hình thành công.", [
         {
           text: "Đóng",
           onPress: () => {
-            navigation.replace("LoginScreen")
+            setIsShow(false);
+            RNRestart.Restart();
           },
         },
-      ])
+      ]);
     } else {
       //checkoffline
-      const rsCheckOffline = await checkConfigAPIOffline(clientId)
-      console.log("check config ", rsCheckOffline)
+      let rsCheckOffline = await checkConfigAPIOffline(clientId);
+      console.log("check config ", rsCheckOffline);
       if (rsCheckOffline) {
-        setLoad(false)
-        Alert.alert("Thông báo", "Đăng ký thành công.", [
+        setLoad(false);
+        Alert.alert("Thông báo", "Cấu hình thành công.", [
           {
             text: "Đóng",
             onPress: () => {
-              navigation.replace("LoginScreen")
+              setIsShow(false);
+              RNRestart.Restart();
             },
           },
-        ])
+        ]);
       } else {
-        setLoad(false)
-        Alert.alert("Thông báo", "Đăng ký thất bại.", [
+        setLoad(false);
+        Alert.alert("Thông báo", "Cấu hình thất bại.", [
           {
             text: "Đóng",
           },
-        ])
+        ]);
       }
     }
-    setLoad(false)
-  }
+    setLoad(false);
+  };
   const checkConfigAPIOffline = (clientId) => {
     return new Promise(async (resolve) => {
-      let flag = false
-      configAPI.forEach(async (item) => {
+      let flag = false;
+      configAPI.forEach(async function (item) {
         if (item.CLIENT_ID.toLowerCase() == clientId.toLowerCase()) {
-          flag = true
-          console.log("item ", item)
-          await AsyncStorage.setItem("API_URL", item.API_NAME)
-          await AsyncStorage.setItem("themeName", "1")
-          await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase())
-          await AsyncStorage.setItem("CLIENT_NM", item.CLIENT_NM)
-          await AsyncStorage.setItem("firstLoadApp", "yes")
-          dispatch(SetApiURL(item.API_NAME))
-          console.log("Offline Configuration saved:", {
-            API_URL: item.API_NAME,
-            CLIENT_ID: clientId.toUpperCase(),
-            firstLoadApp: "yes"
-          })
-          resolve(true)
+          flag = true;
+          console.log("item ", item);
+          await AsyncStorage.setItem("API_URL", item.API_NAME);
+          await AsyncStorage.setItem("themeName", "1");
+          await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase());
+          dispatch(SetApiURL(item.API_NAME));
+          resolve(true);
         }
-      })
+      });
       if (flag) {
-        resolve(true)
+        resolve(true);
       } else {
-        resolve(false)
+        resolve(false);
       }
-    })
-  }
+    });
+  };
   const checkConfigAPI = (clientId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(false)
-      }, 10000)
-      const URL = ServerIP.tvs + "User/CheckClient?clientId=" + clientId + "&clientKey="
-      console.log(URL)
+        resolve(false);
+      }, 10000);
+      const URL =
+        ServerIP.tvs + "User/CheckClient?clientId=" + clientId + "&clientKey=";
+      console.log(URL);
       axios
         .post(URL, null)
         .then(async (response) => {
-          console.log("response10001", response.data)
+          console.log(response.data);
           if (response.data.data.length > 0) {
-            await AsyncStorage.setItem("API_URL", response.data.data[0].api_name)
-            await AsyncStorage.setItem("themeName", response.data.data[0].theme_type)
-            await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase())
-            await AsyncStorage.setItem("CLIENT_NM", response.data.data[0].client_nm)
-            await AsyncStorage.setItem("firstLoadApp", "yes")
-            dispatch(SetApiURL(response.data.data[0].api_name))
-            console.log("API Configuration saved:", {
-              API_URL: response.data.data[0].api_name,
-              CLIENT_ID: clientId.toUpperCase(),
-              firstLoadApp: "yes"
-            })
-
-            resolve(true)
+            await AsyncStorage.setItem(
+              "API_URL",
+              response.data.data[0].api_name
+            );
+            await AsyncStorage.setItem(
+              "themeName",
+              response.data.data[0].theme_type
+            );
+            await AsyncStorage.setItem("CLIENT_ID", clientId.toUpperCase());
+            dispatch(SetApiURL(response.data.data[0].api_name));
+            resolve(true);
           } else {
-            resolve(false)
+            resolve(false);
           }
         })
         .catch(async (error) => {
-          console.log(error)
-          resolve(false)
-        })
-    })
-  }
-  const dispatch = useDispatch()
-  const [isShow, setIsShow] = useState(false)
+          console.log(error);
+          resolve(false);
+        });
+    });
+  };
+  const dispatch = useDispatch();
+  const [isShow, setIsShow] = useState(false);
 
-  // useEffect(() => {
-  //   let CLIENT_ID = ""
-  //   let API_URL = ""
-  //   fetchData()
-  //   async function fetchData() {
-  //     CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID")
-  //     API_URL = await AsyncStorage.getItem("API_URL")
-  //   }
-  //   if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
-  //     setClientId("")
-  //   } else if (API_URL == null && CLIENT_ID == null) {
-  //     setClientId("")
-  //   } else {
-  //     setClientId(CLIENT_ID)
-  //   }
-
-  //   if (API_URL != "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
-  //     if (configAPI != null && configAPI != []) {
-  //       configAPI.forEach(async (item) => {
-  //         if (item.API_NAME.toLowerCase() == API_URL.toLowerCase()) {
-  //           console.log("item ", item)
-  //           setClientId(item.CLIENT_ID.toUpperCase())
-  //         }
-  //       })
-  //     }
-  //   }
-
-  //   // Always show the configuration screen when navigated to
-  //   setIsShow(true)
-
-  //   // Check if this is the first load
-  //   AsyncStorage.getItem("firstLoadApp").then(async (rs) => {
-  //     if (!rs) {
-  //       // First time loading the app
-  //       AsyncStorage.setItem("themeName", "1")
-  //       AsyncStorage.setItem("API_URL", ServerIP.tvs)
-  //       dispatch(SetApiURL(ServerIP.tvs))
-  //       dispatch(sysLoadTheme(arr[0].color))
-  //       AsyncStorage.setItem("firstLoadApp", "yes")
-  //     }
-  //   })
-
-  //   return () => { }
-  // }, [])
   useEffect(() => {
-    let CLIENT_ID = ""
-    let API_URL = ""
+    const CLIENT_ID = "";
+    const API_URL = "";
+    fetchData();
+    async function fetchData() {
+      CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID");
+      API_URL = await AsyncStorage.getItem("API_URL");
+    }
+    if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+      setClientId("");
+    } else if (API_URL == null && CLIENT_ID == null) {
+      setClientId("");
+    } else {
+      setClientId(CLIENT_ID);
+    }
 
-    const initializeApp = async () => {
-      try {
-        CLIENT_ID = await AsyncStorage.getItem("CLIENT_ID")
-        API_URL = await AsyncStorage.getItem("API_URL")
-
-        console.log("ConfigThemeScreen - Stored values:", { CLIENT_ID, API_URL })
-
-        // Hiển thị màn hình config
-        setIsShow(true)
-
-        // Logic để set ClientId từ dữ liệu đã lưu
-        if (API_URL == "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
-          setClientId("")
-        } else if (API_URL == null && CLIENT_ID == null) {
-          setClientId("")
-        } else {
-          setClientId(CLIENT_ID || "")
-        }
-
-        if (API_URL != "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
-          if (configAPI != null && configAPI != []) {
-            configAPI.forEach(async (item) => {
-              if (item.API_NAME.toLowerCase() == API_URL.toLowerCase()) {
-                console.log("item ", item)
-                setClientId(item.CLIENT_ID.toUpperCase())
-              }
-            })
+    if (API_URL != "http://14.241.235.252:8081/api/" && CLIENT_ID == null) {
+      if (configAPI != null && configAPI != []) {
+        configAPI.forEach(async function (item) {
+          if (item.API_NAME.toLowerCase() == API_URL.toLowerCase()) {
+            console.log("item ", item);
+            setClientId(item.CLIENT_ID.toUpperCase());
           }
-        }
-
-        // Set default values nếu chưa có
-        const firstLoadApp = await AsyncStorage.getItem("firstLoadApp")
-        if (!firstLoadApp) {
-          await AsyncStorage.setItem("themeName", "1")
-          await AsyncStorage.setItem("API_URL", ServerIP.tvs)
-          dispatch(SetApiURL(ServerIP.tvs))
-          dispatch(sysLoadTheme(arr[0].color))
-        }
-
-      } catch (error) {
-        console.log("Error initializing ConfigThemeScreen:", error)
-        setIsShow(true)
+        });
       }
     }
 
-    initializeApp()
-  }, [])
-  const [currentCaptcha, setCurrentCaptcha] = useState("")
+    AsyncStorage.getItem("firstLoadApp").then(async (rs) => {
+      if (rs) {
+        getTheme();
+      } else {
+        AsyncStorage.setItem("themeName", "1");
+        AsyncStorage.setItem("API_URL", ServerIP.tvs);
+        dispatch(SetApiURL(ServerIP.tvs));
+        dispatch(sysLoadTheme(arr[0].color));
+        AsyncStorage.setItem("firstLoadApp", "yes");
+        setIsShow(true);
+      }
+    });
+    const getTheme = async () => {
+      try {
+        const themeName = await AsyncStorage.getItem("themeName");
+        if (!themeName) {
+          setIsShow(true);
+        } else {
+          const tempTheme = arr.filter((i) => i.id === themeName)[0].color;
+          dispatch(sysLoadTheme(tempTheme));
+          navigation.replace("LoginScreen");
+        }
+      } catch (error) { }
+    };
+    return () => { };
+  }, []);
 
-  const handleCaptchaChange = (newCaptchaText) => {
-    setCurrentCaptcha(newCaptchaText)
-  }
+  const [currentNumber, setCurrentNumber] = useState("");
+  const handleNumberChange = (newNumber) => {
+    setCurrentNumber(newNumber.toString());
+  };
 
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-  const translation = useRef(new Animated.Value(0)).current
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const translation = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(translation, {
       toValue: isKeyboardVisible ? -40 : 0,
       duration: 500,
       useNativeDriver: true,
-    }).start()
-  }, [isKeyboardVisible])
+    }).start();
+  }, [isKeyboardVisible]);
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
-      console.log("show")
-      setKeyboardVisible(true) // or some other action
-    })
-    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
-      console.log("hide")
-
-      setKeyboardVisible(false) // or some other action
-    })
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        console.log("show");
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        console.log("hide");
+        setKeyboardVisible(false); // or some other action
+      }
+    );
 
     return () => {
-      keyboardDidHideListener.remove()
-      keyboardDidShowListener.remove()
-    }
-  }, [])
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -402,9 +318,9 @@ const ConfigThemeScreen = ({ navigation }) => {
               />
             </View>
           </View>
-          {/* Captcha field (existing) */}
+          {/* Random number field */}
           <View>
-            <Text style={styles.label}>Mã xác nhận</Text>
+            <Text style={styles.label}>Số xác nhận</Text>
             <View style={styles.captchaContainer}>
               <View style={styles.captchaInputContainer}>
                 <Icon name="shield-check" size={20} color={ColorTV.Color.textPrimary3} style={styles.inputIcon} />
@@ -412,11 +328,12 @@ const ConfigThemeScreen = ({ navigation }) => {
                   value={captchaText}
                   onChangeText={setCaptchaText}
                   style={styles.input}
-                  placeholder="Nhập mã xác nhận"
+                  placeholder="Nhập số xác nhận"
                   placeholderTextColor="#999"
+                  keyboardType="numeric"
                 />
               </View>
-              <CaptchaComponent onCaptchaChange={handleCaptchaChange} />
+              <RandomNumberComponent onNumberChange={handleNumberChange} />
             </View>
           </View>
 
